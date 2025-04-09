@@ -1,8 +1,8 @@
-package com.example.backend.models;
+package com.example.backend.DTO;
 
-public record VacancyService(
-    String area,
-    String profession,
+public record VacancyServiceDTO(
+    Integer areaId,
+    Integer professionId,
     Integer volumeOfPublicationPackage,
     String vacancyType,
     Integer publicationPeriod,
