@@ -1,6 +1,6 @@
-package com.example.backend.DTO;
+package com.example.backend.models;
 
-public record ResumesAccessServiceDTO(
+public record ResumesAccessOffer(
     Integer areaId,
     Integer professionId,
     Integer accessDuration,
