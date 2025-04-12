@@ -16,10 +16,10 @@ public class OfferController {
   @PostMapping("/service-offer")
   public ResponseEntity<OfferDto> processRequest(@RequestBody ClaimDto request) {
 
-    Map<Integer, VacancyOffer> vacancyServices = new HashMap<>();
-    Map<Integer, ResumesAccessOffer> resumesAccessServices = new HashMap<>();
+    Map<Integer, VacancyOffer> vacancyOffers = new HashMap<>();
+    Map<Integer, ResumesAccessOffer> resumesAccessOffers = new HashMap<>();
 
-    vacancyServices.put(1, new VacancyOffer(
+    vacancyOffers.put(1, new VacancyOffer(
         request.areaId(),
         request.professionId(),
         50,
@@ -28,7 +28,7 @@ public class OfferController {
         100.0,
         5000.0
         ));
-    resumesAccessServices.put(1, new ResumesAccessOffer(
+    resumesAccessOffers.put(1, new ResumesAccessOffer(
         request.areaId(),
         request.professionId(),
         30,
@@ -36,6 +36,6 @@ public class OfferController {
         4500.0
         ));
 
-    return ResponseEntity.ok(new OfferDto(vacancyServices, resumesAccessServices));
+    return ResponseEntity.ok(new OfferDto(vacancyOffers, resumesAccessOffers));
   }
 }
