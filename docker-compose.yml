@@ -17,9 +17,9 @@ services:
     container_name: spring_backend
     restart: unless-stopped
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydatabase
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/service_picker
+      - SPRING_DATASOURCE_USERNAME=service_picker_user
+      - SPRING_DATASOURCE_PASSWORD=service_picker_dev
     depends_on:
       - db
 
