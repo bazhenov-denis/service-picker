@@ -6,8 +6,9 @@ import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.ResumesAccessOffer;
 import com.example.backend.models.VacancyOffer;
 import com.example.backend.service.ApiService;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,8 @@ public class OfferService {
   private ApiService apiService;
 
   public OfferDto pick(ClaimDto claim) {
-    Map<Integer, VacancyOffer> vacancyOffers = new HashMap<>();
-    Map<Integer, ResumesAccessOffer> resumesAccessOffers = new HashMap<>();
+    List<VacancyOffer> vacancyOffers = new ArrayList<>();
+    List<ResumesAccessOffer> resumesAccessOffers = new ArrayList<>();
 
     // поход в API за кол-вом вакансий по региону и профессии
     VacancyResult vacancyResult = apiService.getVacancyCount(claim.areaId(), claim.professionId());
@@ -26,8 +27,8 @@ public class OfferService {
     // алгоритм подбора
     if (vacancyResult.isSuccess()) {
       if (vacancyResult.getCount() < 100){
-        vacancyOffers.put(
-            1, new VacancyOffer(
+        vacancyOffers.add(
+            new VacancyOffer(
                 claim.areaId(),
                 claim.professionId(),
                 50,
@@ -38,8 +39,8 @@ public class OfferService {
             )
         );
       } else {
-        resumesAccessOffers.put(
-            1, new ResumesAccessOffer(
+        resumesAccessOffers.add(
+            new ResumesAccessOffer(
                 claim.areaId(),
                 claim.professionId(),
                 30,
