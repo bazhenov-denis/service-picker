@@ -7,6 +7,7 @@ import com.example.backend.models.ResumesAccessOffer;
 import com.example.backend.models.VacancyOffer;
 import com.example.backend.service.ApiService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,9 @@ public class OfferService {
             )
         );
       }
+    } else {
+      // если обращение в апи неудачно, то возвращаем пустой ДТО, контроллер вернет 400 статус
+      return new OfferDto(Collections.emptyList(), Collections.emptyList());
     }
 
     return new OfferDto(vacancyOffers, resumesAccessOffers);
