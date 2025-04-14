@@ -1,41 +1,32 @@
 package com.example.backend.controllers;
 
-import com.example.backend.models.ResumesAccessOffer;
 import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferDto;
-import com.example.backend.models.VacancyOffer;
-import java.util.HashMap;
-import java.util.Map;
+import com.example.backend.services.OfferService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class OfferController {
+  @Autowired
+  private OfferService offerService;
+
   @PostMapping("/service-offer")
-  public ResponseEntity<OfferDto> processRequest(@RequestBody ClaimDto request) {
+  public ResponseEntity<OfferDto> processClaim(@Validated @RequestBody ClaimDto claim) {
+    // обращение в сервис подбора
+    OfferDto offer = offerService.pick(claim);
 
-    Map<Integer, VacancyOffer> vacancyOffers = new HashMap<>();
-    Map<Integer, ResumesAccessOffer> resumesAccessOffers = new HashMap<>();
+    // пустой ответ от сервиса => что-то пошло не так => 400
+    if (offer.vacancyOffers().isEmpty() && offer.resumesAccessOffers().isEmpty()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+    }
 
-    vacancyOffers.put(1, new VacancyOffer(
-        request.areaId(),
-        request.professionId(),
-        50,
-        "Regular",
-        30,
-        100.0,
-        5000.0
-        ));
-    resumesAccessOffers.put(1, new ResumesAccessOffer(
-        request.areaId(),
-        request.professionId(),
-        30,
-        100,
-        4500.0
-        ));
-
-    return ResponseEntity.ok(new OfferDto(vacancyOffers, resumesAccessOffers));
+    // 200
+    return ResponseEntity.ok(offer);
   }
 }
