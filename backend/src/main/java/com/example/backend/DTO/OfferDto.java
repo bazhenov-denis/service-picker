@@ -2,7 +2,7 @@ package com.example.backend.DTO;
 
 import com.example.backend.models.ResumesAccessOffer;
 import com.example.backend.models.VacancyOffer;
-import java.util.Map;
+import java.util.List;
 
-public record OfferDto(Map<Integer, VacancyOffer> vacancyOffers, Map<Integer, ResumesAccessOffer> resumesAccessOffers) {
+public record OfferDto(List<VacancyOffer> vacancyOffers, List<ResumesAccessOffer> resumesAccessOffers) {
 }
