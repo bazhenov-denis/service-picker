@@ -11,8 +11,8 @@ IN:
 <p>
 OUT:
 {
-    "vacancyOffers": {
-        "1": {
+    "vacancyOffers": [
+        {
             "areaId": 6,
             "professionId": 5,
             "volumeOfPublicationPackage": 50,
@@ -21,15 +21,22 @@ OUT:
             "pricePerOne": 100.0,
             "pricePerPackage": 5000.0
         }
-    },
-    "resumesAccessOffers": {
-        "1": {
+    ],
+    "resumesAccessOffers": []
+}
+</p>
+<p>или</p>
+<p>
+{
+    "vacancyOffers": [],
+    "resumesAccessOffers": [
+        {
             "areaId": 6,
             "professionId": 5,
             "accessDuration": 30,
             "numberOfContacts": 100,
             "price": 4500.0
         }
-    }
+    ]
 }
 </p>
