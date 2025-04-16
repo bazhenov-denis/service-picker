@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.services;
 
 import com.example.backend.DTO.*;
 import com.example.backend.exception.ApiException;
