@@ -11,29 +11,17 @@ import jakarta.persistence.Table;
 @Table(name = "vacancy_offer")
 public class VacancyOffer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Integer areaId;
-    private Integer professionId;
-    private Integer packageVolume;
-    private String vacancyType;
-    private Integer publicationPeriod;
-    private Double pricePerOne;
-    private Double pricePerPackage;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    public VacancyOffer(
-        Integer areaId, Integer professionId, Integer packageVolume,
-        String vacancyType, Integer publicationPeriod, Double pricePerOne, Double pricePerPackage
-    ) {
-        this.areaId = areaId;
-        this.professionId = professionId;
-        this.packageVolume = packageVolume;
-        this.vacancyType = vacancyType;
-        this.publicationPeriod = publicationPeriod;
-        this.pricePerOne = pricePerOne;
-        this.pricePerPackage = pricePerPackage;
-    }
+  private Integer areaId;
+  private Integer professionId;
+  private Integer packageVolume;
+  private String vacancyType;
+  private Integer publicationPeriod;
+  private Double pricePerOne;
+  private Double pricePerPackage;
 
   public Integer getAreaId() {
     return areaId;
