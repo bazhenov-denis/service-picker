@@ -5,7 +5,7 @@ import com.example.backend.DTO.OfferDto;
 import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.ResumesAccessOffer;
 import com.example.backend.models.VacancyOffer;
-import com.example.backend.service.ApiService;
+import com.example.backend.services.ApiService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,7 @@ public class OfferService {
                 claim.areaId(),
                 claim.professionId(),
                 50,
-                "Regular",
+                "Standard",
                 30,
                 100.0,
                 5000.0
