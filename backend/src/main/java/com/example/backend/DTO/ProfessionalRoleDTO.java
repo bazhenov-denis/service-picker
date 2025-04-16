@@ -7,7 +7,6 @@ public class ProfessionalRoleDTO {
     private String id;
     private String name;
 
-    // Геттеры и сеттеры
     public String getId() {
         return id;
     }

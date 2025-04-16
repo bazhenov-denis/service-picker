@@ -15,12 +15,57 @@ public class ResumesAccessOffer {
     private Long id;
 
     private Integer areaId;
-
     private Integer professionId;
-
     private Integer accessDuration;
-
     private Integer numberOfContacts;
-
     private Double price;
+
+    public ResumesAccessOffer(Integer areaId, Integer professionId,
+        Integer accessDuration, Integer numberOfContacts, Double price) {
+        this.areaId = areaId;
+        this.professionId = professionId;
+        this.accessDuration = accessDuration;
+        this.numberOfContacts = numberOfContacts;
+        this.price = price;
+    }
+
+  public Integer getAreaId() {
+    return areaId;
+  }
+
+  public void setAreaId(Integer areaId) {
+    this.areaId = areaId;
+  }
+
+  public Integer getProfessionId() {
+    return professionId;
+  }
+
+  public void setProfessionId(Integer professionId) {
+    this.professionId = professionId;
+  }
+
+  public Integer getAccessDuration() {
+    return accessDuration;
+  }
+
+  public void setAccessDuration(Integer accessDuration) {
+    this.accessDuration = accessDuration;
+  }
+
+  public Integer getNumberOfContacts() {
+    return numberOfContacts;
+  }
+
+  public void setNumberOfContacts(Integer numberOfContacts) {
+    this.numberOfContacts = numberOfContacts;
+  }
+
+  public Double getPrice() {
+    return price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
 }
