@@ -10,24 +10,15 @@ import jakarta.persistence.Table;
 @Table(name = "resumes_access_offer")
 public class ResumesAccessOffer {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private Integer areaId;
-    private Integer professionId;
-    private Integer accessDuration;
-    private Integer numberOfContacts;
-    private Double price;
-
-    public ResumesAccessOffer(Integer areaId, Integer professionId,
-        Integer accessDuration, Integer numberOfContacts, Double price) {
-        this.areaId = areaId;
-        this.professionId = professionId;
-        this.accessDuration = accessDuration;
-        this.numberOfContacts = numberOfContacts;
-        this.price = price;
-    }
+  private Integer areaId;
+  private Integer professionId;
+  private Integer accessDuration;
+  private Integer numberOfContacts;
+  private Double price;
 
   public Integer getAreaId() {
     return areaId;
