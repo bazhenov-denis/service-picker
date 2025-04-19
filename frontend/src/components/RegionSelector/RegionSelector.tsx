@@ -5,42 +5,21 @@ import { useRegions } from '../../hooks/useRegions'; // Импортируем �
 import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 
-interface Region {
-  id: string;
-  label: string;
-  items?: Region[];
-}
-
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
 }
 
-const transformToTreeModel = (regions: Region[]): CustomTreeModel[] => {
-  return regions.map((region) => ({
-    id: region.id,
-    text: region.label,
-    items: region.items ? transformToTreeModel(region.items) : undefined,
-    expanded: false,
-    selected: false,
-    disabled: false,
-  }));
-};
-
 const RegionSelector: React.FC = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
   const controlsRef = useRef<ListControls>(null);
   
-  // Используем хук для получения данных
   const { regions, loading, error } = useRegions();
 
-  // Преобразуем регионы в формат TreeModel
+  // Используем данные напрямую, без дополнительного преобразования
   const treeData = useMemo(() => {
     if (!regions?.length) return [];
-    console.log('Original regions data:', regions);
-    const transformed = transformToTreeModel(regions);
-    console.log('Transformed tree data:', transformed);
-    return transformed;
+    console.log('Tree data:', regions);
+    return regions;
   }, [regions]);
 
   // Создаем коллекцию для TreeSelector
@@ -60,15 +39,6 @@ const RegionSelector: React.FC = () => {
 
   const handleRegionChange = useCallback((allSelected: string[]) => {
     setSelectedRegions(allSelected);
-  }, []);
-
-  const handleExpansion = useCallback((id: string) => {
-    setExpandedNodes(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(nodeId => nodeId !== id);
-      }
-      return [...prev, id];
-    });
   }, []);
 
   const getSelectAllParentTrl = useCallback((id: string) => {
