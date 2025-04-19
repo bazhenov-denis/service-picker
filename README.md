@@ -6,6 +6,9 @@
 - 🔙 Бэкенд: Spring Boot (Java 17)  
 - 🐳 Docker + Docker Compose  
 
+## API документация
+
+http://localhost:8080/api-docs
 
 ## 🚀  старт
 
@@ -23,3 +26,13 @@ docker-compose up --build
 
 - Docker  
 - Docker Compose  
+
+
+## данные для бд
+
+Параметр	Значение
+Host	localhost
+Port	5432
+Database	service_picker
+User	service_picker_user
+Password	service_picker_dev
