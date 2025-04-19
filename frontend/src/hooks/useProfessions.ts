@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { professions } from '../mocks/professions';
+import { professions } from '../api/mocks/professions';
 import { transformProfessionsToTreeModel } from '../utils/professionsTransformer';
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
