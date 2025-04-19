@@ -4,6 +4,7 @@ import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
 import { useRegions } from '../../hooks/useRegions'; // Импортируем хук
 import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
+import styles from './RegionSelector.module.css';
 
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
@@ -47,12 +48,7 @@ const RegionSelector: React.FC = () => {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '200px' 
-      }}>
+      <div className={styles.loadingContainer}>
         <div>Загрузка регионов...</div>
       </div>
     );
@@ -60,47 +56,23 @@ const RegionSelector: React.FC = () => {
 
   if (error) {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '200px',
-        color: 'red',
-        textAlign: 'center',
-        padding: '20px'
-      }}>
+      <div className={styles.errorContainer}>
         <div>
           <p>Ошибка при загрузке регионов</p>
-          <p style={{ fontSize: '14px', color: '#666' }}>Пожалуйста, проверьте подключение к серверу</p>
+          <p className={styles.errorMessage}>Пожалуйста, проверьте подключение к серверу</p>
         </div>
       </div>
     );
   }
   
   return (
-    <div style={{ position: "relative", height: "400px", width: "100%" }}>
+    <div className={styles.regionSelector}>
       <h2>Выберите регион:</h2>
-      <div style={{ 
-        border: "1px solid #e0e0e0",
-        borderRadius: "4px",
-        backgroundColor: "#fff",
-        padding: "16px",
-        height: "calc(100% - 60px)"
-      }}>
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          marginBottom: '12px'
-        }}>
+      <div className={styles.selectorContainer}>
+        <div className={styles.controls}>
           <button
             onClick={() => controlsRef.current?.back()}
-            style={{
-              padding: '8px 16px',
-              border: '1px solid #e0e0e0',
-              borderRadius: '4px',
-              backgroundColor: '#fff',
-              cursor: 'pointer'
-            }}
+            className={styles.backButton}
           >
             ← Назад
           </button>
@@ -114,20 +86,11 @@ const RegionSelector: React.FC = () => {
           getSelectAllParentTrl={getSelectAllParentTrl}
         >
           {({ renderTreeSelector, renderInput }) => (
-            <div style={{ 
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '12px',
-              height: '100%'
-            }}>
-              <div style={{ flexShrink: 0 }}>
+            <div className={styles.treeWrapper}>
+              <div className={styles.inputContainer}>
                 {renderInput()}
               </div>
-              <div style={{ 
-                flex: 1,
-                overflow: "auto",
-                minHeight: 0
-              }}>
+              <div className={styles.treeContainer}>
                 {renderTreeSelector()}
               </div>
             </div>

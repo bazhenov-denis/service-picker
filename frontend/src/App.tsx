@@ -1,19 +1,17 @@
 import React from 'react';
 import Header from './components/Header/Header';
 import RegionSelector from './components/RegionSelector/RegionSelector';
+import ProfessionSelector from './components/ProfessionSelector/ProfessionSelector';
+import styles from './App.module.css';
 
 function App() {
   return (
-    <div className="App">
+    <div className={styles.app}>
       <Header />
-      <div style={{
-        width: '1000px',
-        margin: '100 auto',
-        padding: '200px 0' // Добавляем отступ сверху и снизу при необходимости
-      }}>
+      <div className={styles.container}>
         <RegionSelector />
+        <ProfessionSelector />
       </div>
-      <p>HELLO</p>
     </div>
   );
 }
