@@ -1,39 +1,60 @@
-// src/components/RegionSelector/index.tsx
-import React, { useState } from 'react';
-import { TreeSelector } from '@hh.ru/magritte-ui';
+import React, { useState } from "react";
+import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
+import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector"; // Исправленный импорт
 
-// Пример mock данных для дерева регионов
-const mockRegions = [
+interface Region {
+  id: string;
+  label: string;
+  children?: Region[];
+}
+
+interface TreeModel {
+  id: string;
+  text: string;
+  items?: TreeModel[];
+}
+
+const mockRegions: Region[] = [
   {
-    id: '1',
-    label: 'Россия',
+    id: "1",
+    label: "Россия",
     children: [
-      { id: '2', label: 'Москва' },
-      { id: '3', label: 'Санкт-Петербург' },
+      { id: "2", label: "Москва" },
+      { id: "3", label: "Санкт-Петербург" },
     ],
   },
   {
-    id: '4',
-    label: 'Казахстан',
+    id: "4",
+    label: "Казахстан",
     children: [
-      { id: '5', label: 'Астана' },
-      { id: '6', label: 'Алматы' },
+      { id: "5", label: "Астана" },
+      { id: "6", label: "Алматы" },
     ],
   },
 ];
 
-const RegionSelector: React.FC = () => {
-  // Состояние для выбранных значений
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+const transformToTreeModel = (regions: Region[]): TreeModel[] => {
+  return regions.map((region) => ({
+    id: region.id,
+    text: region.label,
+    items: region.children ? transformToTreeModel(region.children) : undefined,
+  }));
+};
 
-  // Обработчик изменения выбора
+const RegionSelector: React.FC = () => {
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const collection = new TreeCollection();
+  const treeData = transformToTreeModel(mockRegions);
+
+  treeData.forEach((region) => {
+    collection.addModel(region);
+  });
+
   const handleRegionChange = (
     allSelected: string[],
     id: string,
     isSelected: boolean
   ) => {
-    console.log('Выбранные регионы:', allSelected);
-    console.log(`Элемент с ID ${id} был ${isSelected ? 'выбран' : 'отменён'}`);
     setSelectedRegions(allSelected);
   };
 
@@ -41,11 +62,14 @@ const RegionSelector: React.FC = () => {
     <div>
       <h2>Выберите регион:</h2>
       <TreeSelector
-        collection={mockRegions} // Данные для дерева
-        value={selectedRegions} // Текущие выбранные значения
-        onChange={handleRegionChange} // Колбек на изменение выбора
-        singleChoice={false} // Разрешить множественный выбор
-      />
+        collection={collection}
+        value={selectedRegions}
+        onChange={handleRegionChange}
+        singleChoice={false}
+        getSelectAllParentTrl={() => "Выбрать все"}
+      >
+        {({ renderTreeSelector }) => renderTreeSelector()}
+      </TreeSelector>
     </div>
   );
 };
