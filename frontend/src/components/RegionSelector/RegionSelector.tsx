@@ -1,75 +1,169 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback, useRef } from "react";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
-import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector"; // Исправленный импорт
+import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
+import { useRegions } from '../../hooks/useRegions'; // Импортируем хук
+import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
+import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 
 interface Region {
   id: string;
   label: string;
-  children?: Region[];
+  items?: Region[];
 }
 
-interface TreeModel {
-  id: string;
-  text: string;
-  items?: TreeModel[];
+interface CustomTreeModel extends TreeModel {
+  items?: CustomTreeModel[];
 }
 
-const mockRegions: Region[] = [
-  {
-    id: "1",
-    label: "Россия",
-    children: [
-      { id: "2", label: "Москва" },
-      { id: "3", label: "Санкт-Петербург" },
-    ],
-  },
-  {
-    id: "4",
-    label: "Казахстан",
-    children: [
-      { id: "5", label: "Астана" },
-      { id: "6", label: "Алматы" },
-    ],
-  },
-];
-
-const transformToTreeModel = (regions: Region[]): TreeModel[] => {
+const transformToTreeModel = (regions: Region[]): CustomTreeModel[] => {
   return regions.map((region) => ({
     id: region.id,
     text: region.label,
-    items: region.children ? transformToTreeModel(region.children) : undefined,
+    items: region.items ? transformToTreeModel(region.items) : undefined,
+    expanded: false,
+    selected: false,
+    disabled: false,
   }));
 };
 
 const RegionSelector: React.FC = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const collection = new TreeCollection();
-  const treeData = transformToTreeModel(mockRegions);
+  const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
+  const controlsRef = useRef<ListControls>(null);
+  
+  // Используем хук для получения данных
+  const { regions, loading, error } = useRegions();
 
-  treeData.forEach((region) => {
-    collection.addModel(region);
-  });
+  // Преобразуем регионы в формат TreeModel
+  const treeData = useMemo(() => {
+    if (!regions?.length) return [];
+    console.log('Original regions data:', regions);
+    const transformed = transformToTreeModel(regions);
+    console.log('Transformed tree data:', transformed);
+    return transformed;
+  }, [regions]);
 
-  const handleRegionChange = (
-    allSelected: string[],
-    id: string,
-    isSelected: boolean
-  ) => {
+  // Создаем коллекцию для TreeSelector
+  const collection = useMemo(() => {
+    const coll = new TreeCollection();
+    
+    const addModelRecursively = (model: CustomTreeModel, parentId?: string) => {
+      coll.addModel(model, parentId);
+      if (model.items) {
+        model.items.forEach(item => addModelRecursively(item, model.id));
+      }
+    };
+
+    treeData.forEach(region => addModelRecursively(region));
+    return coll;
+  }, [treeData]);
+
+  const handleRegionChange = useCallback((allSelected: string[]) => {
     setSelectedRegions(allSelected);
-  };
+  }, []);
 
+  const handleExpansion = useCallback((id: string) => {
+    setExpandedNodes(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(nodeId => nodeId !== id);
+      }
+      return [...prev, id];
+    });
+  }, []);
+
+  const getSelectAllParentTrl = useCallback((id: string) => {
+    return `Выбрать все (${id})`;
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '200px' 
+      }}>
+        <div>Загрузка регионов...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '200px',
+        color: 'red',
+        textAlign: 'center',
+        padding: '20px'
+      }}>
+        <div>
+          <p>Ошибка при загрузке регионов</p>
+          <p style={{ fontSize: '14px', color: '#666' }}>Пожалуйста, проверьте подключение к серверу</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
-    <div>
+    <div style={{ position: "relative", height: "400px", width: "100%" }}>
       <h2>Выберите регион:</h2>
-      <TreeSelector
-        collection={collection}
-        value={selectedRegions}
-        onChange={handleRegionChange}
-        singleChoice={false}
-        getSelectAllParentTrl={() => "Выбрать все"}
-      >
-        {({ renderTreeSelector }) => renderTreeSelector()}
-      </TreeSelector>
+      <div style={{ 
+        border: "1px solid #e0e0e0",
+        borderRadius: "4px",
+        backgroundColor: "#fff",
+        padding: "16px",
+        height: "calc(100% - 60px)"
+      }}>
+        <div style={{
+          display: 'flex',
+          gap: '8px',
+          marginBottom: '12px'
+        }}>
+          <button
+            onClick={() => controlsRef.current?.back()}
+            style={{
+              padding: '8px 16px',
+              border: '1px solid #e0e0e0',
+              borderRadius: '4px',
+              backgroundColor: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            ← Назад
+          </button>
+        </div>
+        <TreeSelector
+          collapseToParentId
+          collection={collection}
+          value={selectedRegions}
+          onChange={handleRegionChange}
+          ref={controlsRef}
+          getSelectAllParentTrl={getSelectAllParentTrl}
+        >
+          {({ renderTreeSelector, renderInput }) => (
+            <div style={{ 
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '12px',
+              height: '100%'
+            }}>
+              <div style={{ flexShrink: 0 }}>
+                {renderInput()}
+              </div>
+              <div style={{ 
+                flex: 1,
+                overflow: "auto",
+                minHeight: 0
+              }}>
+                {renderTreeSelector()}
+              </div>
+            </div>
+          )}
+        </TreeSelector>
+      </div>
     </div>
   );
 };

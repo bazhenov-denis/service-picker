@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "@hh.ru/magritte-ui": "^98.0.1",
     "axios": "0.26.0",

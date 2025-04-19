@@ -6,7 +6,13 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <RegionSelector />
+      <div style={{
+        width: '1000px',
+        margin: '100 auto',
+        padding: '200px 0' // Добавляем отступ сверху и снизу при необходимости
+      }}>
+        <RegionSelector />
+      </div>
       <p>HELLO</p>
     </div>
   );
