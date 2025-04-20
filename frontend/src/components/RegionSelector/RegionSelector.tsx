@@ -11,7 +11,11 @@ interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
 }
 
-const RegionSelector: React.FC = () => {
+interface RegionSelectorProps {
+  onRegionsChange: (regions: string[]) => void;
+}
+
+const RegionSelector: React.FC<RegionSelectorProps> = ({ onRegionsChange }) => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const controlsRef = useRef<ListControls>(null);
   
@@ -42,7 +46,8 @@ const RegionSelector: React.FC = () => {
 
   const handleRegionChange = useCallback((allSelected: string[]) => {
     setSelectedRegions(allSelected);
-  }, []);
+    onRegionsChange(allSelected);
+  }, [onRegionsChange]);
 
   const getSelectAllParentTrl = useCallback((id: string) => {
     return `Выбрать все`;

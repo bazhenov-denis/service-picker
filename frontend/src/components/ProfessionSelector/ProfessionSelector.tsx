@@ -5,7 +5,11 @@ import { useProfessions } from '../../hooks/useProfessions';
 import styles from './ProfessionSelector.module.css';
 import { useDelayedRender } from '../../hooks/useDelayedRender';
 
-const ProfessionSelector: React.FC = () => {
+interface ProfessionSelectorProps {
+  onProfessionsChange: (professions: string[]) => void;
+}
+
+const ProfessionSelector: React.FC<ProfessionSelectorProps> = ({ onProfessionsChange }) => {
   // Храним ID с префиксами для корректной работы TreeSelector
   const [selectedProfessions, setSelectedProfessions] = useState<string[]>([]);
   const controlsRef = useRef<ListControls>(null);
@@ -15,7 +19,8 @@ const ProfessionSelector: React.FC = () => {
   const handleProfessionChange = useCallback((allSelected: string[]) => {
     // Сохраняем ID с префиксами
     setSelectedProfessions(allSelected);
-  }, []);
+    onProfessionsChange(allSelected);
+  }, [onProfessionsChange]);
 
   const getSelectAllParentTrl = useCallback(() => {
     return 'Выбрать все';

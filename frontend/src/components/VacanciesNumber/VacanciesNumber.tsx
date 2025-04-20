@@ -1,39 +1,37 @@
-import React, { useState } from 'react';
-import { Input } from '@hh.ru/magritte-ui-input';
+import React from 'react';
 import styles from './VacanciesNumber.module.css';
 
-const VacanciesNumber: React.FC = () => {
-  const [value, setValue] = useState<string>('');
-  const [error, setError] = useState<string>('');
+interface VacanciesNumberProps {
+  onNumberChange: (number: number) => void;
+}
 
-  const handleChange = (inputValue: string) => {
-    // Разрешаем только цифры
-    if (!/^\d*$/.test(inputValue)) {
-      setError('Пожалуйста, введите только цифры');
-      return;
-    }
+export const VacanciesNumber: React.FC<VacanciesNumberProps> = ({ onNumberChange }) => {
+  const [number, setNumber] = React.useState<number>(0);
+  const [error, setError] = React.useState<string>('');
 
-    // Проверяем, что число больше 0
-    const numValue = parseInt(inputValue);
-    if (inputValue && numValue <= 0) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (value > 0) {
+      setNumber(value);
+      setError('');
+      onNumberChange(value);
+    } else {
       setError('Число должно быть больше 0');
-      return;
     }
-
-    setValue(inputValue);
-    setError('');
   };
 
   return (
     <div className={styles.vacanciesNumber}>
       <h2 className={styles.title}>Количество вакансий</h2>
-      <Input
-        value={value}
+      <input
+        type="number"
+        className={styles.input}
+        value={number}
         onChange={handleChange}
-        placeholder="Введите количество вакансий"
-        errorMessage={error}
-        invalid={!!error}
+        min="1"
+        data-qa="vacancies-number-input"
       />
+      {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 };
