@@ -3,11 +3,13 @@ import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 import { useProfessions } from '../../hooks/useProfessions';
 import styles from './ProfessionSelector.module.css';
+import { useDelayedRender } from '../../hooks/useDelayedRender';
 
 const ProfessionSelector: React.FC = () => {
   const [selectedProfessions, setSelectedProfessions] = useState<string[]>([]);
   const controlsRef = useRef<ListControls>(null);
-  const { collection, getOriginalId } = useProfessions();
+  const { collection, getOriginalId, loading, error } = useProfessions();
+  const isVisible = useDelayedRender(200); // Немного большая задержка, чем у RegionSelector
 
   const handleProfessionChange = useCallback((allSelected: string[]) => {
     setSelectedProfessions(allSelected.map(getOriginalId));
@@ -16,6 +18,25 @@ const ProfessionSelector: React.FC = () => {
   const getSelectAllParentTrl = useCallback((id: string) => {
     return `Выбрать все (${getOriginalId(id)})`;
   }, [getOriginalId]);
+
+  if (!isVisible || loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div>Загрузка профессий...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorContainer}>
+        <div>
+          <p>Ошибка при загрузке профессий</p>
+          <p className={styles.errorMessage}>Пожалуйста, проверьте подключение к серверу</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className={styles.professionSelector}>

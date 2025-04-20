@@ -5,6 +5,7 @@ import { useRegions } from '../../hooks/useRegions'; // Импортируем �
 import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 import styles from './RegionSelector.module.css';
+import { useDelayedRender } from '../../hooks/useDelayedRender';
 
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
@@ -15,6 +16,7 @@ const RegionSelector: React.FC = () => {
   const controlsRef = useRef<ListControls>(null);
   
   const { regions, loading, error } = useRegions();
+  const isVisible = useDelayedRender();
 
   // Используем данные напрямую, без дополнительного преобразования
   const treeData = useMemo(() => {
@@ -45,6 +47,12 @@ const RegionSelector: React.FC = () => {
   const getSelectAllParentTrl = useCallback((id: string) => {
     return `Выбрать все (${id})`;
   }, []);
+
+  if (!isVisible) {
+    return <div className={styles.loadingContainer}>
+      <div>Загрузка регионов...</div>
+    </div>;
+  }
 
   if (loading) {
     return (
