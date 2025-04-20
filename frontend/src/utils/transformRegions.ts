@@ -10,7 +10,7 @@ import { ModelData } from '@hh.ru/magritte-ui-tree-selector/collection/types'; /
 export function transformRegions(data: any[]): ModelData[] {
   return data.map((item) => {
     const model: ModelData = {
-      id: item.area_id, // Используем area_id как уникальный идентификатор
+      id: item.id,
       text: item.name, // Название региона
     };
 
