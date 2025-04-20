@@ -1,13 +1,12 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState } from 'react';
+import { Input } from '@hh.ru/magritte-ui-input';
 import styles from './VacanciesNumber.module.css';
 
 const VacanciesNumber: React.FC = () => {
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<string>('');
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    
+  const handleChange = (inputValue: string) => {
     // Разрешаем только цифры
     if (!/^\d*$/.test(inputValue)) {
       setError('Пожалуйста, введите только цифры');
@@ -28,14 +27,13 @@ const VacanciesNumber: React.FC = () => {
   return (
     <div className={styles.vacanciesNumber}>
       <h2 className={styles.title}>Количество вакансий</h2>
-      <input
-        type="text"
+      <Input
         value={value}
         onChange={handleChange}
-        className={styles.input}
         placeholder="Введите количество вакансий"
+        errorMessage={error}
+        invalid={!!error}
       />
-      {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 };
