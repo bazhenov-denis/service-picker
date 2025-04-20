@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "less": "^4.3.0",
+    "less-loader": "^12.2.0"
+  },
+  "dependencies": {
+    "@hh.ru/magritte-ui": "^98.0.1",
+    "axios": "^1.8.4"
+  }
+}
