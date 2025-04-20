@@ -6,19 +6,21 @@ import styles from './ProfessionSelector.module.css';
 import { useDelayedRender } from '../../hooks/useDelayedRender';
 
 const ProfessionSelector: React.FC = () => {
+  // Храним ID с префиксами для корректной работы TreeSelector
   const [selectedProfessions, setSelectedProfessions] = useState<string[]>([]);
   const controlsRef = useRef<ListControls>(null);
   const { collection, getOriginalId, loading, error } = useProfessions();
-  const isVisible = useDelayedRender(200); // Немного большая задержка, чем у RegionSelector
+  const isVisible = useDelayedRender(300);
 
   const handleProfessionChange = useCallback((allSelected: string[]) => {
-    setSelectedProfessions(allSelected.map(getOriginalId));
-  }, [getOriginalId]);
+    // Сохраняем ID с префиксами
+    setSelectedProfessions(allSelected);
+  }, []);
 
-  const getSelectAllParentTrl = useCallback((id: string) => {
-    return `Выбрать все (${getOriginalId(id)})`;
-  }, [getOriginalId]);
-
+  const getSelectAllParentTrl = useCallback(() => {
+    return 'Выбрать все';
+  }, []);
+  
   if (!isVisible || loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -53,7 +55,7 @@ const ProfessionSelector: React.FC = () => {
         <TreeSelector
           collapseToParentId
           collection={collection}
-          value={selectedProfessions.map(id => `role_${id}`)}
+          value={selectedProfessions}
           onChange={handleProfessionChange}
           ref={controlsRef}
           getSelectAllParentTrl={getSelectAllParentTrl}

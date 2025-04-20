@@ -16,7 +16,7 @@ const RegionSelector: React.FC = () => {
   const controlsRef = useRef<ListControls>(null);
   
   const { regions, loading, error } = useRegions();
-  const isVisible = useDelayedRender(300);
+  const isVisible = useDelayedRender(400);
 
   // Используем данные напрямую, без дополнительного преобразования
   const treeData = useMemo(() => {
@@ -45,7 +45,7 @@ const RegionSelector: React.FC = () => {
   }, []);
 
   const getSelectAllParentTrl = useCallback((id: string) => {
-    return `Выбрать все (${id})`;
+    return `Выбрать все`;
   }, []);
 
   if (!isVisible) {
