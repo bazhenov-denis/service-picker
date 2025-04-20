@@ -33,7 +33,9 @@ public class AreasController {
           content = {
               @Content(mediaType = "application/json", schema = @Schema(implementation = AreaDTO.class),
                   examples = @ExampleObject(
-                      value = "{ \"id\": \"113\", \"parent_id\": null, \"name\": \"Россия\", \"areas\": [] }"
+                      value = "{ \"id\": \"113\", \"parent_id\": null, \"name\": \"Россия\", \"areas\": [ " +
+                          "{ \"id\": \"1620\", \"parent_id\": \"113\", \"name\": \"Республика Марий Эл\", \"areas\": [" +
+                          "{ \"id\": \"4228\", \"parent_id\": \"1620\", \"name\": \"Виловатово\", \"areas\": [] }] }] }"
                   ))
           }),
       @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)
