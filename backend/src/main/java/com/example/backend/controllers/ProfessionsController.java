@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/professions")
 public class ProfessionsController {
+
   private final ApiService apiService;
 
   public ProfessionsController(ApiService apiService) {
@@ -36,8 +37,8 @@ public class ProfessionsController {
                   )),
           }),
       @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content)
-    })
-    @GetMapping
+  })
+  @GetMapping
   public ResponseEntity<ProfessionalRolesResponseDTO> getProfessions() {
     try {
       ProfessionalRolesResponseDTO dto = apiService.getProfessionalRolesDictionary();
