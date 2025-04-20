@@ -4,6 +4,7 @@ import RegionSelector from './components/RegionSelector/RegionSelector';
 import ProfessionSelector from './components/ProfessionSelector/ProfessionSelector';
 import VacanciesNumber from './components/VacanciesNumber/VacanciesNumber';
 import ServicePickerButton from './components/ServicePickerButton/ServicePickerButton';
+import OfferDisplay from './components/OfferDisplay/OfferDisplay';
 import { useServicePicker } from './hooks/useServicePicker';
 import styles from './App.module.css';
 
@@ -15,7 +16,10 @@ function App() {
     setSelectedProfessions,
     vacanciesNumber,
     setVacanciesNumber,
-    handleSendData
+    handleSendData,
+    offer,
+    error,
+    isLoading
   } = useServicePicker();
 
   return (
@@ -30,7 +34,10 @@ function App() {
           selectedProfessions={selectedProfessions}
           vacanciesNumber={vacanciesNumber}
           onSendData={handleSendData}
+          isLoading={isLoading}
+          error={error}
         />
+        {offer && <OfferDisplay offer={offer} />}
       </div>
     </div>
   );

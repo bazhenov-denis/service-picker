@@ -12,6 +12,8 @@ interface ServicePickerButtonProps {
     professions: string[];
     vacanciesNumber: number;
   }) => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
@@ -19,6 +21,8 @@ export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
   selectedProfessions,
   vacanciesNumber,
   onSendData,
+  isLoading = false,
+  error = null
 }) => {
   const handleClick = () => {
     const data = {
@@ -34,7 +38,7 @@ export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
     onSendData(data);
   };
 
-  const isDisabled = !selectedRegions.length || !selectedProfessions.length || !vacanciesNumber;
+  const isDisabled = !selectedRegions.length || !selectedProfessions.length || !vacanciesNumber || isLoading;
 
   return (
     <div className={styles.buttonContainer}>
@@ -47,8 +51,9 @@ export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
         onClick={handleClick}
         data-qa="service-picker-button"
       >
-        Подобрать услугу
+        {isLoading ? 'Отправка...' : 'Подобрать услугу'}
       </Button>
+      {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 };
