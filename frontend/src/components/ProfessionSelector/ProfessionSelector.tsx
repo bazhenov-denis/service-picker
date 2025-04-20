@@ -10,7 +10,7 @@ const ProfessionSelector: React.FC = () => {
   const [selectedProfessions, setSelectedProfessions] = useState<string[]>([]);
   const controlsRef = useRef<ListControls>(null);
   const { collection, getOriginalId, loading, error } = useProfessions();
-  const isVisible = useDelayedRender(300);
+  const isVisible = useDelayedRender(200);
 
   const handleProfessionChange = useCallback((allSelected: string[]) => {
     // Сохраняем ID с префиксами

@@ -1,0 +1,30 @@
+.vacanciesNumber {
+  height: 100px;
+  width: 600px;
+  padding-top: 30px;
+}
+
+.title {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 90%;
+  height: 40px;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #0070fb;
+}
+
+.error {
+  color: #f00;
+  font-size: 14px;
+  margin-top: 5px;
+} 
