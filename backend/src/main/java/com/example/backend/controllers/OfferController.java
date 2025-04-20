@@ -26,7 +26,16 @@ public class OfferController {
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Successfully picked a service",
           content = {
-              @Content(mediaType = "application/json", schema = @Schema(implementation = OfferDto.class))
+              @Content(mediaType = "application/json", schema = @Schema(implementation = OfferDto.class),
+                  examples = { @ExampleObject(name = "Resumes Access Offer",
+                          value = "{ \"vacancyOffers\": [], " +
+                          "\"resumesAccessOffers\": [{ \"areaId\": 1, \"professionId\": 5, " +
+                          "\"accessDuration\": 30, \"numberOfContacts\": 100, \"price\": 4500.0 }]}"),
+                      @ExampleObject(name = "Vacancy Offer",
+                          value = "{ \"vacancyOffers\": [{ \"areaId\": 4228, \"professionId\": 50, \"packageVolume\": 50," +
+                          "\"vacancyType\": \"Standard\", \"publicationPeriod\": 30, \"pricePerOne\": 100.0, \"pricePerPackage\": 5000.0 }]," +
+                          "\"resumesAccessOffers\": [] }")
+              })
           }),
       @ApiResponse(responseCode = "400", description = "Invalid user data supplied", content = @Content)
   })
@@ -35,7 +44,7 @@ public class OfferController {
       @io.swagger.v3.oas.annotations.parameters.RequestBody(
           description = "User claim data", required = true, content = @Content(
           mediaType = "application/json", schema = @Schema(implementation = ClaimDto.class), examples = @ExampleObject(
-              value = "{ \"professionId\": 5, \"amount\": 2, \"areaId\": 1 }"
+          value = "{ \"professionId\": 5, \"amount\": 2, \"areaId\": 1 }"
       )))
       @Validated @RequestBody ClaimDto claim
   ) {
