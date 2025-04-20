@@ -31,13 +31,14 @@ public class OfferController {
       @ApiResponse(responseCode = "400", description = "Invalid user data supplied", content = @Content)
   })
   @PostMapping("/service-offer")
-  public ResponseEntity<OfferDto> processClaim(@io.swagger.v3.oas.annotations.parameters.RequestBody(
-      description = "User claim data", required = true, content = @Content(
+  public ResponseEntity<OfferDto> processClaim(
+      @io.swagger.v3.oas.annotations.parameters.RequestBody(
+          description = "User claim data", required = true, content = @Content(
           mediaType = "application/json", schema = @Schema(implementation = ClaimDto.class), examples = @ExampleObject(
               value = "{ \"professionId\": 5, \"amount\": 2, \"areaId\": 1 }"
-          ))
-  )
-      @Validated @RequestBody ClaimDto claim) {
+      )))
+      @Validated @RequestBody ClaimDto claim
+  ) {
     // обращение в сервис подбора
     OfferDto offer = offerService.pick(claim);
 

@@ -9,26 +9,46 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.ALWAYS)
-@JsonPropertyOrder({ "id", "parent_id", "name", "areas" })
+@JsonPropertyOrder({"id", "parent_id", "name", "areas"})
 public class AreaDTO {
 
-    private String id;
+  private String id;
 
-    @JsonProperty("parent_id")
-    private String parentId;
-    private String name;
-    @JsonProperty("areas")
-    private List<AreaDTO> areas; 
+  @JsonProperty("parent_id")
+  private String parentId;
+  private String name;
+  @JsonProperty("areas")
+  private List<AreaDTO> areas;
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+  public String getId() {
+    return id;
+  }
 
-    public String getParentId() { return parentId; }
-    public void   setParentId(String parentId) { this.parentId = parentId; }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+  public String getParentId() {
+    return parentId;
+  }
 
-    public List<AreaDTO> getAreas() { return areas; }
-    public void setAreas(List<AreaDTO> areas) { this.areas = areas; }
+  public void setParentId(String parentId) {
+    this.parentId = parentId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<AreaDTO> getAreas() {
+    return areas;
+  }
+
+  public void setAreas(List<AreaDTO> areas) {
+    this.areas = areas;
+  }
 }
