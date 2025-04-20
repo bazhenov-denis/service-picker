@@ -8,24 +8,20 @@ const api = axios.create({
     'Accept': 'application/json'
   },
   // Включаем поддержку CORS
-  withCredentials: false
+  withCredentials: true
 });
 
-// Перехватчик ответов для обработки ошибок
 api.interceptors.response.use(
   response => response,
   error => {
     if (error.response) {
-      // Ошибка от сервера
       console.error('Ошибка сервера:', {
         status: error.response.status,
         data: error.response.data
       });
     } else if (error.request) {
-      // Ошибка сети
       console.error('Ошибка сети:', error.message);
     } else {
-      // Другие ошибки
       console.error('Ошибка:', error.message);
     }
     return Promise.reject(error);

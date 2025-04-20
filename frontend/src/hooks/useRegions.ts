@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { transformRegions } from '../utils/transformRegions';
 import { mockRegions } from '../api/mocks/regions';
+import { fetchRegions } from '../api/client';
 
 /**
  * Хук для загрузки и преобразования данных регионов.
@@ -17,7 +18,9 @@ export const useRegions = () => {
     const loadRegions = async () => {
       try {
         setLoading(true);
-        const transformedData = transformRegions(mockRegions);
+        const data = await fetchRegions();
+        const transformedData = transformRegions(data);
+        // const transformedData = transformRegions(mockRegions);
         setRegions(transformedData);
       } catch (err) {
         console.error('Ошибка при загрузке регионов:', err);
