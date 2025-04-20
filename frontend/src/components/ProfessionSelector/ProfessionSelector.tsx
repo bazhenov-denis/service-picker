@@ -13,7 +13,7 @@ const ProfessionSelector: React.FC<ProfessionSelectorProps> = ({ onProfessionsCh
   // Храним ID с префиксами для корректной работы TreeSelector
   const [selectedProfessions, setSelectedProfessions] = useState<string[]>([]);
   const controlsRef = useRef<ListControls>(null);
-  const { collection, getOriginalId, loading, error } = useProfessions();
+  const { collection, loading, error } = useProfessions();
   const isVisible = useDelayedRender(200);
 
   const handleProfessionChange = useCallback((allSelected: string[]) => {

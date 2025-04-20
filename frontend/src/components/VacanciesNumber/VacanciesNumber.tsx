@@ -6,18 +6,36 @@ interface VacanciesNumberProps {
 }
 
 export const VacanciesNumber: React.FC<VacanciesNumberProps> = ({ onNumberChange }) => {
-  const [number, setNumber] = React.useState<number>(0);
+  const [number, setNumber] = React.useState<string>('');
   const [error, setError] = React.useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (value > 0) {
-      setNumber(value);
+    const value = e.target.value;
+    
+    // Если поле пустое, очищаем ошибку и значение
+    if (value === '') {
+      setNumber('');
       setError('');
-      onNumberChange(value);
-    } else {
-      setError('Число должно быть больше 0');
+      onNumberChange(0);
+      return;
     }
+
+    // Проверяем, что введено число
+    const numValue = parseInt(value);
+    if (isNaN(numValue)) {
+      setError('Пожалуйста, введите число');
+      return;
+    }
+
+    // Проверяем, что число больше 0
+    if (numValue <= 0) {
+      setError('Число должно быть больше 0');
+      return;
+    }
+
+    setNumber(value);
+    setError('');
+    onNumberChange(numValue);
   };
 
   return (
@@ -29,6 +47,7 @@ export const VacanciesNumber: React.FC<VacanciesNumberProps> = ({ onNumberChange
         value={number}
         onChange={handleChange}
         min="1"
+        placeholder="Введите количество вакансий"
         data-qa="vacancies-number-input"
       />
       {error && <div className={styles.error}>{error}</div>}

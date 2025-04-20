@@ -20,7 +20,7 @@ const RegionSelector: React.FC<RegionSelectorProps> = ({ onRegionsChange }) => {
   const controlsRef = useRef<ListControls>(null);
   
   const { regions, loading, error } = useRegions();
-  const isVisible = useDelayedRender(300);
+  const isVisible = useDelayedRender(600);
 
   // Используем данные напрямую, без дополнительного преобразования
   const treeData = useMemo(() => {
