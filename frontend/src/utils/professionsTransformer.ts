@@ -10,6 +10,26 @@ interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
 }
 
+interface ProfessionResponse {
+  categories: Array<{
+    id: string;
+    name: string;
+    roles: Array<{
+      id: string;
+      name: string;
+    }>;
+  }>;
+}
+
+export const transformApiResponse = (response: ProfessionResponse): CustomTreeModel[] => {
+  const professions = response.categories.map(category => ({
+    id: category.id,
+    name: category.name,
+    items: category.roles
+  }));
+  return transformProfessionsToTreeModel(professions);
+};
+
 export const transformProfessionsToTreeModel = (professions: Profession[]): CustomTreeModel[] => {
   return professions.map(category => ({
     id: `category_${category.id}`,

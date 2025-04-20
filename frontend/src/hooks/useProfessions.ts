@@ -1,16 +1,49 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { professions } from '../api/mocks/professions';
-import { transformProfessionsToTreeModel } from '../utils/professionsTransformer';
+import { transformApiResponse } from '../utils/professionsTransformer';
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
+import { fetchProfessions } from '../api/client';
 
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
 }
 
+interface ProfessionCategory {
+  id: string;
+  name: string;
+  roles: Array<{
+    id: string;
+    name: string;
+  }>;
+}
+
+interface ProfessionResponse {
+  categories: ProfessionCategory[];
+}
+
 export const useProfessions = () => {
-  const treeData = useMemo(() => {
-    return transformProfessionsToTreeModel(professions);
+  const [professionData, setProfessionData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProfessions = async () => {
+      try {
+        setLoading(true);
+        const response = await fetchProfessions();
+        const transformedData = transformApiResponse(response as any);
+        // const transformedData = transformProfessionsToTreeModel(professions);
+        setProfessionData(transformedData);
+      } catch (err) {
+        console.error('Ошибка при загрузке профессий:', err);
+        setError('Не удалось загрузить профессии');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfessions();
   }, []);
 
   const collection = useMemo(() => {
@@ -23,9 +56,9 @@ export const useProfessions = () => {
       }
     };
 
-    treeData.forEach(profession => addModelRecursively(profession));
+    professionData.forEach(profession => addModelRecursively(profession));
     return coll;
-  }, [treeData]);
+  }, [professionData]);
 
   const getOriginalId = (id: string) => {
     return id.replace(/^(category_|role_)/, '');
@@ -33,6 +66,8 @@ export const useProfessions = () => {
 
   return {
     collection,
-    getOriginalId
+    getOriginalId,
+    loading,
+    error
   };
 }; 

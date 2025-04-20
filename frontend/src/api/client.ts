@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Создаем экземпляр axios с базовым URL и настройками
 const api = axios.create({
   baseURL: 'http://localhost:8080',
   headers: {
