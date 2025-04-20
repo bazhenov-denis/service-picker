@@ -37,7 +37,7 @@ public class OfferService {
 
     // алгоритм подбора
     if (vacancyResult.isSuccess()) {
-      if (vacancyResult.getCount() < 100){
+      if (vacancyResult.getCount() < 100) {
         // если искомая услуга есть в базе, то добавляем ее в ответ
         // если нет, то ничего не добавляем
         Optional<VacancyOffer> vacancyOffer = vacancyOfferRepository.findById(1L);
