@@ -44,7 +44,7 @@ public class AreasController {
   public ResponseEntity<List<AreaDTO>> getAllAreas() {
     try {
       List<AreaDTO> areas = apiService.getAreas();
-      return ResponseEntity.ok(areas);
+      return ResponseEntity.ok(List.of(areas.get(0)));
     } catch (IllegalStateException e) {
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST,
