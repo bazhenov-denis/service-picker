@@ -2,12 +2,29 @@ package com.example.backend.models;
 
 import jakarta.persistence.Entity;
 
-
 @Entity
-public class ResumesAccessOffer extends Offer {
+public class CombinedOffer extends Offer {
 
+  private String vacancyType;
+  private Integer count;
   private Integer civCount;
   private Integer apiLimitedCount;
+
+  public String getVacancyType() {
+    return vacancyType;
+  }
+
+  public void setVacancyType(String vacancyType) {
+    this.vacancyType = vacancyType;
+  }
+
+  public Integer getCount() {
+    return count;
+  }
+
+  public void setCount(Integer count) {
+    this.count = count;
+  }
 
   public Integer getCivCount() {
     return civCount;
