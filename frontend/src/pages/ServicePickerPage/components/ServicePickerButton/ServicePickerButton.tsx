@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { Button } from "@hh.ru/magritte-ui-button";
 import "@hh.ru/magritte-ui-button/index.css";
 import styles from "./ServicePickerButton.module.css";
@@ -16,7 +16,7 @@ interface ServicePickerButtonProps {
   error?: string | null;
 }
 
-export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
+export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
   selectedRegions,
   selectedProfessions,
   vacanciesNumber,

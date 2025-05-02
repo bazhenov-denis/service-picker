@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import styles from "./OfferDisplay.module.css";
 
 interface VacancyOffer {
@@ -28,7 +28,7 @@ interface OfferDisplayProps {
   };
 }
 
-export const OfferDisplay: React.FC<OfferDisplayProps> = ({ offer }) => {
+export const OfferDisplay: FC<OfferDisplayProps> = ({ offer }) => {
   return (
     <div className={styles.offerContainer}>
       <h3>Предложенные услуги:</h3>

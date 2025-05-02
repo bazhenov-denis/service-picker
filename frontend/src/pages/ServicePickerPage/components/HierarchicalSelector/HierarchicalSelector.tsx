@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { FC, useRef } from "react";
 import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
@@ -17,7 +17,7 @@ interface HierarchicalSelectorProps {
   dataQa?: string;
 }
 
-export const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
+export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   title,
   collection,
   selectedItems,

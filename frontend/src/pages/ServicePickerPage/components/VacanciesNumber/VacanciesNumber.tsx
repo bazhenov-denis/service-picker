@@ -1,17 +1,17 @@
-import React from "react";
+import { FC, useState, ChangeEvent } from "react";
 import styles from "./VacanciesNumber.module.css";
 
 interface VacanciesNumberProps {
   onNumberChange: (number: number) => void;
 }
 
-export const VacanciesNumber: React.FC<VacanciesNumberProps> = ({
+export const VacanciesNumber: FC<VacanciesNumberProps> = ({
   onNumberChange,
 }) => {
-  const [number, setNumber] = React.useState<string>("");
-  const [error, setError] = React.useState<string>("");
+  const [number, setNumber] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
     // Если поле пустое, очищаем ошибку и значение
