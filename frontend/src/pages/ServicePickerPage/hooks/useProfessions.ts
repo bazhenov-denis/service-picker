@@ -1,9 +1,9 @@
 import { useMemo, useState, useEffect } from 'react';
-import { professions } from '../api/mocks/professions';
+import { professions } from '../__mocks__/professions';
 import { transformApiResponse } from '../utils/professionsTransformer';
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
-import { fetchProfessions } from '../api/client';
+import { fetchProfessions } from '../api/httpClient';
 
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];

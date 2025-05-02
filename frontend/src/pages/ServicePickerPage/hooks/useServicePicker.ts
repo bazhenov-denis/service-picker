@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { serviceApi } from '../api/serviceApi';
+import { serviceHttpClient } from '../api/serviceHttpClient';
 import { useProfessions } from './useProfessions';
 
 interface ServicePickerData {
@@ -47,7 +47,7 @@ export const useServicePicker = () => {
       const areaId = parseInt(getOriginalId(data.regions[0]));
       const professionId = parseInt(getOriginalId(data.professions[0]));
       
-      const response = await serviceApi.sendServiceRequest({
+      const response = await serviceHttpClient.sendServiceRequest({
         professionId,
         amount: data.vacanciesNumber,
         areaId

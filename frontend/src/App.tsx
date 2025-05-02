@@ -1,12 +1,12 @@
 import React from 'react';
-import Header from './components/Header/Header';
-import HierarchicalSelector from './components/HierarchicalSelector/HierarchicalSelector';
-import VacanciesNumber from './components/VacanciesNumber/VacanciesNumber';
-import ServicePickerButton from './components/ServicePickerButton/ServicePickerButton';
-import OfferDisplay from './components/OfferDisplay/OfferDisplay';
-import { useServicePicker } from './hooks/useServicePicker';
-import { useRegions } from './hooks/useRegions';
-import { useProfessions } from './hooks/useProfessions';
+import Header from '../src/pages/ServicePickerPage/components/Header/Header';
+import HierarchicalSelector from './pages/ServicePickerPage/components/HierarchicalSelector/HierarchicalSelector';
+import VacanciesNumber from './pages/ServicePickerPage/components/VacanciesNumber/VacanciesNumber';
+import ServicePickerButton from './pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton';
+import OfferDisplay from './pages/ServicePickerPage/components/OfferDisplay/OfferDisplay';
+import { useServicePicker } from './pages/ServicePickerPage/hooks/useServicePicker';
+import { useRegions } from './pages/ServicePickerPage/hooks/useRegions';
+import { useProfessions } from './pages/ServicePickerPage/hooks/useProfessions';
 import styles from './App.module.css';
 
 function App() {

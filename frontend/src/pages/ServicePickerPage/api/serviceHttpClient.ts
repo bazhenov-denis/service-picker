@@ -27,7 +27,7 @@ interface OfferDto {
 
 const API_BASE_URL = 'http://localhost:8080';
 
-export const serviceApi = {
+export const serviceHttpClient = {
   async sendServiceRequest(data: ClaimDto): Promise<OfferDto> {
     const response = await fetch(`${API_BASE_URL}/service-offer`, {
       method: 'POST',
