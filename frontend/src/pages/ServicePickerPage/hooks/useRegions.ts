@@ -1,11 +1,11 @@
 // hooks/useRegions.ts
 
-import { useState, useEffect, useMemo } from 'react';
-import { transformRegions } from '../utils/transformRegions';
-import { mockRegions } from '../__mocks__/regions';
-import { fetchRegions } from '../api/httpClient';
-import TreeCollection from '@hh.ru/magritte-ui-tree-selector/collection/treeCollection';
-import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
+import { useState, useEffect, useMemo } from "react";
+import { transformRegions } from "../utils/transformRegions";
+import { mockRegions } from "../__mocks__/regions";
+import { fetchRegions } from "../api/httpClient";
+import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
+import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
@@ -23,15 +23,15 @@ export const useRegions = () => {
   // Создаем коллекцию для TreeSelector
   const collection = useMemo(() => {
     const coll = new TreeCollection();
-    
+
     const addModelRecursively = (model: CustomTreeModel, parentId?: string) => {
       coll.addModel(model, parentId);
       if (model.items) {
-        model.items.forEach(item => addModelRecursively(item, model.id));
+        model.items.forEach((item) => addModelRecursively(item, model.id));
       }
     };
 
-    regions.forEach(region => addModelRecursively(region));
+    regions.forEach((region) => addModelRecursively(region));
     return coll;
   }, [regions]);
 
@@ -44,8 +44,8 @@ export const useRegions = () => {
         // const transformedData = transformRegions(mockRegions);
         setRegions(transformedData);
       } catch (err) {
-        console.error('Ошибка при загрузке регионов:', err);
-        setError('Не удалось загрузить регионы');
+        console.error("Ошибка при загрузке регионов:", err);
+        setError("Не удалось загрузить регионы");
       } finally {
         setLoading(false);
       }

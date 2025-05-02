@@ -1,13 +1,13 @@
-import React from 'react';
-import Header from '../src/pages/ServicePickerPage/components/Header/Header';
-import HierarchicalSelector from './pages/ServicePickerPage/components/HierarchicalSelector/HierarchicalSelector';
-import VacanciesNumber from './pages/ServicePickerPage/components/VacanciesNumber/VacanciesNumber';
-import ServicePickerButton from './pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton';
-import OfferDisplay from './pages/ServicePickerPage/components/OfferDisplay/OfferDisplay';
-import { useServicePicker } from './pages/ServicePickerPage/hooks/useServicePicker';
-import { useRegions } from './pages/ServicePickerPage/hooks/useRegions';
-import { useProfessions } from './pages/ServicePickerPage/hooks/useProfessions';
-import styles from './App.module.css';
+import React from "react";
+import Header from "../src/pages/ServicePickerPage/components/Header/Header";
+import HierarchicalSelector from "./pages/ServicePickerPage/components/HierarchicalSelector/HierarchicalSelector";
+import VacanciesNumber from "./pages/ServicePickerPage/components/VacanciesNumber/VacanciesNumber";
+import ServicePickerButton from "./pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton";
+import OfferDisplay from "./pages/ServicePickerPage/components/OfferDisplay/OfferDisplay";
+import { useServicePicker } from "./pages/ServicePickerPage/hooks/useServicePicker";
+import { useRegions } from "./pages/ServicePickerPage/hooks/useRegions";
+import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
+import styles from "./App.module.css";
 
 function App() {
   const {
@@ -20,11 +20,19 @@ function App() {
     handleSendData,
     offer,
     error,
-    isLoading
+    isLoading,
   } = useServicePicker();
 
-  const { collection: regionsCollection, loading: regionsLoading, error: regionsError } = useRegions();
-  const { collection: professionsCollection, loading: professionsLoading, error: professionsError } = useProfessions();
+  const {
+    collection: regionsCollection,
+    loading: regionsLoading,
+    error: regionsError,
+  } = useRegions();
+  const {
+    collection: professionsCollection,
+    loading: professionsLoading,
+    error: professionsError,
+  } = useProfessions();
 
   return (
     <div className={styles.app}>

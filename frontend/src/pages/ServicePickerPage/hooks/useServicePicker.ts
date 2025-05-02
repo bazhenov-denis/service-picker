@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { serviceHttpClient } from '../api/serviceHttpClient';
-import { useProfessions } from './useProfessions';
+import { useState } from "react";
+import { serviceHttpClient } from "../api/serviceHttpClient";
+import { useProfessions } from "./useProfessions";
 
 interface ServicePickerData {
   regions: string[];
@@ -42,20 +42,24 @@ export const useServicePicker = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Получаем чистые ID без префиксов
       const areaId = parseInt(getOriginalId(data.regions[0]));
       const professionId = parseInt(getOriginalId(data.professions[0]));
-      
+
       const response = await serviceHttpClient.sendServiceRequest({
         professionId,
         amount: data.vacanciesNumber,
-        areaId
+        areaId,
       });
-      
+
       setOffer(response);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла ошибка при отправке данных');
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Произошла ошибка при отправке данных",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -71,6 +75,6 @@ export const useServicePicker = () => {
     handleSendData,
     offer,
     error,
-    isLoading
+    isLoading,
   };
-}; 
+};

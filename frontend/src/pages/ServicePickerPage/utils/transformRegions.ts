@@ -1,6 +1,6 @@
 // utils/transformRegions.ts
 
-import { ModelData } from '@hh.ru/magritte-ui-tree-selector/collection/types'; // Импортируем тип ModelData
+import { ModelData } from "@hh.ru/magritte-ui-tree-selector/collection/types"; // Импортируем тип ModelData
 
 /**
  * Преобразует данные из API в формат ModelData.

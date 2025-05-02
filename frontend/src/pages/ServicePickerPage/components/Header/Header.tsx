@@ -1,6 +1,6 @@
 // src/components/Header/index.tsx
-import React from 'react';
-import styles from './Header.module.css'; // Импорт CSS-модуля
+import React from "react";
+import styles from "./Header.module.css"; // Импорт CSS-модуля
 
 const Header: React.FC = () => {
   return (

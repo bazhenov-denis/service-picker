@@ -1,9 +1,9 @@
-import { useMemo, useState, useEffect } from 'react';
-import { professions } from '../__mocks__/professions';
-import { transformApiResponse } from '../utils/professionsTransformer';
+import { useMemo, useState, useEffect } from "react";
+import { professions } from "../__mocks__/professions";
+import { transformApiResponse } from "../utils/professionsTransformer";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
-import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
-import { fetchProfessions } from '../api/httpClient';
+import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
+import { fetchProfessions } from "../api/httpClient";
 
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
@@ -36,8 +36,8 @@ export const useProfessions = () => {
         // const transformedData = transformProfessionsToTreeModel(professions);
         setProfessionData(transformedData);
       } catch (err) {
-        console.error('Ошибка при загрузке профессий:', err);
-        setError('Не удалось загрузить профессии');
+        console.error("Ошибка при загрузке профессий:", err);
+        setError("Не удалось загрузить профессии");
       } finally {
         setLoading(false);
       }
@@ -48,26 +48,26 @@ export const useProfessions = () => {
 
   const collection = useMemo(() => {
     const coll = new TreeCollection();
-    
+
     const addModelRecursively = (model: CustomTreeModel, parentId?: string) => {
       coll.addModel(model, parentId);
       if (model.items) {
-        model.items.forEach(item => addModelRecursively(item, model.id));
+        model.items.forEach((item) => addModelRecursively(item, model.id));
       }
     };
 
-    professionData.forEach(profession => addModelRecursively(profession));
+    professionData.forEach((profession) => addModelRecursively(profession));
     return coll;
   }, [professionData]);
 
   const getOriginalId = (id: string) => {
-    return id.replace(/^(category_|role_)/, '');
+    return id.replace(/^(category_|role_)/, "");
   };
 
   return {
     collection,
     getOriginalId,
     loading,
-    error
+    error,
   };
-}; 
+};

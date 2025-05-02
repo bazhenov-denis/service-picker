@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
-import { TreeSelector } from '@hh.ru/magritte-ui-tree-selector';
-import type { ListControls } from '@hh.ru/magritte-ui-tree-selector';
-import TreeCollection from '@hh.ru/magritte-ui-tree-selector/collection/treeCollection';
-import { useDelayedRender } from '../../hooks/useDelayedRender';
-import styles from './HierarchicalSelector.module.css';
+import React, { useRef } from "react";
+import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
+import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
+import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
+import { useDelayedRender } from "../../hooks/useDelayedRender";
+import styles from "./HierarchicalSelector.module.css";
 
 interface HierarchicalSelectorProps {
   title: string;
@@ -25,13 +25,13 @@ export const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
   loading,
   error,
   loadingDelay = 600,
-  placeholder = 'Выберите значение',
-  dataQa
+  placeholder = "Выберите значение",
+  dataQa,
 }) => {
   const controlsRef = useRef<ListControls>(null);
   const isVisible = useDelayedRender(loadingDelay);
 
-  const getSelectAllParentTrl = () => 'Выбрать все';
+  const getSelectAllParentTrl = () => "Выбрать все";
 
   if (!isVisible || loading) {
     return (
@@ -46,7 +46,9 @@ export const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
       <div className={styles.errorContainer}>
         <div>
           <p>Ошибка при загрузке данных</p>
-          <p className={styles.errorMessage}>Пожалуйста, проверьте подключение к серверу</p>
+          <p className={styles.errorMessage}>
+            Пожалуйста, проверьте подключение к серверу
+          </p>
         </div>
       </div>
     );
@@ -74,12 +76,8 @@ export const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
       >
         {({ renderTreeSelector, renderInput }) => (
           <div className={styles.treeWrapper}>
-            <div className={styles.inputContainer}>
-              {renderInput()}
-            </div>
-            <div className={styles.treeContainer}>
-              {renderTreeSelector()}
-            </div>
+            <div className={styles.inputContainer}>{renderInput()}</div>
+            <div className={styles.treeContainer}>{renderTreeSelector()}</div>
           </div>
         )}
       </TreeSelector>
@@ -87,4 +85,4 @@ export const HierarchicalSelector: React.FC<HierarchicalSelectorProps> = ({
   );
 };
 
-export default HierarchicalSelector; 
+export default HierarchicalSelector;

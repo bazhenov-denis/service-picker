@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export const useDelayedRender = (delay: number = 100) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -12,4 +12,4 @@ export const useDelayedRender = (delay: number = 100) => {
   }, [delay]);
 
   return isVisible;
-}; 
+};
