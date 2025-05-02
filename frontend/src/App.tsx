@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import Header from "../src/pages/ServicePickerPage/components/Header/Header";
 import HierarchicalSelector from "./pages/ServicePickerPage/components/HierarchicalSelector/HierarchicalSelector";
 import VacanciesNumber from "./pages/ServicePickerPage/components/VacanciesNumber/VacanciesNumber";
@@ -9,7 +9,7 @@ import { useRegions } from "./pages/ServicePickerPage/hooks/useRegions";
 import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
 import styles from "./App.module.css";
 
-function App() {
+const App: FC = () => {
   const {
     selectedRegions,
     setSelectedRegions,
@@ -69,6 +69,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;

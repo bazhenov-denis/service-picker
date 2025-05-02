@@ -30,11 +30,6 @@ export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
       professions: selectedProfessions,
       vacanciesNumber,
     };
-
-    // Отправляем данные в консоль разработчика
-    console.log("Отправка данных на бэкенд:", data);
-
-    // Вызываем колбэк с данными
     onSendData(data);
   };
 

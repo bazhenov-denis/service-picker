@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { transformRegions } from "../utils/transformRegions";
-import { mockRegions } from "../__mocks__/regions";
 import { fetchRegions } from "../api/httpClient";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
