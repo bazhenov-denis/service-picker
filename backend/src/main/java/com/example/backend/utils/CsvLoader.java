@@ -25,7 +25,7 @@ public class CsvLoader {
         .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
         .build()) {
       List<String[]> records = reader.readAll();
-      records.remove(0); // Убираем заголовок CSV
+      records.remove(0);
 
       String insertQuery = "INSERT INTO offers (product_id, tariff, code, child_code_1, child_count_1, child_code_2, child_count_2, child_code_3, child_count_3, child_code_4, child_count_4, period, region_id, profrole_group_id, price_all, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -53,7 +53,6 @@ public class CsvLoader {
           Double priceAll = parseDouble(record[14]);
           String currency = record[15];
 
-          // Вставка данных
           jdbcTemplate.update(insertQuery,
               productId, tariff, code,
               childCode1, childCount1,
@@ -75,7 +74,6 @@ public class CsvLoader {
     }
   }
 
-  // Методы безопасного преобразования данных
   private Long parseLong(String value) {
     return value == null || value.isEmpty() ? null : Long.parseLong(value.trim());
   }
