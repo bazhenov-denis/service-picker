@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS offers;
-
 CREATE TABLE offers (
                         id BIGSERIAL PRIMARY KEY,
                         product_id        INT,
@@ -21,4 +19,3 @@ CREATE TABLE offers (
 );
 
 
-DELETE FROM flyway_schema_history WHERE version = '1';
