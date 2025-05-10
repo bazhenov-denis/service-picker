@@ -1,8 +1,14 @@
 package com.example.backend.utils;
 
+import com.example.backend.models.Offer;
+import com.example.backend.models.ProfrolesMapping;
+import com.example.backend.models.RegionAreaMapping;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -15,8 +21,8 @@ import java.util.List;
 @Component
 public class CsvLoader {
 
-  @Autowired
-  private JdbcTemplate jdbcTemplate;
+  //@Autowired
+  //private JdbcTemplate jdbcTemplate;
 
   @PostConstruct
   public void loadCsvData() {
@@ -36,21 +42,42 @@ public class CsvLoader {
         records.remove(0);
       }
 
-      String insertQuery = "INSERT INTO offers (product_id, tariff, code, child_code_1, child_count_1, child_code_2, child_count_2, child_code_3, child_count_3, child_code_4, child_count_4, period, region_id, profrole_group_id, price_all, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      Session session = HibernateUtil.getSessionFactory().openSession();
+      Transaction tx = session.beginTransaction();
+//      Query query = session.createQuery(
+//          "INSERT INTO offers (product_id, tariff, code, " +
+//              "child_code_1, child_count_1, child_code_2, child_count_2, child_code_3, child_count_3, child_code_4, child_count_4, " +
+//              "period, region_id, profrole_group_id, price_all, currency) " +
+//              "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+//      );
+//      String insertQuery = "INSERT INTO offers (product_id, tariff, code, child_code_1, child_count_1, child_code_2, child_count_2, child_code_3, child_count_3, child_code_4, child_count_4, period, region_id, profrole_group_id, price_all, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
       for (String[] record : records) {
         if (record.length < 16) continue;
 
-        jdbcTemplate.update(insertQuery,
+        Offer offer = new Offer(
             parseLong(record[0]), record[1], record[2],
             record[3], parseInt(record[4]),
             record[5], parseInt(record[6]),
             record[7], parseInt(record[8]),
             record[9], parseInt(record[10]),
-            parseInt(record[11]), parseInt(record[12]),
+            parseInt(record[11]), parseLong(record[12]),
             parseInt(record[13]), parseDouble(record[14]), record[15]
-        );
+            );
+        session.persist(offer);
+
+//        jdbcTemplate.update(insertQuery,
+//            parseLong(record[0]), record[1], record[2],
+//            record[3], parseInt(record[4]),
+//            record[5], parseInt(record[6]),
+//            record[7], parseInt(record[8]),
+//            record[9], parseInt(record[10]),
+//            parseInt(record[11]), parseInt(record[12]),
+//            parseInt(record[13]), parseDouble(record[14]), record[15]
+//        );
       }
+      tx.commit();
+      session.close();
     } catch (Exception e) {
       System.err.println("Error loading offers CSV: " + e.getMessage());
       e.printStackTrace();
@@ -68,16 +95,23 @@ public class CsvLoader {
         records.remove(0);
       }
 
-      String insertQuery = "INSERT INTO profroles_mapping (price_profrole_group_id, professional_role_id) VALUES (?, ?)";
+      //String insertQuery = "INSERT INTO profroles_mapping (price_profrole_group_id, professional_role_id) VALUES (?, ?)";
+      Session session = HibernateUtil.getSessionFactory().openSession();
+      Transaction tx = session.beginTransaction();
 
       for (String[] record : records) {
         if (record.length < 2) continue;
 
-        jdbcTemplate.update(insertQuery,
-            parseLong(record[0]), // use Long
-            parseLong(record[1])
-        );
+        ProfrolesMapping profrolesMapping = new ProfrolesMapping(parseInt(record[0]), parseInt(record[1]));
+        session.persist(profrolesMapping);
+//        jdbcTemplate.update(insertQuery,
+//            parseLong(record[0]), // use Long
+//            parseLong(record[1])
+//        );
       }
+
+      tx.commit();
+      session.close();
     } catch (Exception e) {
       System.err.println("Error loading profroles mapping CSV: " + e.getMessage());
       e.printStackTrace();
@@ -95,16 +129,23 @@ public class CsvLoader {
         records.remove(0);
       }
 
-      String insertQuery = "INSERT INTO region_area_mapping (price_region_id, area_id) VALUES (?, ?)";
+//      String insertQuery = "INSERT INTO region_area_mapping (price_region_id, area_id) VALUES (?, ?)";
+      Session session = HibernateUtil.getSessionFactory().openSession();
+      Transaction tx = session.beginTransaction();
 
       for (String[] record : records) {
         if (record.length < 2) continue;
 
-        jdbcTemplate.update(insertQuery,
-            parseLong(record[0]),
-            parseLong(record[1])
-        );
+        RegionAreaMapping regionAreaMapping = new RegionAreaMapping(parseLong(record[0]), parseInt(record[1]));
+        session.persist(regionAreaMapping);
+//        jdbcTemplate.update(insertQuery,
+//            parseLong(record[0]),
+//            parseLong(record[1])
+//        );
       }
+
+      tx.commit();
+      session.close();
     } catch (Exception e) {
       System.err.println("Error loading area mapping CSV: " + e.getMessage());
       e.printStackTrace();
