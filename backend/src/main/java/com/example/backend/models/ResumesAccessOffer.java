@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 
 
 @Entity
-public class ResumesAccessOffer extends Offer {
+public class ResumesAccessOffer {
 
   private Integer civCount;
   private Integer apiLimitedCount;

@@ -6,18 +6,11 @@ import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.Offer;
 import com.example.backend.models.ResumesAccessOffer;
 import com.example.backend.models.VacancyOffer;
-import com.example.backend.repositories.ResumesAccessOfferRepository;
-import com.example.backend.repositories.VacancyOfferRepository;
-import com.example.backend.services.ApiService;
 import com.example.backend.utils.HibernateUtil;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,12 +19,6 @@ import org.springframework.stereotype.Service;
 public class OfferService {
   @Autowired
   private ApiService apiService;
-
-  @Autowired
-  private ResumesAccessOfferRepository resumesAccessOfferRepository;
-
-  @Autowired
-  private VacancyOfferRepository vacancyOfferRepository;
 
   public OfferDto pick(ClaimDto claim) {
     List<VacancyOffer> vacancyOffers = new ArrayList<>();

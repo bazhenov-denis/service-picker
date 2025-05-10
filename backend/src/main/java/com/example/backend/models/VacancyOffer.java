@@ -4,7 +4,7 @@ package com.example.backend.models;
 import jakarta.persistence.Entity;
 
 @Entity
-public class VacancyOffer extends Offer {
+public class VacancyOffer {
 
   private String vacancyType;
   private Integer count;
