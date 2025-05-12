@@ -1,10 +1,6 @@
-package com.example.backend.models;
+package com.example.backend.DTO;
 
-
-import jakarta.persistence.Entity;
-
-@Entity
-public class VacancyOffer {
+public class VacancyOfferDto {
 
   private String vacancyType;
   private Integer count;

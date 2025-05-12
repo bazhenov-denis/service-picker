@@ -11,7 +11,8 @@ import jakarta.persistence.Table;
 @Table(name = "profroles_mapping")
 public class ProfrolesMapping {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Column(name = "id", nullable = false)
   private Long id;
 
   @Column(name = "price_profrole_group_id")
@@ -23,6 +24,9 @@ public class ProfrolesMapping {
   public ProfrolesMapping(Integer priceProfroleGroupId, Integer professionalRoleId) {
     this.priceProfroleGroupId = priceProfroleGroupId;
     this.professionalRoleId = professionalRoleId;
+  }
+
+  public ProfrolesMapping() {
   }
 
   public Long getId() {

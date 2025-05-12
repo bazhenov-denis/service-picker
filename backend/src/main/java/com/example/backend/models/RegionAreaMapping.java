@@ -11,7 +11,8 @@ import jakarta.persistence.Table;
 @Table(name = "region_area_mapping")
 public class RegionAreaMapping {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Column(name = "id", nullable = false)
   private Long id;
 
   @Column(name = "price_region_id")
@@ -23,6 +24,9 @@ public class RegionAreaMapping {
   public RegionAreaMapping(Long priceRegionId, Integer areaId) {
     this.priceRegionId = priceRegionId;
     this.areaId = areaId;
+  }
+
+  public RegionAreaMapping() {
   }
 
   public Long getId() {

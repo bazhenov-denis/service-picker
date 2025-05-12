@@ -9,7 +9,7 @@ interface ServicePickerData {
 }
 
 interface Offer {
-  vacancyOffers: Array<{
+  vacancyOfferDtos: Array<{
     id: number;
     areaId: number;
     professionId: number;
@@ -19,7 +19,7 @@ interface Offer {
     pricePerOne: number;
     pricePerPackage: number;
   }>;
-  resumesAccessOffers: Array<{
+  resumesAccessOfferDtos: Array<{
     id: number;
     areaId: number;
     professionId: number;

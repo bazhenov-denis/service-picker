@@ -7,9 +7,12 @@
     <session-factory>
         <!-- Database connection properties -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">${SPRING_DATASOURCE_URL}</property>
-        <property name="hibernate.connection.username">${SPRING_DATASOURCE_USERNAME}</property>
-        <property name="hibernate.connection.password">${SPRING_DATASOURCE_PASSWORD}</property>
+<!--        <property name="hibernate.connection.url">${SPRING_DATASOURCE_URL}</property>-->
+        <property name="hibernate.connection.url">jdbc:postgresql://db:5432/service_picker</property>
+<!--        <property name="hibernate.connection.username">${SPRING_DATASOURCE_USERNAME}</property>-->
+<!--        <property name="hibernate.connection.password">${SPRING_DATASOURCE_PASSWORD}</property>-->
+        <property name="hibernate.connection.username">service_picker_user</property>
+        <property name="hibernate.connection.password">service_picker_dev</property>
 
         <!-- Other Hibernate properties -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
@@ -22,6 +25,8 @@
         <!-- Mapping files or annotated classes -->
         <!-- Add your entity classes or mapping files here  for ex: entity used below -->
         <mapping class="com.example.backend.models.Offer"/>
+        <mapping class="com.example.backend.models.ProfrolesMapping"/>
+        <mapping class="com.example.backend.models.RegionAreaMapping"/>
 
     </session-factory>
 </hibernate-configuration>

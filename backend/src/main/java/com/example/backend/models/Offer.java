@@ -11,7 +11,8 @@ import jakarta.persistence.Table;
 @Table(name = "offers")
 public class Offer {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Column(name = "id", nullable = false)
   private Long id;
 
   @Column(name = "product_id")
@@ -96,6 +97,9 @@ public class Offer {
     this.profroleGroupId = profroleGroupId;
     this.priceAll = priceAll;
     this.currency = currency;
+  }
+
+  public Offer() {
   }
 
   public Long getId() {

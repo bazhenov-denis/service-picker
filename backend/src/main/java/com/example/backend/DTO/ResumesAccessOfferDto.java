@@ -1,10 +1,6 @@
-package com.example.backend.models;
+package com.example.backend.DTO;
 
-import jakarta.persistence.Entity;
-
-
-@Entity
-public class ResumesAccessOffer {
+public class ResumesAccessOfferDto {
 
   private Integer civCount;
   private Integer apiLimitedCount;

@@ -5,7 +5,7 @@ interface ClaimDto {
 }
 
 interface OfferDto {
-  vacancyOffers: Array<{
+  vacancyOfferDtos: Array<{
     id: number;
     areaId: number;
     professionId: number;
@@ -15,7 +15,7 @@ interface OfferDto {
     pricePerOne: number;
     pricePerPackage: number;
   }>;
-  resumesAccessOffers: Array<{
+  resumesAccessOfferDtos: Array<{
     id: number;
     areaId: number;
     professionId: number;

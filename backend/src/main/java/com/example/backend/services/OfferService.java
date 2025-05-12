@@ -4,8 +4,8 @@ import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferDto;
 import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.Offer;
-import com.example.backend.models.ResumesAccessOffer;
-import com.example.backend.models.VacancyOffer;
+import com.example.backend.DTO.ResumesAccessOfferDto;
+import com.example.backend.DTO.VacancyOfferDto;
 import com.example.backend.utils.HibernateUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,8 @@ public class OfferService {
   private ApiService apiService;
 
   public OfferDto pick(ClaimDto claim) {
-    List<VacancyOffer> vacancyOffers = new ArrayList<>();
-    List<ResumesAccessOffer> resumesAccessOffers = new ArrayList<>();
+    List<VacancyOfferDto> vacancyOfferDtos = new ArrayList<>();
+    List<ResumesAccessOfferDto> resumesAccessOfferDtos = new ArrayList<>();
 
     // поход в API за кол-вом вакансий по региону и профессии
     VacancyResult vacancyResult = apiService.getVacancyCount(claim.areaId(), claim.professionId());
@@ -34,6 +34,6 @@ public class OfferService {
     List<Offer> offers = (List<Offer>)query.list();
     session.close();
 
-    return new OfferDto(vacancyOffers, resumesAccessOffers);
+    return new OfferDto(vacancyOfferDtos, resumesAccessOfferDtos);
   }
 }
