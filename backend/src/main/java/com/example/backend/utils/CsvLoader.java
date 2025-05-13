@@ -7,25 +7,23 @@ import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import java.io.FileReader;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
 public class CsvLoader {
 
-  //@Autowired
-  //private JdbcTemplate jdbcTemplate;
+  @Autowired
+  private SessionFactory sessionFactory;
 
   private static final Logger log = LoggerFactory.getLogger(CsvLoader.class);
 
@@ -47,28 +45,12 @@ public class CsvLoader {
         records.remove(0);
       }
 
-      Session session = HibernateUtil.getSessionFactory().openSession();
+      Session session = sessionFactory.openSession();
       Transaction tx = session.beginTransaction();
-//      Query query = session.createQuery(
-//          "INSERT INTO offers (product_id, tariff, code, " +
-//              "child_code_1, child_count_1, child_code_2, child_count_2, child_code_3, child_count_3, child_code_4, child_count_4, " +
-//              "period, region_id, profrole_group_id, price_all, currency) " +
-//              "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-//      );
-//      String insertQuery = "INSERT INTO offers (product_id, tariff, code, child_code_1, child_count_1, child_code_2, child_count_2, child_code_3, child_count_3, child_code_4, child_count_4, period, region_id, profrole_group_id, price_all, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+//
       for (String[] record : records) {
         if (record.length < 16) continue;
 
-//        Offer offer = new Offer(
-//            parseLong(record[0]), record[1], record[2],
-//            record[3], parseInt(record[4]),
-//            record[5], parseInt(record[6]),
-//            record[7], parseInt(record[8]),
-//            record[9], parseInt(record[10]),
-//            parseInt(record[11]), parseLong(record[12]),
-//            parseInt(record[13]), parseDouble(record[14]), record[15]
-//            );
         Offer offer = new Offer();
         offer.setProductId(parseLong(record[0]));
         offer.setTariff(record[1]);
@@ -87,17 +69,8 @@ public class CsvLoader {
         offer.setPriceAll(parseDouble(record[14]));
         offer.setCurrency(record[15]);
         session.persist(offer);
-
-//        jdbcTemplate.update(insertQuery,
-//            parseLong(record[0]), record[1], record[2],
-//            record[3], parseInt(record[4]),
-//            record[5], parseInt(record[6]),
-//            record[7], parseInt(record[8]),
-//            record[9], parseInt(record[10]),
-//            parseInt(record[11]), parseInt(record[12]),
-//            parseInt(record[13]), parseDouble(record[14]), record[15]
-//        );
       }
+
       tx.commit();
       session.close();
     } catch (Exception e) {
@@ -117,8 +90,7 @@ public class CsvLoader {
         records.remove(0);
       }
 
-      //String insertQuery = "INSERT INTO profroles_mapping (price_profrole_group_id, professional_role_id) VALUES (?, ?)";
-      Session session = HibernateUtil.getSessionFactory().openSession();
+      Session session = sessionFactory.openSession();
       Transaction tx = session.beginTransaction();
 
       for (String[] record : records) {
@@ -126,10 +98,6 @@ public class CsvLoader {
 
         ProfrolesMapping profrolesMapping = new ProfrolesMapping(parseInt(record[0]), parseInt(record[1]));
         session.persist(profrolesMapping);
-//        jdbcTemplate.update(insertQuery,
-//            parseLong(record[0]), // use Long
-//            parseLong(record[1])
-//        );
       }
 
       tx.commit();
@@ -151,8 +119,7 @@ public class CsvLoader {
         records.remove(0);
       }
 
-//      String insertQuery = "INSERT INTO region_area_mapping (price_region_id, area_id) VALUES (?, ?)";
-      Session session = HibernateUtil.getSessionFactory().openSession();
+      Session session = sessionFactory.openSession();
       Transaction tx = session.beginTransaction();
 
       for (String[] record : records) {
@@ -160,10 +127,6 @@ public class CsvLoader {
 
         RegionAreaMapping regionAreaMapping = new RegionAreaMapping(parseLong(record[0]), parseInt(record[1]));
         session.persist(regionAreaMapping);
-//        jdbcTemplate.update(insertQuery,
-//            parseLong(record[0]),
-//            parseLong(record[1])
-//        );
       }
 
       tx.commit();

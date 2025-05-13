@@ -6,17 +6,21 @@ import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.Offer;
 import com.example.backend.DTO.ResumesAccessOfferDto;
 import com.example.backend.DTO.VacancyOfferDto;
-import com.example.backend.utils.HibernateUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OfferService {
+  @Autowired
+  private SessionFactory sessionFactory;
+
   @Autowired
   private ApiService apiService;
 
@@ -28,7 +32,7 @@ public class OfferService {
     VacancyResult vacancyResult = apiService.getVacancyCount(claim.areaId(), claim.professionId());
 
     // алгоритм подбора
-    Session session = HibernateUtil.getSessionFactory().openSession();
+    Session session = sessionFactory.openSession();
     //Transaction tx = session.beginTransaction();
     Query query = session.createQuery("SELECT * FROM offers");
     List<Offer> offers = (List<Offer>)query.list();
