@@ -6,7 +6,6 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,6 @@ public class CsvLoader {
   @PostConstruct
   public void loadCsvData() {
     loadOffersData();
-    //loadProfrolesMappingData();
-    //loadAreaMappingData();
   }
 
   private void loadOffersData() {
@@ -76,64 +73,6 @@ public class CsvLoader {
       e.printStackTrace();
     }
   }
-
-//  private void loadProfrolesMappingData() {
-//    String csvFilePath = "/app/src/main/resources/db/migration/data/mapping_profroles.csv";
-//    try (CSVReader reader = new CSVReaderBuilder(new FileReader(Paths.get(csvFilePath).toFile()))
-//        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-//        .build()) {
-//      List<String[]> records = reader.readAll();
-//      // remove header if present
-//      if (!records.isEmpty() && records.get(0).length >= 2 && isHeader(records.get(0), "price_profrole_group_id")) {
-//        records.remove(0);
-//      }
-//
-//      EntityManager em = emf.createEntityManager();
-//      EntityTransaction etx = em.getTransaction();
-//
-//      for (String[] record : records) {
-//        if (record.length < 2) continue;
-//
-//        ProfrolesMapping profrolesMapping = new ProfrolesMapping(parseInt(record[0]), parseInt(record[1]));
-//        em.persist(profrolesMapping);
-//      }
-//
-//      etx.commit();
-//      em.close();
-//    } catch (Exception e) {
-//      System.err.println("Error loading profroles mapping CSV: " + e.getMessage());
-//      e.printStackTrace();
-//    }
-//  }
-//
-//  private void loadAreaMappingData() {
-//    String csvFilePath = "/app/src/main/resources/db/migration/data/mapping_area.csv";
-//    try (CSVReader reader = new CSVReaderBuilder(new FileReader(Paths.get(csvFilePath).toFile()))
-//        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-//        .build()) {
-//      List<String[]> records = reader.readAll();
-//      // remove header if present
-//      if (!records.isEmpty() && records.get(0).length >= 2 && isHeader(records.get(0), "price_region_id")) {
-//        records.remove(0);
-//      }
-//
-//      EntityManager em = emf.createEntityManager();
-//      EntityTransaction etx = em.getTransaction();
-//
-//      for (String[] record : records) {
-//        if (record.length < 2) continue;
-//
-//        RegionAreaMapping regionAreaMapping = new RegionAreaMapping(parseLong(record[0]), parseInt(record[1]));
-//        em.persist(regionAreaMapping);
-//      }
-//
-//      etx.commit();
-//      em.close();
-//    } catch (Exception e) {
-//      System.err.println("Error loading area mapping CSV: " + e.getMessage());
-//      e.printStackTrace();
-//    }
-//  }
 
   private boolean isHeader(String[] record, String firstColumnName) {
     // simple check: if first cell equals expected column name
