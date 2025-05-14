@@ -23,8 +23,8 @@ interface ResumesAccessOffer {
 
 interface OfferDisplayProps {
   offer: {
-    vacancyOfferDtos: VacancyOffer[];
-    resumesAccessOfferDtos: ResumesAccessOffer[];
+    vacancyOffers: VacancyOffer[];
+    resumesAccessOffers: ResumesAccessOffer[];
   };
 }
 
@@ -32,10 +32,10 @@ export const OfferDisplay: React.FC<OfferDisplayProps> = ({ offer }) => {
   return (
     <div className={styles.offerContainer}>
       <h3>Предложенные услуги:</h3>
-      {offer.vacancyOfferDtos.length > 0 && (
+      {offer.vacancyOffers.length > 0 && (
         <div>
           <h4>Вакансии:</h4>
-          {offer.vacancyOfferDtos.map(offer => (
+          {offer.vacancyOffers.map(offer => (
             <div key={offer.id} className={styles.offerItem}>
               <p>Тип: {offer.vacancyType}</p>
               <p>Объем пакета: {offer.packageVolume}</p>
@@ -46,10 +46,10 @@ export const OfferDisplay: React.FC<OfferDisplayProps> = ({ offer }) => {
           ))}
         </div>
       )}
-      {offer.resumesAccessOfferDtos.length > 0 && (
+      {offer.resumesAccessOffers.length > 0 && (
         <div>
           <h4>Доступ к резюме:</h4>
-          {offer.resumesAccessOfferDtos.map(offer => (
+          {offer.resumesAccessOffers.map(offer => (
             <div key={offer.id} className={styles.offerItem}>
               <p>Длительность доступа: {offer.accessDuration}</p>
               <p>Количество контактов: {offer.numberOfContacts}</p>
