@@ -1,13 +1,10 @@
 package com.example.backend.utils;
 
+import com.example.backend.DAO.OfferDaoImpl;
 import com.example.backend.models.Offer;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,9 +17,7 @@ import java.util.List;
 public class CsvLoader {
 
   @Autowired
-  private EntityManagerFactory emf;
-
-  private static final Logger log = LoggerFactory.getLogger(CsvLoader.class);
+  private OfferDaoImpl offerDao;
 
   @PostConstruct
   public void loadCsvData() {
@@ -40,9 +35,6 @@ public class CsvLoader {
         records.remove(0);
       }
 
-      EntityManager em = emf.createEntityManager();
-      em.getTransaction().begin();
-//
       for (String[] record : records) {
         if (record.length < 16) continue;
 
@@ -63,11 +55,8 @@ public class CsvLoader {
         offer.setProfroleGroupId(parseInt(record[13]));
         offer.setPriceAll(parseDouble(record[14]));
         offer.setCurrency(record[15]);
-        em.persist(offer);
+        offerDao.save(offer);
       }
-
-      em.getTransaction().commit();
-      em.close();
     } catch (Exception e) {
       System.err.println("Error loading offers CSV: " + e.getMessage());
       e.printStackTrace();
