@@ -4,9 +4,9 @@ VALUES (1, 'reference', 'Выберите регион:', 'regions', TRUE),
        (3, 'input', 'Сколько человек необходимо?', NULL, TRUE),
        (4, 'single-choice', 'Как срочно нужен человек?', NULL, FALSE);
 
-INSERT INTO options (question_id, id, option_text)
+INSERT INTO options (id, question_id, text)
 VALUES
-    (4, 1, 'как можно скорее'),
-    (4, 2, 'ближайшие 2 недели'),
-    (4, 3, 'ближайший месяц'),
+    (1, 4, 'как можно скорее'),
+    (2, 4, 'ближайшие 2 недели'),
+    (3, 4, 'ближайший месяц'),
     (4, 4, 'не срочно');

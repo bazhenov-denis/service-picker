@@ -10,10 +10,11 @@ CREATE TABLE questions
 
 CREATE TABLE options
 (
-    question_id INT  NOT NULL
-        REFERENCES questions (id)
-            ON DELETE CASCADE,
-    id          INT  NOT NULL,
-    option_text TEXT NOT NULL,
-    PRIMARY KEY (question_id, id)
+    id          INT PRIMARY KEY,
+    question_id INT  NOT NULL,
+    text        TEXT NOT NULL,
+    CONSTRAINT fk_options_question
+        FOREIGN KEY (question_id)
+            REFERENCES questions (id)
+            ON DELETE CASCADE
 );
