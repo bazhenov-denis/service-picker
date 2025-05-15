@@ -1,10 +1,14 @@
 package com.example.backend.utils;
 
+import com.example.backend.models.Offer;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
@@ -16,13 +20,13 @@ import java.util.List;
 public class CsvLoader {
 
   @Autowired
-  private JdbcTemplate jdbcTemplate;
+  private EntityManagerFactory emf;
+
+  private static final Logger log = LoggerFactory.getLogger(CsvLoader.class);
 
   @PostConstruct
   public void loadCsvData() {
     loadOffersData();
-    loadProfrolesMappingData();
-    loadAreaMappingData();
   }
 
   private void loadOffersData() {
@@ -36,84 +40,43 @@ public class CsvLoader {
         records.remove(0);
       }
 
-      String insertQuery = "INSERT INTO offers (product_id, tariff, code, child_code_1, child_count_1, child_code_2, child_count_2, child_code_3, child_count_3, child_code_4, child_count_4, period, region_id, profrole_group_id, price_all, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
+      EntityManager em = emf.createEntityManager();
+      em.getTransaction().begin();
+//
       for (String[] record : records) {
         if (record.length < 16) continue;
 
-        jdbcTemplate.update(insertQuery,
-            parseLong(record[0]), record[1], record[2],
-            record[3], parseInt(record[4]),
-            record[5], parseInt(record[6]),
-            record[7], parseInt(record[8]),
-            record[9], parseInt(record[10]),
-            parseInt(record[11]), parseInt(record[12]),
-            parseInt(record[13]), parseDouble(record[14]), record[15]
-        );
+        Offer offer = new Offer();
+        offer.setProductId(parseLong(record[0]));
+        offer.setTariff(record[1]);
+        offer.setCode(record[2]);
+        offer.setChildCode1(record[3]);
+        offer.setChildCount1(parseInt(record[4]));
+        offer.setChildCode2(record[5]);
+        offer.setChildCount2(parseInt(record[6]));
+        offer.setChildCode3(record[7]);
+        offer.setChildCount3(parseInt(record[8]));
+        offer.setChildCode4(record[9]);
+        offer.setChildCount4(parseInt(record[10]));
+        offer.setPeriod(parseInt(record[11]));
+        offer.setRegionId(parseLong(record[12]));
+        offer.setProfroleGroupId(parseInt(record[13]));
+        offer.setPriceAll(parseDouble(record[14]));
+        offer.setCurrency(record[15]);
+        em.persist(offer);
       }
+
+      em.getTransaction().commit();
+      em.close();
     } catch (Exception e) {
       System.err.println("Error loading offers CSV: " + e.getMessage());
       e.printStackTrace();
     }
   }
 
-  private void loadProfrolesMappingData() {
-    String csvFilePath = "/app/src/main/resources/db/migration/data/mapping_profroles.csv";
-    try (CSVReader reader = new CSVReaderBuilder(new FileReader(Paths.get(csvFilePath).toFile()))
-        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-        .build()) {
-      List<String[]> records = reader.readAll();
-      // remove header if present
-      if (!records.isEmpty() && records.get(0).length >= 2 && isHeader(records.get(0), "price_profrole_group_id")) {
-        records.remove(0);
-      }
-
-      String insertQuery = "INSERT INTO profroles_mapping (price_profrole_group_id, professional_role_id) VALUES (?, ?)";
-
-      for (String[] record : records) {
-        if (record.length < 2) continue;
-
-        jdbcTemplate.update(insertQuery,
-            parseLong(record[0]), // use Long
-            parseLong(record[1])
-        );
-      }
-    } catch (Exception e) {
-      System.err.println("Error loading profroles mapping CSV: " + e.getMessage());
-      e.printStackTrace();
-    }
-  }
-
-  private void loadAreaMappingData() {
-    String csvFilePath = "/app/src/main/resources/db/migration/data/mapping_area.csv";
-    try (CSVReader reader = new CSVReaderBuilder(new FileReader(Paths.get(csvFilePath).toFile()))
-        .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
-        .build()) {
-      List<String[]> records = reader.readAll();
-      // remove header if present
-      if (!records.isEmpty() && records.get(0).length >= 2 && isHeader(records.get(0), "price_region_id")) {
-        records.remove(0);
-      }
-
-      String insertQuery = "INSERT INTO region_area_mapping (price_region_id, area_id) VALUES (?, ?)";
-
-      for (String[] record : records) {
-        if (record.length < 2) continue;
-
-        jdbcTemplate.update(insertQuery,
-            parseLong(record[0]),
-            parseLong(record[1])
-        );
-      }
-    } catch (Exception e) {
-      System.err.println("Error loading area mapping CSV: " + e.getMessage());
-      e.printStackTrace();
-    }
-  }
-
   private boolean isHeader(String[] record, String firstColumnName) {
     // simple check: if first cell equals expected column name
-    return record[0].trim().equalsIgnoreCase(firstColumnName);
+    return record[0].contains(firstColumnName);
   }
 
   private Long parseLong(String value) {

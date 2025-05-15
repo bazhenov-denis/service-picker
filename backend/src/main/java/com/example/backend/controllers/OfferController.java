@@ -52,7 +52,7 @@ public class OfferController {
     OfferDto offer = offerService.pick(claim);
 
     // пустой ответ от сервиса => что-то пошло не так => 400
-    if (offer.vacancyOffers().isEmpty() && offer.resumesAccessOffers().isEmpty()) {
+    if (offer.vacancyOfferDtos().isEmpty() && offer.resumesAccessOfferDtos().isEmpty()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
