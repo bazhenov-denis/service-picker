@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button } from '@hh.ru/magritte-ui-button';
-import '@hh.ru/magritte-ui-button/index.css';
-import styles from './ServicePickerButton.module.css';
+import { FC } from "react";
+import { Button } from "@hh.ru/magritte-ui-button";
+import "@hh.ru/magritte-ui-button/index.css";
+import styles from "./ServicePickerButton.module.css";
 
 interface ServicePickerButtonProps {
   selectedRegions: string[];
@@ -16,13 +16,13 @@ interface ServicePickerButtonProps {
   error?: string | null;
 }
 
-export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
+export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
   selectedRegions,
   selectedProfessions,
   vacanciesNumber,
   onSendData,
   isLoading = false,
-  error = null
+  error = null,
 }) => {
   const handleClick = () => {
     const data = {
@@ -30,15 +30,14 @@ export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
       professions: selectedProfessions,
       vacanciesNumber,
     };
-    
-    // Отправляем данные в консоль разработчика
-    console.log('Отправка данных на бэкенд:', data);
-    
-    // Вызываем колбэк с данными
     onSendData(data);
   };
 
-  const isDisabled = !selectedRegions.length || !selectedProfessions.length || !vacanciesNumber || isLoading;
+  const isDisabled =
+    !selectedRegions.length ||
+    !selectedProfessions.length ||
+    !vacanciesNumber ||
+    isLoading;
 
   return (
     <div className={styles.buttonContainer}>
@@ -51,11 +50,11 @@ export const ServicePickerButton: React.FC<ServicePickerButtonProps> = ({
         onClick={handleClick}
         data-qa="service-picker-button"
       >
-        {isLoading ? 'Отправка...' : 'Подобрать услугу'}
+        {isLoading ? "Отправка..." : "Подобрать услугу"}
       </Button>
       {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 };
 
-export default ServicePickerButton; 
+export default ServicePickerButton;

@@ -1,3 +1,3 @@
-declare module '@hh.ru/magritte-ui' {
-    export const TreeSelector: any;
-  }
+declare module "@hh.ru/magritte-ui" {
+  export const TreeSelector: any;
+}

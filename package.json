@@ -3,6 +3,7 @@
     "@craco/craco": "^7.1.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "http-proxy-middleware": "^3.0.5",
     "less": "^4.3.0",
     "less-loader": "^12.2.0"
   },

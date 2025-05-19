@@ -1,4 +1,4 @@
-import { TreeModel } from '@hh.ru/magritte-ui-tree-selector/collection/types';
+import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
 interface Profession {
   id: string;
@@ -21,22 +21,26 @@ interface ProfessionResponse {
   }>;
 }
 
-export const transformApiResponse = (response: ProfessionResponse): CustomTreeModel[] => {
-  const professions = response.categories.map(category => ({
+export const transformApiResponse = (
+  response: ProfessionResponse,
+): CustomTreeModel[] => {
+  const professions = response.categories.map((category) => ({
     id: category.id,
     name: category.name,
-    items: category.roles
+    items: category.roles,
   }));
   return transformProfessionsToTreeModel(professions);
 };
 
-export const transformProfessionsToTreeModel = (professions: Profession[]): CustomTreeModel[] => {
-  return professions.map(category => ({
+export const transformProfessionsToTreeModel = (
+  professions: Profession[],
+): CustomTreeModel[] => {
+  return professions.map((category) => ({
     id: `category_${category.id}`,
     text: category.name,
-    items: category.items?.map(role => ({
+    items: category.items?.map((role) => ({
       id: `role_${role.id}`,
-      text: role.name
-    }))
+      text: role.name,
+    })),
   }));
-}; 
+};

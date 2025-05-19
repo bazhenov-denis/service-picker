@@ -1,8 +1,8 @@
 // src/components/Header/index.tsx
-import React from 'react';
-import styles from './Header.module.css'; // Импорт CSS-модуля
+import { FC } from "react";
+import styles from "./Header.module.css"; // Импорт CSS-модуля
 
-const Header: React.FC = () => {
+const Header: FC = () => {
   return (
     <div className={styles.headerContainer}>
       <img className={styles.logo} src="/hh-logo.svg" alt="Логотип" />

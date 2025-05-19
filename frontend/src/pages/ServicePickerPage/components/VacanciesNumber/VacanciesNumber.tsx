@@ -1,21 +1,23 @@
-import React from 'react';
-import styles from './VacanciesNumber.module.css';
+import { FC, useState, ChangeEvent } from "react";
+import styles from "./VacanciesNumber.module.css";
 
 interface VacanciesNumberProps {
   onNumberChange: (number: number) => void;
 }
 
-export const VacanciesNumber: React.FC<VacanciesNumberProps> = ({ onNumberChange }) => {
-  const [number, setNumber] = React.useState<string>('');
-  const [error, setError] = React.useState<string>('');
+export const VacanciesNumber: FC<VacanciesNumberProps> = ({
+  onNumberChange,
+}) => {
+  const [number, setNumber] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
+
     // Если поле пустое, очищаем ошибку и значение
-    if (value === '') {
-      setNumber('');
-      setError('');
+    if (value === "") {
+      setNumber("");
+      setError("");
       onNumberChange(0);
       return;
     }
@@ -23,18 +25,18 @@ export const VacanciesNumber: React.FC<VacanciesNumberProps> = ({ onNumberChange
     // Проверяем, что введено число
     const numValue = parseInt(value);
     if (isNaN(numValue)) {
-      setError('Пожалуйста, введите число');
+      setError("Пожалуйста, введите число");
       return;
     }
 
     // Проверяем, что число больше 0
     if (numValue <= 0) {
-      setError('Число должно быть больше 0');
+      setError("Число должно быть больше 0");
       return;
     }
 
     setNumber(value);
-    setError('');
+    setError("");
     onNumberChange(numValue);
   };
 
@@ -55,4 +57,4 @@ export const VacanciesNumber: React.FC<VacanciesNumberProps> = ({ onNumberChange
   );
 };
 
-export default VacanciesNumber; 
+export default VacanciesNumber;
