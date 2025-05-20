@@ -30,7 +30,7 @@ public class OfferService {
     List<Offer> offers = offerDao.getByRegionAndProfroleGroup(0L, 0);
     offers.sort(Comparator.comparing(Offer::getPriceAll));
     Offer bestOffer = offers.get(0);
-    OfferListDto offerListDto = new OfferListDto(Collections.emptyList());
+    OfferListDto offerListDto = new OfferListDto();
 
     if (bestOffer.getCode().equals("DI")) {
       OfferDto offerDto = new OfferDto(

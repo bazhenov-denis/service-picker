@@ -1,12 +1,13 @@
 package com.example.backend.DTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OfferListDto {
   private List<OfferDto> items;
 
-  public OfferListDto(List<OfferDto> items) {
-    this.items = items;
+  public OfferListDto() {
+    this.items = new ArrayList<>();
   }
 
   public List<OfferDto> getItems() {
