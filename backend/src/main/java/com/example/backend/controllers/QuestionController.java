@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/questions")
 public class QuestionController {
-  private final QuestionService svc;
-  public QuestionController(QuestionService svc) { this.svc = svc; }
+  private final QuestionService questionService;
+  public QuestionController(QuestionService questionService) { this.questionService = questionService; }
 
   @GetMapping
   public List<QuestionDTO> list() {
-    return svc.getAllQuestions();
+    return questionService.getAllQuestions();
   }
 }

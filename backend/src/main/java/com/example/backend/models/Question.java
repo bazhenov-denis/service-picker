@@ -1,7 +1,9 @@
 package com.example.backend.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,7 +32,12 @@ public class Question {
   @Column(name = "reference_type")
   private String referenceType;
 
-  @OneToMany(mappedBy = "question")
+  @OneToMany(
+      mappedBy = "question",
+      fetch = FetchType.EAGER,
+      cascade = CascadeType.ALL,
+      orphanRemoval = true
+  )
   private List<Option> options;
 
   public Question() {
