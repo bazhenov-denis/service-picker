@@ -1,5 +1,6 @@
 package com.example.backend.services;
 
+import com.example.backend.DAO.OfferDaoImpl;
 import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferDto;
 import com.example.backend.DTO.VacancyResult;
@@ -8,18 +9,16 @@ import com.example.backend.DTO.ResumesAccessOfferDto;
 import com.example.backend.DTO.VacancyOfferDto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OfferService {
   @Autowired
-  private SessionFactory sessionFactory;
+  private OfferDaoImpl offerDao;
 
   @Autowired
   private ApiService apiService;
@@ -32,11 +31,16 @@ public class OfferService {
     VacancyResult vacancyResult = apiService.getVacancyCount(claim.areaId(), claim.professionId());
 
     // алгоритм подбора
-    Session session = sessionFactory.openSession();
-    //Transaction tx = session.beginTransaction();
-    Query query = session.createQuery("SELECT * FROM offers");
-    List<Offer> offers = (List<Offer>)query.list();
-    session.close();
+    List<Offer> offers = offerDao.getByRegionAndProfroleGroup(0L, 0);
+    offers.sort(Comparator.comparing(Offer::getPriceAll));
+    Offer bestOffer = offers.get(0);
+
+    if (bestOffer.getCode().equals("DI")) {
+      resumesAccessOfferDtos.add(new ResumesAccessOfferDto(bestOffer.getChildCount1(), bestOffer.getChildCount2()));
+    }
+    if (bestOffer.getCode().equals("VPPL")) {
+      vacancyOfferDtos.add(new VacancyOfferDto(bestOffer.getChildCode1(), bestOffer.getChildCount1()));
+    }
 
     return new OfferDto(vacancyOfferDtos, resumesAccessOfferDtos);
   }
