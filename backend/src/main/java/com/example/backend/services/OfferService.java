@@ -34,7 +34,7 @@ public class OfferService {
 
     if (bestOffer.getCode().equals("DI")) {
       OfferDto offerDto = new OfferDto(
-          1, "resume_access", "Доступ к базе резюме", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
+          "Оптимальный", "resume_access", "Доступ к базе резюме", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
           bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
           null, null, bestOffer.getChildCount1().toString(), bestOffer.getChildCount2().toString()
       );
@@ -42,7 +42,7 @@ public class OfferService {
     }
     if (bestOffer.getCode().equals("VPPL")) {
       OfferDto offerDto = new OfferDto(
-          1, "vacancy", "Публикация вакансий", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
+          "Оптимальный", "vacancy", "Публикация вакансий", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
           bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
           bestOffer.getChildCode1(), bestOffer.getChildCount1().toString(), null, null
       );
@@ -50,7 +50,7 @@ public class OfferService {
     }
     if (bestOffer.getCode().equals("CIV+VPPL")) {
       OfferDto offerDto = new OfferDto(
-          1, "mixed", "Доступ к базе резюме + публикация вакансий", bestOffer.getPeriod().toString(),
+          "Оптимальный", "mixed", "Доступ к базе резюме + публикация вакансий", bestOffer.getPeriod().toString(),
           bestOffer.getRegionId().toString(), bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
           bestOffer.getChildCode2(), bestOffer.getChildCount2().toString(),
           bestOffer.getChildCount1().toString(), bestOffer.getChildCount3().toString()
