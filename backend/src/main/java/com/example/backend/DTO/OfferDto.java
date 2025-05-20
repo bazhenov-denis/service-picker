@@ -1,6 +1,6 @@
 package com.example.backend.DTO;
 
-import java.util.List;
-
-public record OfferDto(List<VacancyOfferDto> vacancyOfferDtos, List<ResumesAccessOfferDto> resumesAccessOfferDtos) {
+public record OfferDto(
+    Integer id, String type, String title, String period, String region, String profroleGroup, String price,
+    String vacancyType, String vacancyCount, String civCount, String apiLimitedCount) {
 }

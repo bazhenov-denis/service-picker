@@ -2,6 +2,7 @@ package com.example.backend.controllers;
 
 import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferDto;
+import com.example.backend.DTO.OfferListDto;
 import com.example.backend.services.OfferService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,7 +41,7 @@ public class OfferController {
       @ApiResponse(responseCode = "400", description = "Invalid user data supplied", content = @Content)
   })
   @PostMapping("/service-offer")
-  public ResponseEntity<OfferDto> processClaim(
+  public ResponseEntity<OfferListDto> processClaim(
       @io.swagger.v3.oas.annotations.parameters.RequestBody(
           description = "User claim data", required = true, content = @Content(
           mediaType = "application/json", schema = @Schema(implementation = ClaimDto.class), examples = @ExampleObject(
@@ -49,14 +50,14 @@ public class OfferController {
       @Validated @RequestBody ClaimDto claim
   ) {
     // обращение в сервис подбора
-    OfferDto offer = offerService.pick(claim);
+    OfferListDto offerListDto = offerService.pick(claim);
 
     // пустой ответ от сервиса => что-то пошло не так => 400
-    if (offer.vacancyOfferDtos().isEmpty() && offer.resumesAccessOfferDtos().isEmpty()) {
+    if (offerListDto.isEmpty()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     // 200
-    return ResponseEntity.ok(offer);
+    return ResponseEntity.ok(offerListDto);
   }
 }

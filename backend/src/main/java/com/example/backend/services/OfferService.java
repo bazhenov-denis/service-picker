@@ -3,12 +3,11 @@ package com.example.backend.services;
 import com.example.backend.DAO.OfferDaoImpl;
 import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferDto;
+import com.example.backend.DTO.OfferListDto;
 import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.Offer;
-import com.example.backend.DTO.ResumesAccessOfferDto;
-import com.example.backend.DTO.VacancyOfferDto;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,10 +22,7 @@ public class OfferService {
   @Autowired
   private ApiService apiService;
 
-  public OfferDto pick(ClaimDto claim) {
-    List<VacancyOfferDto> vacancyOfferDtos = new ArrayList<>();
-    List<ResumesAccessOfferDto> resumesAccessOfferDtos = new ArrayList<>();
-
+  public OfferListDto pick(ClaimDto claim) {
     // поход в API за кол-вом вакансий по региону и профессии
     VacancyResult vacancyResult = apiService.getVacancyCount(claim.areaId(), claim.professionId());
 
@@ -34,14 +30,34 @@ public class OfferService {
     List<Offer> offers = offerDao.getByRegionAndProfroleGroup(0L, 0);
     offers.sort(Comparator.comparing(Offer::getPriceAll));
     Offer bestOffer = offers.get(0);
+    OfferListDto offerListDto = new OfferListDto(Collections.emptyList());
 
     if (bestOffer.getCode().equals("DI")) {
-      resumesAccessOfferDtos.add(new ResumesAccessOfferDto(bestOffer.getChildCount1(), bestOffer.getChildCount2()));
+      OfferDto offerDto = new OfferDto(
+          1, "resume_access", "Доступ к базе резюме", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
+          bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
+          null, null, bestOffer.getChildCount1().toString(), bestOffer.getChildCount2().toString()
+      );
+      offerListDto.add(offerDto);
     }
     if (bestOffer.getCode().equals("VPPL")) {
-      vacancyOfferDtos.add(new VacancyOfferDto(bestOffer.getChildCode1(), bestOffer.getChildCount1()));
+      OfferDto offerDto = new OfferDto(
+          1, "vacancy", "Публикация вакансий", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
+          bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
+          bestOffer.getChildCode1(), bestOffer.getChildCount1().toString(), null, null
+      );
+      offerListDto.add(offerDto);
+    }
+    if (bestOffer.getCode().equals("CIV+VPPL")) {
+      OfferDto offerDto = new OfferDto(
+          1, "mixed", "Доступ к базе резюме + публикация вакансий", bestOffer.getPeriod().toString(),
+          bestOffer.getRegionId().toString(), bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
+          bestOffer.getChildCode2(), bestOffer.getChildCount2().toString(),
+          bestOffer.getChildCount1().toString(), bestOffer.getChildCount3().toString()
+      );
+      offerListDto.add(offerDto);
     }
 
-    return new OfferDto(vacancyOfferDtos, resumesAccessOfferDtos);
+    return offerListDto;
   }
 }
