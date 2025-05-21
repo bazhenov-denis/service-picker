@@ -10,7 +10,7 @@ import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
 
 const App: React.FC = () => {
-  const { questions, loading: questionsLoading, error: questionsError } = useQuestions();
+  const { questions } = useQuestions();
   const { collection: regionsCollection } = useRegions();
   const { collection: professionsCollection } = useProfessions();
   const {
