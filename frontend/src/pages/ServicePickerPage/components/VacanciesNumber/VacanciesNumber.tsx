@@ -1,58 +1,60 @@
-import { FC, useState, ChangeEvent } from "react";
+import React, { FC, useState } from "react";
 import styles from "./VacanciesNumber.module.css";
 
-interface VacanciesNumberProps {
-  onNumberChange: (number: number) => void;
+interface Props {
+  onNumberChange: (value: number) => void;
+  error: string | null;
+  question: {
+    id: number;
+    questionText: string;
+    validation?: { min: number; max: number };
+    placeholder?: string;
+  };
+  placeholder?: string;
 }
 
-export const VacanciesNumber: FC<VacanciesNumberProps> = ({
-  onNumberChange,
-}) => {
-  const [number, setNumber] = useState<string>("");
-  const [error, setError] = useState<string>("");
+const VacanciesNumber: FC<Props> = ({ onNumberChange, error, question }) => {
+  const [value, setValue] = useState<string>("");
+  const [inputError, setInputError] = useState<string | null>(null);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let inputValue = e.target.value;
 
-    // Если поле пустое, очищаем ошибку и значение
-    if (value === "") {
-      setNumber("");
-      setError("");
-      onNumberChange(0);
+    const sanitizedValue = inputValue.replace(/[^0-9]/g, "");
+
+    if (sanitizedValue.length > 1 && sanitizedValue.startsWith("0")) {
+      setInputError("Число не может начинаться с 0");
       return;
     }
 
-    // Проверяем, что введено число
-    const numValue = parseInt(value);
-    if (isNaN(numValue)) {
-      setError("Пожалуйста, введите число");
-      return;
+    const { min = 1, max = 100 } = question.validation || {};
+    if (sanitizedValue) {
+      const numValue = parseInt(sanitizedValue, 10);
+      if (numValue < min || numValue > max) {
+        setInputError(`Введите число от ${min} до ${max}`);
+        return;
+      }
     }
 
-    // Проверяем, что число больше 0
-    if (numValue <= 0) {
-      setError("Число должно быть больше 0");
-      return;
-    }
-
-    setNumber(value);
-    setError("");
-    onNumberChange(numValue);
+    setValue(sanitizedValue);
+    setInputError(null);
+    onNumberChange(sanitizedValue ? parseInt(sanitizedValue, 10) : 0);
   };
 
   return (
     <div className={styles.vacanciesNumber}>
-      <h2 className={styles.title}>Количество вакансий</h2>
+      <h2 className={styles.title}>{question.questionText}</h2>
       <input
-        type="number"
-        className={styles.input}
-        value={number}
+        type="text"
+        value={value}
         onChange={handleChange}
-        min="1"
-        placeholder="Введите количество вакансий"
-        data-qa="vacancies-number-input"
+        placeholder={question.placeholder || "Введите число"}
+        className={`${styles.input} ${inputError ? styles.inputError : ""}`}
+        inputMode="numeric"
+        pattern="[0-9]*"
       />
-      {error && <div className={styles.error}>{error}</div>}
+      {inputError && <div className={styles.errorMessage}>{inputError}</div>}
+      {error && <div className={styles.errorMessage}>{error}</div>}
     </div>
   );
 };

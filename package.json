@@ -5,7 +5,8 @@
     "@types/react-dom": "^19.1.2",
     "http-proxy-middleware": "^3.0.5",
     "less": "^4.3.0",
-    "less-loader": "^12.2.0"
+    "less-loader": "^12.2.0",
+    "prettier": "^3.5.3"
   },
   "dependencies": {
     "@hh.ru/magritte-ui": "^98.0.1",
