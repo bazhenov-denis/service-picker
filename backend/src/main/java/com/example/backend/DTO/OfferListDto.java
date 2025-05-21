@@ -1,5 +1,6 @@
 package com.example.backend.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class OfferListDto {
     this.items = items;
   }
 
+  @JsonIgnore
   public boolean isEmpty() {
     return items.isEmpty();
   }
