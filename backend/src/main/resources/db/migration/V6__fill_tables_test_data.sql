@@ -13,21 +13,23 @@ INSERT INTO offers (
 INSERT INTO region_area_mapping (id, price_region_id, area_id) VALUES
 (1, 1620, 77),
 (2, 1624, 78),
-(3, 1530, 66);
-
-
-INSERT INTO price_profrole (id, name) VALUES
-(1, 'IT-специалисты'),
-(2, 'Маркетинг и продажи');
+(3, 1530, 66); 
 
 
 INSERT INTO profrole (id, name) VALUES
-(1, 'Backend-разработчик'),
-(2, 'Frontend-разработчик'),
-(3, 'Маркетолог');
+(4, 'Автомойщик'),
+(8, 'Администратор');
 
 
-INSERT INTO profrole_group_mapping (id, price_profrole_id, profrole_id) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 2, 3);
+INSERT INTO price_profrole (id, name) VALUES
+(19, 'Автомобильный бизнес'),
+(5, 'Административный персонал'),
+(35, 'Рабочие'),
+(37, 'Продажи, финансы, администрирование и HR');
+
+
+INSERT INTO profrole_group_mapping (price_profrole_id, profrole_id) VALUES
+(19, 4),
+(35, 4),
+(5, 8),
+(37, 8); 
