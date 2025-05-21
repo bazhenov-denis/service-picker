@@ -11,9 +11,9 @@ INSERT INTO offers (
 
 
 INSERT INTO region_area_mapping (id, price_region_id, area_id) VALUES
-(1, 1, 77),
-(2, 1, 78),
-(3, 2, 66);
+(1, 1620, 77),
+(2, 1624, 78),
+(3, 1530, 66);
 
 
 INSERT INTO price_profrole (id, name) VALUES
