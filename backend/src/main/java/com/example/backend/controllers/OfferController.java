@@ -42,7 +42,7 @@ public class OfferController {
 
     // пустой ответ от сервиса => что-то пошло не так => 400
     if (offerListDto.isEmpty()) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     // 200

@@ -34,26 +34,49 @@ public class OfferService {
 
     if (bestOffer.getCode().equals("DI")) {
       OfferDto offerDto = new OfferDto(
-          "Оптимальный", "resume_access", "Доступ к базе резюме", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
-          bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
-          null, null, bestOffer.getChildCount1().toString(), bestOffer.getChildCount2().toString()
+          "Оптимальный",
+          "resume_access",
+          "Доступ к базе резюме",
+          bestOffer.getPeriod().toString(),
+          bestOffer.getRegionId().toString(),
+          bestOffer.getProfroleGroupId().toString(),
+          bestOffer.getPriceAll().toString(),
+          null,
+          null,
+          bestOffer.getChildCount1().toString(),
+          bestOffer.getChildCount2().toString()
       );
       offerListDto.add(offerDto);
     }
     if (bestOffer.getCode().equals("VPPL")) {
       OfferDto offerDto = new OfferDto(
-          "Оптимальный", "vacancy", "Публикация вакансий", bestOffer.getPeriod().toString(), bestOffer.getRegionId().toString(),
-          bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
-          bestOffer.getChildCode1(), bestOffer.getChildCount1().toString(), null, null
+          "Оптимальный",
+          "vacancy",
+          "Публикация вакансий",
+          bestOffer.getPeriod().toString(),
+          bestOffer.getRegionId().toString(),
+          bestOffer.getProfroleGroupId().toString(),
+          bestOffer.getPriceAll().toString(),
+          bestOffer.getChildCode1(),
+          bestOffer.getChildCount1().toString(),
+          null,
+          null
       );
       offerListDto.add(offerDto);
     }
     if (bestOffer.getCode().equals("CIV+VPPL")) {
       OfferDto offerDto = new OfferDto(
-          "Оптимальный", "mixed", "Доступ к базе резюме + публикация вакансий", bestOffer.getPeriod().toString(),
-          bestOffer.getRegionId().toString(), bestOffer.getProfroleGroupId().toString(), bestOffer.getPriceAll().toString(),
-          bestOffer.getChildCode2(), bestOffer.getChildCount2().toString(),
-          bestOffer.getChildCount1().toString(), bestOffer.getChildCount3().toString()
+          "Оптимальный",
+          "mixed",
+          "Доступ к базе резюме + публикация вакансий",
+          bestOffer.getPeriod().toString(),
+          bestOffer.getRegionId().toString(),
+          bestOffer.getProfroleGroupId().toString(),
+          bestOffer.getPriceAll().toString(),
+          bestOffer.getChildCode2(),
+          bestOffer.getChildCount2().toString(),
+          bestOffer.getChildCount1().toString(),
+          bestOffer.getChildCount3().toString()
       );
       offerListDto.add(offerDto);
     }
