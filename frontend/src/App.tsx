@@ -50,9 +50,9 @@ const App: React.FC = () => {
           onSendData={handleSendData}
           isLoading={isLoading}
           error={error}
-          selectedRegions={[]}
-          selectedProfessions={[]}
-          vacanciesNumber={0}
+          selectedRegions={answers[1] || []}
+          selectedProfessions={answers[2] || []}
+          vacanciesNumber={answers[3] || []}
         />
         {offer && <OfferDisplay offer={offer} />}
       </div>

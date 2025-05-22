@@ -1,4 +1,3 @@
-// ./pages/ServicePickerPage/hooks/useServicePicker.ts
 import { useState } from "react";
 import { serviceHttpClient } from "../client/serviceHttpClient";
 import { useProfessions } from "./useProfessions";
