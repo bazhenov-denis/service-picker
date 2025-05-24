@@ -29,7 +29,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,scss}",
-    "prepare": "husky install"
+    "prepare:dev": "husky install"
   },
   "eslintConfig": {
     "extends": [
