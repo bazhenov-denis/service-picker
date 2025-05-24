@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./MultipleChoice.module.css"; // Импорт стилей
+import styles from "./MultipleChoice.module.css";
 
 interface Option {
   id: number;

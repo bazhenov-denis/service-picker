@@ -1,13 +1,10 @@
-export type AnswerValue =
-  | { type: "reference"; value: string[] }
-  | { type: "input"; value: number }
-  | { type: "single-choice"; value: number | null }
-  | { type: "multiple-choice"; value: number[] };
+export type AnswerValue = string[] | number[] | number | undefined;
 
 export interface QuestionBase {
   id: number;
   questionText: string;
   isRequired: boolean;
+  type: string;
 }
 
 export interface ReferenceQuestion extends QuestionBase {

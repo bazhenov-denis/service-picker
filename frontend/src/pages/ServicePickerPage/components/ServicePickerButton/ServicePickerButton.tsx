@@ -2,42 +2,30 @@ import { FC } from "react";
 import { Button } from "@hh.ru/magritte-ui-button";
 import "@hh.ru/magritte-ui-button/index.css";
 import styles from "./ServicePickerButton.module.css";
+import type { Question } from "../../types/question";
+
+type AnswerValue = string[] | number[] | number;
 
 interface ServicePickerButtonProps {
-  selectedRegions: string[];
-  selectedProfessions: string[];
-  vacanciesNumber: number;
-  onSendData: (data: {
-    regions: string[];
-    professions: string[];
-    vacanciesNumber: number;
-  }) => void;
+  answers: Record<string, AnswerValue>;
+  questions: Question[];
+  onSubmit: () => void;
   isLoading?: boolean;
   error?: string | null;
 }
 
 export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
-  selectedRegions,
-  selectedProfessions,
-  vacanciesNumber,
-  onSendData,
+  answers,
+  questions,
+  onSubmit,
   isLoading = false,
   error = null,
 }) => {
-  const handleClick = () => {
-    const data = {
-      regions: selectedRegions,
-      professions: selectedProfessions,
-      vacanciesNumber,
-    };
-    onSendData(data);
-  };
-
-  const isDisabled =
-    !selectedRegions.length ||
-    !selectedProfessions.length ||
-    !vacanciesNumber ||
-    isLoading;
+  const isDisabled = questions.some((question) => {
+    if (!question.isRequired) return false;
+    const answer = answers[question.id.toString()];
+    return !answer || (Array.isArray(answer) && answer.length === 0);
+  }) || isLoading;
 
   return (
     <div className={styles.buttonContainer}>
@@ -47,7 +35,7 @@ export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
         size="large"
         stretched
         disabled={isDisabled}
-        onClick={handleClick}
+        onClick={onSubmit}
         data-qa="service-picker-button"
       >
         {isLoading ? "Отправка..." : "Подобрать услугу"}
