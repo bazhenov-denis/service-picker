@@ -21,7 +21,13 @@ interface Props {
   collection?: any;
 }
 
-const QuestionRenderer: React.FC<Props> = ({ question, answer, onChange, error, collection }) => {
+const QuestionRenderer: React.FC<Props> = ({
+  question,
+  answer,
+  onChange,
+  error,
+  collection,
+}) => {
   const handleChange = (value: unknown) => {
     onChange({ type: question.type, value });
   };
@@ -39,7 +45,7 @@ const QuestionRenderer: React.FC<Props> = ({ question, answer, onChange, error, 
       />
     );
   }
-  
+
   if (question.type === "input") {
     return (
       <VacanciesNumber
@@ -49,7 +55,7 @@ const QuestionRenderer: React.FC<Props> = ({ question, answer, onChange, error, 
       />
     );
   }
-  
+
   if (question.type === "single-choice") {
     return (
       <SingleChoice
@@ -60,7 +66,7 @@ const QuestionRenderer: React.FC<Props> = ({ question, answer, onChange, error, 
       />
     );
   }
-  
+
   if (question.type === "multiple-choice") {
     return (
       <MultipleChoice

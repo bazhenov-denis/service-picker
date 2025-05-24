@@ -24,7 +24,7 @@ interface ProfessionResponse {
 }
 
 export const transformApiResponse = (
-  response: ProfessionResponse
+  response: ProfessionResponse,
 ): { collection: CustomTreeModel[]; title: string } => {
   const professions = response.categories.map((category) => ({
     id: category.id,
@@ -40,7 +40,7 @@ export const transformApiResponse = (
 };
 
 export const transformProfessionsToTreeModel = (
-  professions: Profession[]
+  professions: Profession[],
 ): CustomTreeModel[] => {
   return professions.map((category) => ({
     id: `category_${category.id}`,

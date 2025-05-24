@@ -17,7 +17,12 @@ interface Props {
   error: string | null;
 }
 
-const MultipleChoice: React.FC<Props> = ({ question, selectedOptions, onToggle, error }) => {
+const MultipleChoice: React.FC<Props> = ({
+  question,
+  selectedOptions,
+  onToggle,
+  error,
+}) => {
   const handleToggle = (optionId: number) => {
     const newSelected = selectedOptions.includes(optionId)
       ? selectedOptions.filter((id) => id !== optionId)

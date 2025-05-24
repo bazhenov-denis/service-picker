@@ -17,7 +17,12 @@ interface Props {
   error: string | null;
 }
 
-const SingleChoice: React.FC<Props> = ({ question, selectedOption, onSelect, error }) => {
+const SingleChoice: React.FC<Props> = ({
+  question,
+  selectedOption,
+  onSelect,
+  error,
+}) => {
   const handleRadioChange = (optionId: number) => {
     // Если клик по уже выбранному варианту — сбросить выбор
     if (selectedOption === optionId) {

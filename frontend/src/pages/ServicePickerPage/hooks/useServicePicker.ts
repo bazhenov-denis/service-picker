@@ -42,7 +42,9 @@ function findParentRegionId(regions: any[], targetId: string): string | null {
 
 export const useServicePicker = (questions: any[]) => {
   const [answers, setAnswers] = useState<{ [key: number]: any }>({});
-  const [validationErrors, setValidationErrors] = useState<{ [key: number]: string }>({});
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: number]: string;
+  }>({});
   const [offer, setOffer] = useState<OfferDto | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
