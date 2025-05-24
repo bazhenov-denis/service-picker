@@ -8,6 +8,7 @@ import { useRegions } from "./pages/ServicePickerPage/hooks/useRegions";
 import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
 import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
+import type { Question } from "./pages/ServicePickerPage/types/question";
 
 const App: React.FC = () => {
   const { questions } = useQuestions();
@@ -21,7 +22,7 @@ const App: React.FC = () => {
     error,
     isLoading,
     validationErrors,
-  } = useServicePicker(questions);
+  } = useServicePicker(questions as Question[]);
 
   return (
     <div className={styles.app}>
@@ -38,7 +39,7 @@ const App: React.FC = () => {
           return (
             <QuestionRenderer
               key={question.id}
-              question={question}
+              question={question as Question}
               answer={answers[question.id]}
               onChange={(value) => setAnswer(question.id, value)}
               error={validationErrors[question.id] || null}

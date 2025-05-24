@@ -28,7 +28,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,scss}"
+    "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,scss}",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -46,6 +47,11 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx,json,css,scss}": [
+      "prettier --write"
     ]
   }
 }

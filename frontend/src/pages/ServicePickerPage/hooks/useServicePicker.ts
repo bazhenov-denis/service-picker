@@ -89,12 +89,15 @@ export const useServicePicker = (questions: any[]) => {
       const rawRegionId = answers[1];
       const originalRegionId = getOriginalId(rawRegionId);
       let areaId = parseInt(originalRegionId);
+
       const parentRegion = findParentRegionId(regions, rawRegionId);
       if (parentRegion) {
         areaId = parseInt(getOriginalId(parentRegion));
       }
+
       const professionId = parseInt(getOriginalId(answers[2]));
       const amount = parseInt(answers[3]);
+
       const response = await serviceHttpClient.sendServiceRequest({
         professionId,
         amount,
