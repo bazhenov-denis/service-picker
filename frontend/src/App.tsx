@@ -1,69 +1,59 @@
-import { FC } from "react";
-import Header from "../src/pages/ServicePickerPage/components/Header/Header";
-import HierarchicalSelector from "./pages/ServicePickerPage/components/HierarchicalSelector/HierarchicalSelector";
-import VacanciesNumber from "./pages/ServicePickerPage/components/VacanciesNumber/VacanciesNumber";
+import React from "react";
+import Header from "./pages/ServicePickerPage/components/Header/Header";
+import QuestionRenderer from "./pages/ServicePickerPage/components/QuestionRenderer/QuestionRenderer";
 import ServicePickerButton from "./pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton";
 import OfferDisplay from "./pages/ServicePickerPage/components/OfferDisplay/OfferDisplay";
 import { useServicePicker } from "./pages/ServicePickerPage/hooks/useServicePicker";
 import { useRegions } from "./pages/ServicePickerPage/hooks/useRegions";
 import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
+import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
+import type { Question } from "./pages/ServicePickerPage/types/question";
 
-const App: FC = () => {
+const App: React.FC = () => {
+  const { questions } = useQuestions();
+  const { collection: regionsCollection } = useRegions();
+  const { collection: professionsCollection } = useProfessions();
   const {
-    selectedRegions,
-    setSelectedRegions,
-    selectedProfessions,
-    setSelectedProfessions,
-    vacanciesNumber,
-    setVacanciesNumber,
+    answers,
+    setAnswer,
     handleSendData,
     offer,
     error,
     isLoading,
-  } = useServicePicker();
-
-  const {
-    collection: regionsCollection,
-    loading: regionsLoading,
-    error: regionsError,
-  } = useRegions();
-  const {
-    collection: professionsCollection,
-    loading: professionsLoading,
-    error: professionsError,
-  } = useProfessions();
+    validationErrors,
+  } = useServicePicker(questions as Question[]);
 
   return (
     <div className={styles.app}>
       <Header />
       <div className={styles.container}>
-        <HierarchicalSelector
-          title="Выберите регион"
-          collection={regionsCollection}
-          selectedItems={selectedRegions}
-          onItemsChange={setSelectedRegions}
-          loading={regionsLoading}
-          error={regionsError}
-          dataQa="region-selector"
-        />
-        <HierarchicalSelector
-          title="Выберите профессию"
-          collection={professionsCollection}
-          selectedItems={selectedProfessions}
-          onItemsChange={setSelectedProfessions}
-          loading={professionsLoading}
-          error={professionsError}
-          dataQa="profession-selector"
-        />
-        <VacanciesNumber onNumberChange={setVacanciesNumber} />
+        {questions.map((question) => {
+          let collection = null;
+          if (question.referenceType === "regions") {
+            collection = regionsCollection;
+          } else if (question.referenceType === "professions") {
+            collection = professionsCollection;
+          }
+
+          return (
+            <QuestionRenderer
+              key={question.id}
+              question={question as Question}
+              answer={answers[question.id]}
+              onChange={(value) => setAnswer(question.id, value)}
+              error={validationErrors[question.id] || null}
+              collection={collection}
+            />
+          );
+        })}
         <ServicePickerButton
-          selectedRegions={selectedRegions}
-          selectedProfessions={selectedProfessions}
-          vacanciesNumber={vacanciesNumber}
           onSendData={handleSendData}
           isLoading={isLoading}
           error={error}
+          selectedRegions={answers[1] || []}
+          selectedProfessions={answers[2] || []}
+          vacanciesNumber={answers[3] || []}
         />
         {offer && <OfferDisplay offer={offer} />}
       </div>

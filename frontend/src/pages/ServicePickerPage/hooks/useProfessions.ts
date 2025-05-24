@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { transformApiResponse } from "../utils/professionsTransformer";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
-import { fetchProfessions } from "../api/httpClient";
+import { fetchProfessions } from "../client/httpClient";
 
 interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
@@ -10,6 +10,7 @@ interface CustomTreeModel extends TreeModel {
 
 export const useProfessions = () => {
   const [professionData, setProfessionData] = useState<any[]>([]);
+  const [title, setTitle] = useState<string>("Загрузка профессий..."); // mockdata
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +21,8 @@ export const useProfessions = () => {
         const response = await fetchProfessions();
         const transformedData = transformApiResponse(response as any);
         // const transformedData = transformProfessionsToTreeModel(professions);
-        setProfessionData(transformedData);
+        setProfessionData(transformedData.collection);
+        setTitle(transformedData.title);
       } catch (err) {
         console.error("Ошибка при загрузке профессий:", err);
         setError("Не удалось загрузить профессии");
@@ -52,6 +54,7 @@ export const useProfessions = () => {
 
   return {
     collection,
+    title, // mockdata
     getOriginalId,
     loading,
     error,

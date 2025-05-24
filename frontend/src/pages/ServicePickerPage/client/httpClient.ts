@@ -46,3 +46,13 @@ export const fetchProfessions = async (): Promise<any[]> => {
     throw error;
   }
 };
+
+export const fetchQuestions = async (): Promise<any[]> => {
+  try {
+    const response = await api.get("/questions");
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при получении вопросов:", error);
+    throw error;
+  }
+};

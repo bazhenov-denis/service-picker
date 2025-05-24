@@ -1,4 +1,5 @@
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
+import { title } from "process";
 
 interface Profession {
   id: string;
@@ -11,6 +12,7 @@ interface CustomTreeModel extends TreeModel {
 }
 
 interface ProfessionResponse {
+  title: string; // для мок данных
   categories: Array<{
     id: string;
     name: string;
@@ -23,13 +25,18 @@ interface ProfessionResponse {
 
 export const transformApiResponse = (
   response: ProfessionResponse,
-): CustomTreeModel[] => {
+): { collection: CustomTreeModel[]; title: string } => {
   const professions = response.categories.map((category) => ({
     id: category.id,
     name: category.name,
     items: category.roles,
   }));
-  return transformProfessionsToTreeModel(professions);
+
+  const collection = transformProfessionsToTreeModel(professions);
+  return {
+    collection,
+    title: response.title,
+  };
 };
 
 export const transformProfessionsToTreeModel = (

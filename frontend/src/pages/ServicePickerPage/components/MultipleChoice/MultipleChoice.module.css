@@ -1,0 +1,61 @@
+.multipleChoiceContainer {
+  width: 100%;
+  max-width: 550px;
+  margin-bottom: 1rem;
+}
+
+.questionTitle {
+  font-size: 16px;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.optionLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.checkbox {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.checkbox:focus {
+  outline: none;
+  border-color: #0070fb;
+}
+
+.checkbox:checked {
+  background-color: #0070fb;
+  border-color: #0070fb;
+}
+
+.checkbox:checked + .optionText {
+  font-weight: 500;
+}
+
+.optionText {
+  font-size: 16px;
+  color: #333;
+  user-select: none;
+}
+
+.errorMessage {
+  color: #f00;
+  font-size: 14px;
+  margin-top: 5px;
+  display: block;
+}
