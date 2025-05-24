@@ -6,6 +6,9 @@
 - 🔙 Бэкенд: Spring Boot (Java 17)  
 - 🐳 Docker + Docker Compose  
 
+## Инструкции по использованию технологий
+https://docs.google.com/document/d/1nPF1NHoYdKr89sz8C9zWaWtCEIzuGBPLGhl5E0D4_fU/edit?usp=sharing
+
 ## API документация
 
 http://localhost:8080/api-docs
