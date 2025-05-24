@@ -31,8 +31,8 @@ export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
     <div className={styles.buttonContainer}>
       <Button
         mode="primary"
-        style="accent"
         size="large"
+        style="accent"
         stretched
         disabled={isDisabled}
         onClick={onSubmit}
