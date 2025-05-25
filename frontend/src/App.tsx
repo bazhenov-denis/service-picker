@@ -3,6 +3,7 @@ import Header from "./pages/ServicePickerPage/components/Header/Header";
 import QuestionRenderer from "./pages/ServicePickerPage/components/QuestionRenderer/QuestionRenderer";
 import ServicePickerButton from "./pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton";
 import OfferDisplay from "./pages/ServicePickerPage/components/OfferDisplay/OfferDisplay";
+import { SelectedState } from "./components/SelectedState/SelectedState";
 import { useServicePicker } from "./pages/ServicePickerPage/hooks/useServicePicker";
 import { useRegions } from "./pages/ServicePickerPage/hooks/useRegions";
 import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
@@ -38,36 +39,43 @@ const App: React.FC = () => {
     <div className={styles.app}>
       <Header />
       <div className={styles.container}>
-        <div className={styles.questionsContainer}>
-          {questions?.map((question) => {
-            const collection =
-              question.type === "reference" && (question as ReferenceQuestion).referenceType === "regions"
-                ? regionsCollection
-                : question.type === "reference" && (question as ReferenceQuestion).referenceType === "professions"
-                ? professionsCollection
-                : undefined;
+        <div className={styles.mainContent}>
+          <div className={styles.questionsContainer}>
+            {questions?.map((question) => {
+              const collection =
+                question.type === "reference" && (question as ReferenceQuestion).referenceType === "regions"
+                  ? regionsCollection
+                  : question.type === "reference" && (question as ReferenceQuestion).referenceType === "professions"
+                  ? professionsCollection
+                  : undefined;
 
-            return (
-              <QuestionRenderer
-                key={question.id}
-                question={question}
-                answer={answers[question.id]}
-                onChange={(value) => setAnswer(question.id, value)}
-                error={validationErrors[question.id]}
-                collection={collection}
-                getDisplayValue={getDisplayValue as (questionId: number, value: any) => string[]}
-              />
-            );
-          })}
+              return (
+                <QuestionRenderer
+                  key={question.id}
+                  question={question}
+                  answer={answers[question.id]}
+                  onChange={(value) => setAnswer(question.id, value)}
+                  error={validationErrors[question.id]}
+                  collection={collection}
+                  getDisplayValue={getDisplayValue as (questionId: number, value: any) => string[]}
+                />
+              );
+            })}
+          </div>
+          <ServicePickerButton
+            onSubmit={handleSubmit}
+            isLoading={isLoading}
+            questions={questions || []}
+            answers={answers}
+          />
+          {offer && <OfferDisplay offer={offer} />}
+          {error && <div className={styles.error}>{error}</div>}
         </div>
-        <ServicePickerButton
-          onSubmit={handleSubmit}
-          isLoading={isLoading}
+        <SelectedState
           questions={questions || []}
           answers={answers}
+          getDisplayValue={getDisplayValue as (questionId: number, value: any) => string[]}
         />
-        {offer && <OfferDisplay offer={offer} />}
-        {error && <div className={styles.error}>{error}</div>}
       </div>
     </div>
   );

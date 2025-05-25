@@ -13,8 +13,24 @@
   margin: 0 auto;
   padding: 2rem;
   display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
+  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  max-width: 800px;
+  display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 2rem;
+}
+
+.questionsContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
 }
 
