@@ -35,9 +35,6 @@ public class Question {
   @Column(name = "short_title")
   private String shortTitle;
 
-  @Column(name = "code", length = 100)
-  private String code;
-
   @Column(name = "position")
   private Integer position;
 
@@ -53,14 +50,12 @@ public class Question {
 
   }
 
-
   public Question(Long id,
       String questionText,
       String type,
       Boolean isRequired,
       String referenceType,
       String shortTitle,
-      String code,
       Integer position,
       List<Option> options) {
     this.id = id;
@@ -69,11 +64,9 @@ public class Question {
     this.isRequired = isRequired;
     this.referenceType = referenceType;
     this.shortTitle = shortTitle;
-    this.code = code;
     this.position = position;
     this.options = options;
   }
-
 
   public Long getId() {
     return id;
@@ -135,13 +128,6 @@ public class Question {
     this.shortTitle = shortTitle;
   }
 
-  public String getCode() {
-    return code;
-  }
-
-  public void setCode(String code) {
-    this.code = code;
-  }
 
   public Integer getPosition() {
     return position;

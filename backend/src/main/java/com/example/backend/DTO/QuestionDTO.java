@@ -11,7 +11,6 @@ public record QuestionDTO(
     Boolean isRequired,
     String referenceType,
     String shortTitle,
-    String code,
     Integer position,
     List<OptionDTO> options
 ) {

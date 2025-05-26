@@ -35,7 +35,6 @@ public class QuestionService {
         q.getIsRequired(),
         q.getReferenceType(),
         q.getShortTitle(),
-        q.getCode(),
         q.getPosition(),
         optionDto
     );
