@@ -9,10 +9,7 @@
 }
 
 .card {
-    padding: 16px;
-    background-color: var(--color-background-default);
-    box-shadow: var(--shadow-elevation-2);
-    border-radius: 8px;
+    width: 100%;
 }
 
 .title {

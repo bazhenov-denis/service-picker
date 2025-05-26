@@ -44,7 +44,13 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
 
     return (
         <div className={styles.container}>
-            <Card className={styles.card}>
+            <Card 
+                className={styles.card}
+                padding={16}
+                borderRadius={8}
+                style="primary"
+                shadow="level-2"
+            >
                 <h3 className={styles.title}>
                     Выбранные параметры
                 </h3>
