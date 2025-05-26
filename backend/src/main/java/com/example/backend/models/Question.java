@@ -32,6 +32,15 @@ public class Question {
   @Column(name = "reference_type")
   private String referenceType;
 
+  @Column(name = "short_title")
+  private String shortTitle;
+
+  @Column(name = "code", length = 100)
+  private String code;
+
+  @Column(name = "position")
+  private Integer position;
+
   @OneToMany(
       mappedBy = "question",
       fetch = FetchType.EAGER,
@@ -44,12 +53,24 @@ public class Question {
 
   }
 
-  public Question(Long id, String questionText, String type, Boolean isRequired, String referenceType, List<Option> options) {
+
+  public Question(Long id,
+      String questionText,
+      String type,
+      Boolean isRequired,
+      String referenceType,
+      String shortTitle,
+      String code,
+      Integer position,
+      List<Option> options) {
     this.id = id;
     this.questionText = questionText;
     this.type = type;
     this.isRequired = isRequired;
     this.referenceType = referenceType;
+    this.shortTitle = shortTitle;
+    this.code = code;
+    this.position = position;
     this.options = options;
   }
 
@@ -101,4 +122,33 @@ public class Question {
   public void setOptions(List<Option> options) {
     this.options = options;
   }
+
+  public Boolean getRequired() {
+    return isRequired;
+  }
+
+  public String getShortTitle() {
+    return shortTitle;
+  }
+
+  public void setShortTitle(String shortTitle) {
+    this.shortTitle = shortTitle;
+  }
+
+  public String getCode() {
+    return code;
+  }
+
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  public Integer getPosition() {
+    return position;
+  }
+
+  public void setPosition(Integer position) {
+    this.position = position;
+  }
+
 }
