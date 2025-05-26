@@ -47,11 +47,14 @@ const App: React.FC = () => {
           <div className={styles.questionsContainer}>
             {questions?.map((question) => {
               const collection =
-                question.type === "reference" && (question as ReferenceQuestion).referenceType === "regions"
+                question.type === "reference" &&
+                (question as ReferenceQuestion).referenceType === "regions"
                   ? regionsCollection
-                  : question.type === "reference" && (question as ReferenceQuestion).referenceType === "professions"
-                  ? professionsCollection
-                  : undefined;
+                  : question.type === "reference" &&
+                      (question as ReferenceQuestion).referenceType ===
+                        "professions"
+                    ? professionsCollection
+                    : undefined;
 
               return (
                 <QuestionRenderer
@@ -61,7 +64,12 @@ const App: React.FC = () => {
                   onChange={(value) => setAnswer(question.id, value)}
                   error={validationErrors[question.id]}
                   collection={collection}
-                  getDisplayValue={getDisplayValue as (questionId: number, value: any) => string[]}
+                  getDisplayValue={
+                    getDisplayValue as (
+                      questionId: number,
+                      value: any,
+                    ) => string[]
+                  }
                 />
               );
             })}
@@ -78,7 +86,9 @@ const App: React.FC = () => {
         <SelectedState
           questions={questions || []}
           answers={answers}
-          getDisplayValue={getDisplayValue as (questionId: number, value: any) => string[]}
+          getDisplayValue={
+            getDisplayValue as (questionId: number, value: any) => string[]
+          }
         />
       </div>
     </div>

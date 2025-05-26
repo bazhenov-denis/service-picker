@@ -234,12 +234,9 @@ export const useServicePicker = (questions: any[]) => {
     const question = questions.find(
       (q) => q.id.toString() === questionId.toString(),
     );
-    if (
-      question?.type === "reference" &&
-      Array.isArray(value)
-    ) {
+    if (question?.type === "reference" && Array.isArray(value)) {
       return value.map((path) => {
-        const lastId = String(path).split('.').pop();
+        const lastId = String(path).split(".").pop();
         if (!lastId) return String(path);
 
         if (question.referenceType === "regions") {
@@ -259,17 +256,14 @@ export const useServicePicker = (questions: any[]) => {
       value.length > 0
     ) {
       const option = (question as SingleChoiceQuestion).options?.find(
-        (opt: { id: number; text: string }) => opt.id === value[0]
+        (opt: { id: number; text: string }) => opt.id === value[0],
       );
       return option ? [option.text] : [];
     }
-    if (
-      question?.type === "multiple-choice" &&
-      Array.isArray(value)
-    ) {
+    if (question?.type === "multiple-choice" && Array.isArray(value)) {
       return value.map((val) => {
         const option = (question as any).options?.find(
-          (opt: { id: number; text: string }) => opt.id === val
+          (opt: { id: number; text: string }) => opt.id === val,
         );
         return option ? option.text : String(val);
       });

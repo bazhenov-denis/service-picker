@@ -64,7 +64,7 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
         getSelectAllParentTrl={getSelectAllParentTrl}
         data-qa={dataQa}
         onMobileNavigationChange={(currentId) => {
-          console.log('Current navigation ID:', currentId);
+          console.log("Current navigation ID:", currentId);
         }}
       >
         {({ renderTreeSelector, renderInput }) => (
