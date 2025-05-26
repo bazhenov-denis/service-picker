@@ -9,17 +9,35 @@ import type {
   InputQuestion,
   SingleChoiceQuestion,
   MultipleChoiceQuestion,
+  AnswerValue,
+  QuestionBase,
 } from "../../types/question";
+import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 
 import styles from "./QuestionRenderer.module.css";
 
 interface Props {
-  question: Question & { type: string };
-  answer: any;
+  question: Question;
+  answer: AnswerValue;
   onChange: (value: any) => void;
   error: string | null;
-  collection?: any;
+  collection?: TreeCollection;
+  getDisplayValue?: (questionId: number, value: AnswerValue) => string[];
 }
+
+const isStringArray = (arr: unknown): arr is string[] => {
+  return (
+    Array.isArray(arr) &&
+    arr.every((item): item is string => typeof item === "string")
+  );
+};
+
+const isNumberArray = (arr: unknown): arr is number[] => {
+  return (
+    Array.isArray(arr) &&
+    arr.every((item): item is number => typeof item === "number")
+  );
+};
 
 const QuestionRenderer: React.FC<Props> = ({
   question,
@@ -27,17 +45,37 @@ const QuestionRenderer: React.FC<Props> = ({
   onChange,
   error,
   collection,
+  getDisplayValue,
 }) => {
   const handleChange = (value: unknown) => {
-    onChange({ type: question.type, value });
+    onChange(value);
   };
 
   if (question.type === "reference") {
+    if (!collection || !(collection instanceof TreeCollection)) {
+      return (
+        <div className={styles.errorContainer}>
+          <div>
+            <p>Ошибка при загрузке данных</p>
+            <p className={styles.errorMessage}>
+              Не удалось загрузить данные для выбора
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    const displayValue = getDisplayValue
+      ? getDisplayValue(question.id, answer)
+      : isStringArray(answer)
+        ? answer
+        : [];
+
     return (
       <HierarchicalSelector
         title={question.questionText}
-        collection={collection || []}
-        selectedItems={(answer as { value: string[] })?.value || []}
+        collection={collection}
+        selectedItems={displayValue}
         onItemsChange={(items) => handleChange(items)}
         loading={!collection}
         error={error}
@@ -47,20 +85,23 @@ const QuestionRenderer: React.FC<Props> = ({
   }
 
   if (question.type === "input") {
+    const value = Array.isArray(answer) ? answer[0] : answer;
     return (
       <VacanciesNumber
         onNumberChange={(value) => handleChange(value)}
         error={error}
         question={question as InputQuestion}
+        value={typeof value === "number" ? value : undefined}
       />
     );
   }
 
   if (question.type === "single-choice") {
+    const value = Array.isArray(answer) ? answer[0] : answer;
     return (
       <SingleChoice
         question={question as SingleChoiceQuestion}
-        selectedOption={(answer as { value: number | null })?.value}
+        selectedOption={typeof value === "number" ? value : null}
         onSelect={(id) => handleChange(id)}
         error={error}
       />
@@ -71,18 +112,21 @@ const QuestionRenderer: React.FC<Props> = ({
     return (
       <MultipleChoice
         question={question as MultipleChoiceQuestion}
-        selectedOptions={(answer as { value: number[] })?.value || []}
+        selectedOptions={isNumberArray(answer) ? answer : []}
         onToggle={(ids) => handleChange(ids)}
         error={error}
       />
     );
   }
 
-  const unknownType = (question as { type: string }).type;
-  console.error(`Неизвестный тип вопроса: ${unknownType}`, question);
+  console.error(
+    `Неизвестный тип вопроса: ${(question as QuestionBase).type}`,
+    question,
+  );
   return (
     <div className={styles.unknownQuestionType}>
-      ❌ Неизвестный тип вопроса: <strong>{unknownType}</strong>
+      ❌ Неизвестный тип вопроса:{" "}
+      <strong>{(question as QuestionBase).type}</strong>
       <p>Пожалуйста, проверьте данные на сервере.</p>
     </div>
   );

@@ -1,10 +1,10 @@
-.vacanciesNumber {
+.container {
   width: 100%;
   max-width: 550px;
   margin-bottom: 1rem;
 }
 
-.title {
+.questionTitle {
   font-size: 16px;
   margin-bottom: 1rem;
   text-align: left;
@@ -12,17 +12,20 @@
 
 .input {
   width: 100%;
-  height: 40px;
   padding: 8px 12px;
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  outline: none;
   transition: border-color 0.2s ease;
 }
 
 .input:focus {
-  outline: none;
   border-color: #0070fb;
+}
+
+.input::placeholder {
+  color: #999;
 }
 
 .inputError {

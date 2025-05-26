@@ -6,7 +6,7 @@ import { fetchRegions } from "../client/httpClient";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
-interface CustomTreeModel extends TreeModel {
+export interface CustomTreeModel extends TreeModel {
   items?: CustomTreeModel[];
 }
 

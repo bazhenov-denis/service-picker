@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { OfferDto } from "../types/service";
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -55,4 +56,24 @@ export const fetchQuestions = async (): Promise<any[]> => {
     console.error("Ошибка при получении вопросов:", error);
     throw error;
   }
+};
+
+type AnswerValue = string[] | number[] | number;
+
+export const sendAnswers = async (
+  answers: Record<string, AnswerValue>,
+): Promise<OfferDto> => {
+  const response = await fetch("/api/service-picker/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(answers),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
 };

@@ -9,53 +9,77 @@ import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
 import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
 import type { Question } from "./pages/ServicePickerPage/types/question";
+import type { ReferenceQuestion } from "./pages/ServicePickerPage/types/question";
 
 const App: React.FC = () => {
-  const { questions } = useQuestions();
+  const {
+    questions,
+    isLoading: questionsLoading,
+    error: questionsError,
+  } = useQuestions();
   const { collection: regionsCollection } = useRegions();
   const { collection: professionsCollection } = useProfessions();
   const {
     answers,
     setAnswer,
-    handleSendData,
+    validationErrors,
     offer,
     error,
     isLoading,
-    validationErrors,
-  } = useServicePicker(questions as Question[]);
+    handleSubmit,
+    getDisplayValue,
+  } = useServicePicker(questions || []);
+
+  if (questionsLoading) {
+    return <div>Загрузка вопросов...</div>;
+  }
+
+  if (questionsError) {
+    return <div>Ошибка: {questionsError}</div>;
+  }
 
   return (
     <div className={styles.app}>
       <Header />
       <div className={styles.container}>
-        {questions.map((question) => {
-          let collection = null;
-          if (question.referenceType === "regions") {
-            collection = regionsCollection;
-          } else if (question.referenceType === "professions") {
-            collection = professionsCollection;
-          }
+        <div className={styles.questionsContainer}>
+          {questions?.map((question) => {
+            const collection =
+              question.type === "reference" &&
+              (question as ReferenceQuestion).referenceType === "regions"
+                ? regionsCollection
+                : question.type === "reference" &&
+                    (question as ReferenceQuestion).referenceType ===
+                      "professions"
+                  ? professionsCollection
+                  : undefined;
 
-          return (
-            <QuestionRenderer
-              key={question.id}
-              question={question as Question}
-              answer={answers[question.id]}
-              onChange={(value) => setAnswer(question.id, value)}
-              error={validationErrors[question.id] || null}
-              collection={collection}
-            />
-          );
-        })}
+            return (
+              <QuestionRenderer
+                key={question.id}
+                question={question}
+                answer={answers[question.id]}
+                onChange={(value) => setAnswer(question.id, value)}
+                error={validationErrors[question.id]}
+                collection={collection}
+                getDisplayValue={
+                  getDisplayValue as (
+                    questionId: number,
+                    value: any,
+                  ) => string[]
+                }
+              />
+            );
+          })}
+        </div>
         <ServicePickerButton
-          onSendData={handleSendData}
+          onSubmit={handleSubmit}
           isLoading={isLoading}
-          error={error}
-          selectedRegions={answers[1] || []}
-          selectedProfessions={answers[2] || []}
-          vacanciesNumber={answers[3] || []}
+          questions={questions || []}
+          answers={answers}
         />
         {offer && <OfferDisplay offer={offer} />}
+        {error && <div className={styles.error}>{error}</div>}
       </div>
     </div>
   );
