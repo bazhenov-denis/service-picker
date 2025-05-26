@@ -21,11 +21,12 @@ export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
   isLoading = false,
   error = null,
 }) => {
-  const isDisabled = questions.some((question) => {
-    if (!question.isRequired) return false;
-    const answer = answers[question.id.toString()];
-    return !answer || (Array.isArray(answer) && answer.length === 0);
-  }) || isLoading;
+  const isDisabled =
+    questions.some((question) => {
+      if (!question.isRequired) return false;
+      const answer = answers[question.id.toString()];
+      return !answer || (Array.isArray(answer) && answer.length === 0);
+    }) || isLoading;
 
   return (
     <div className={styles.buttonContainer}>

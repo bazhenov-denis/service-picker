@@ -17,4 +17,4 @@ export interface OfferDto {
     numberOfContacts: number;
     price: number;
   }>;
-} 
+}

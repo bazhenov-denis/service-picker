@@ -10,13 +10,16 @@ type AnswerValue = string[] | number[] | number;
 const regionPathMap = new Map<string, string>();
 const regionIdMap = new Map<string, string>();
 
-const findRegionPath = (collection: TreeCollection, targetId: string): string[] => {
+const findRegionPath = (
+  collection: TreeCollection,
+  targetId: string,
+): string[] => {
   const model = collection.getModel(targetId);
   if (!model) return [];
 
   const path: string[] = [];
   let currentId: string | undefined = targetId;
-  
+
   while (currentId) {
     path.unshift(currentId);
     const parent = collection.getParent(currentId);
@@ -27,8 +30,8 @@ const findRegionPath = (collection: TreeCollection, targetId: string): string[] 
 };
 
 const updateRegionMaps = (collection: TreeCollection) => {
-  console.log('Начало updateRegionMaps');
-  
+  console.log("Начало updateRegionMaps");
+
   regionPathMap.clear();
   regionIdMap.clear();
 
@@ -37,7 +40,7 @@ const updateRegionMaps = (collection: TreeCollection) => {
 
   const processModel = (modelId: string) => {
     if (processedIds.has(modelId)) return;
-    
+
     const model = collection.getModel(modelId);
     if (!model) {
       console.warn(`Модель не найдена для ID: ${modelId}`);
@@ -49,32 +52,35 @@ const updateRegionMaps = (collection: TreeCollection) => {
 
     const children = collection.getChildren(modelId);
     if (children) {
-      console.log(`Найдены дочерние элементы для ${modelId}:`, children.map(c => c.id));
-      children.forEach(child => processModel(child.id));
+      console.log(
+        `Найдены дочерние элементы для ${modelId}:`,
+        children.map((c) => c.id),
+      );
+      children.forEach((child) => processModel(child.id));
     } else {
       console.log(`Нет дочерних элементов для ${modelId}`);
     }
   };
 
-  const rootModel = collection.getModel('root') || collection.getModel('1');
+  const rootModel = collection.getModel("root") || collection.getModel("1");
   if (rootModel) {
-    console.log('Начинаем с корневой модели:', rootModel.id);
+    console.log("Начинаем с корневой модели:", rootModel.id);
     processModel(rootModel.id);
   } else {
-    const anyModel = collection.getModel('113');
+    const anyModel = collection.getModel("113");
     if (anyModel) {
-      console.log('Начинаем с модели:', anyModel.id);
+      console.log("Начинаем с модели:", anyModel.id);
       processModel(anyModel.id);
     } else {
-      console.error('Не найдено ни одной модели в коллекции');
+      console.error("Не найдено ни одной модели в коллекции");
       return;
     }
   }
 
-  console.log('Обработано моделей:', models.length);
+  console.log("Обработано моделей:", models.length);
 
-  models.forEach(model => {
-    const path = findRegionPath(collection, model.id).join('.');
+  models.forEach((model) => {
+    const path = findRegionPath(collection, model.id).join(".");
     if (path) {
       regionPathMap.set(model.id, path);
       regionIdMap.set(path, model.id);
@@ -84,11 +90,11 @@ const updateRegionMaps = (collection: TreeCollection) => {
     }
   });
 
-  console.log('Маппинги обновлены:', {
+  console.log("Маппинги обновлены:", {
     totalModels: models.length,
     pathMapSize: regionPathMap.size,
     idMapSize: regionIdMap.size,
-    sampleEntries: Array.from(regionPathMap.entries()).slice(0, 3)
+    sampleEntries: Array.from(regionPathMap.entries()).slice(0, 3),
   });
 };
 
@@ -104,41 +110,49 @@ export const useServicePicker = (questions: any[]) => {
 
   const setAnswer = (questionId: number, value: any) => {
     let formattedValue: AnswerValue;
-    const question = questions.find(q => q.id === questionId);
-    
-    console.log('setAnswer вызван с:', { questionId, value, questionType: question?.type, referenceType: question?.referenceType });
-    
+    const question = questions.find((q) => q.id === questionId);
+
+    console.log("setAnswer вызван с:", {
+      questionId,
+      value,
+      questionType: question?.type,
+      referenceType: question?.referenceType,
+    });
+
     if (Array.isArray(value)) {
-      if (question?.type === "reference" && question?.referenceType === "regions") {
-        const paths = value.map(id => {
-          const path = findRegionPath(regionsCollection, String(id)).join('.');
+      if (
+        question?.type === "reference" &&
+        question?.referenceType === "regions"
+      ) {
+        const paths = value.map((id) => {
+          const path = findRegionPath(regionsCollection, String(id)).join(".");
           if (!path) {
             console.warn(`Не удалось построить путь для региона с ID ${id}`);
             return String(id);
           }
           return path;
         });
-        
-        console.log('Сохранение путей регионов:', { questionId, paths, value });
+
+        console.log("Сохранение путей регионов:", { questionId, paths, value });
         formattedValue = paths;
       } else {
         formattedValue = value;
       }
-    } else if (typeof value === 'number') {
+    } else if (typeof value === "number") {
       formattedValue = [value];
     } else {
-      console.error('Неизвестный тип значения:', value);
+      console.error("Неизвестный тип значения:", value);
       return;
     }
 
-    setAnswers(prev => {
+    setAnswers((prev) => {
       const newAnswers = { ...prev, [questionId.toString()]: formattedValue };
-      console.log('Новое состояние answers:', newAnswers);
+      console.log("Новое состояние answers:", newAnswers);
       return newAnswers;
     });
-    
+
     if (validationErrors[questionId]) {
-      setValidationErrors(prev => {
+      setValidationErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[questionId];
         return newErrors;
@@ -154,7 +168,9 @@ export const useServicePicker = (questions: any[]) => {
         if (!answer || (Array.isArray(answer) && answer.length === 0)) {
           newErrors[question.id] = "Обязательное поле";
         } else if (question.type === "input") {
-          const num = Array.isArray(answer) ? Number(answer[0]) : Number(answer);
+          const num = Array.isArray(answer)
+            ? Number(answer[0])
+            : Number(answer);
           const min = question.validation?.min ?? 1;
           const max = question.validation?.max ?? 100;
           if (isNaN(num) || num < min || num > max) {
@@ -176,13 +192,13 @@ export const useServicePicker = (questions: any[]) => {
     setError(null);
 
     try {
-      console.log('Начало отправки данных. Текущие состояния:', {
+      console.log("Начало отправки данных. Текущие состояния:", {
         answers,
-        regionPathMapSize: regionPathMap.size
+        regionPathMapSize: regionPathMap.size,
       });
 
       const answersToSend = { ...answers };
-      console.log('Финальные данные для отправки:', answersToSend);
+      console.log("Финальные данные для отправки:", answersToSend);
       const result = await sendAnswers(answersToSend);
       setOffer(result);
     } catch (err) {
@@ -195,11 +211,11 @@ export const useServicePicker = (questions: any[]) => {
 
   useEffect(() => {
     if (regionsCollection) {
-      console.log('Коллекция регионов обновлена:', {
+      console.log("Коллекция регионов обновлена:", {
         hasCollection: !!regionsCollection,
-        collectionType: regionsCollection.constructor.name
+        collectionType: regionsCollection.constructor.name,
       });
-      
+
       const timer = setTimeout(() => {
         updateRegionMaps(regionsCollection);
       }, 100);
@@ -208,11 +224,20 @@ export const useServicePicker = (questions: any[]) => {
     }
   }, [regionsCollection]);
 
-  const getDisplayValue = (questionId: number, value: AnswerValue): string[] => {
-    const question = questions.find(q => q.id.toString() === questionId.toString());
-    if (question?.type === "reference" && question?.referenceType === "regions" && Array.isArray(value)) {
-      return value.map(path => {
-        const parts = String(path).split('.');
+  const getDisplayValue = (
+    questionId: number,
+    value: AnswerValue,
+  ): string[] => {
+    const question = questions.find(
+      (q) => q.id.toString() === questionId.toString(),
+    );
+    if (
+      question?.type === "reference" &&
+      question?.referenceType === "regions" &&
+      Array.isArray(value)
+    ) {
+      return value.map((path) => {
+        const parts = String(path).split(".");
         return parts[parts.length - 1];
       });
     }
