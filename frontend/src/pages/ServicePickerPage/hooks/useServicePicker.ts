@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useRegions } from "./useRegions";
+import { useProfessions } from "./useProfessions";
 import { sendAnswers } from "../client/httpClient";
 import type { OfferDto } from "../types/service";
+import type { SingleChoiceQuestion } from "../types/question";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
@@ -107,6 +109,7 @@ export const useServicePicker = (questions: any[]) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { collection: regionsCollection } = useRegions();
+  const { collection: professionsCollection } = useProfessions();
 
   const setAnswer = (questionId: number, value: any) => {
     let formattedValue: AnswerValue;
@@ -233,13 +236,46 @@ export const useServicePicker = (questions: any[]) => {
     );
     if (
       question?.type === "reference" &&
-      question?.referenceType === "regions" &&
       Array.isArray(value)
     ) {
       return value.map((path) => {
-        const parts = String(path).split(".");
-        return parts[parts.length - 1];
+        const lastId = String(path).split('.').pop();
+        if (!lastId) return String(path);
+
+        if (question.referenceType === "regions") {
+          const model = regionsCollection.getModel(lastId);
+          return model?.text || String(path);
+        }
+        if (question.referenceType === "professions") {
+          const model = professionsCollection.getModel(lastId);
+          return model?.text || String(path);
+        }
+        return String(path);
       });
+    }
+    if (
+      question?.type === "single-choice" &&
+      Array.isArray(value) &&
+      value.length > 0
+    ) {
+      const option = (question as SingleChoiceQuestion).options?.find(
+        (opt: { id: number; text: string }) => opt.id === value[0]
+      );
+      return option ? [option.text] : [];
+    }
+    if (
+      question?.type === "multiple-choice" &&
+      Array.isArray(value)
+    ) {
+      return value.map((val) => {
+        const option = (question as any).options?.find(
+          (opt: { id: number; text: string }) => opt.id === val
+        );
+        return option ? option.text : String(val);
+      });
+    }
+    if (question?.type === "input") {
+      return [Array.isArray(value) ? String(value[0]) : String(value)];
     }
     return Array.isArray(value) ? value.map(String) : [];
   };

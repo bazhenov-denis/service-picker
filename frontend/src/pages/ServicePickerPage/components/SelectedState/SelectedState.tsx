@@ -24,7 +24,7 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
 
         return (
             <div className={styles.parameter} key={question.id}>
-                <Text>{question.questionText}:</Text>
+                <Text>{question.questionText}</Text>
                 <Text weight="medium">
                     {displayValues.join(', ')}
                 </Text>
