@@ -4,6 +4,23 @@
   font-family: "Inter", sans-serif;
 }
 
+/* Стили для TreeSelector */
+.magritte-tree-selector,
+.magritte-tree-selector *,
+.magritte-tree-selector-item,
+.magritte-tree-selector-item *,
+.magritte-tree-selector-input,
+.magritte-tree-selector-input * {
+  font-family: "Inter", sans-serif !important;
+}
+
+.magritte-text___pbpft_3-0-32,
+.magritte-text_style-primary___AQ7MW_3-0-32,
+.magritte-text_typography-label-2-regular___ia7GB_3-0-32,
+[class*="magritte-text"] {
+  font-family: "Inter", sans-serif !important;
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
