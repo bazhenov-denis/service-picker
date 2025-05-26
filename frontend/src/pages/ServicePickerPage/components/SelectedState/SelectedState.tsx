@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from '@hh.ru/magritte-ui-card';
 import { Text } from '@hh.ru/magritte-ui-typography';
 import styles from './SelectedState.module.css';
-import type { Question } from '../../pages/ServicePickerPage/types/question';
+import type { Question } from '../../types/question';
 
 interface SelectedStateProps {
     questions: Question[];

@@ -3,7 +3,7 @@ import Header from "./pages/ServicePickerPage/components/Header/Header";
 import QuestionRenderer from "./pages/ServicePickerPage/components/QuestionRenderer/QuestionRenderer";
 import ServicePickerButton from "./pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton";
 import OfferDisplay from "./pages/ServicePickerPage/components/OfferDisplay/OfferDisplay";
-import { SelectedState } from "./components/SelectedState/SelectedState";
+import { SelectedState } from "./pages/ServicePickerPage/components/SelectedState/SelectedState";
 import { useServicePicker } from "./pages/ServicePickerPage/hooks/useServicePicker";
 import { useRegions } from "./pages/ServicePickerPage/hooks/useRegions";
 import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
