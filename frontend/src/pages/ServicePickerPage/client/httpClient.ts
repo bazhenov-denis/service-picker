@@ -60,7 +60,9 @@ export const fetchQuestions = async (): Promise<any[]> => {
 
 type AnswerValue = string[] | number[] | number;
 
-export const sendAnswers = async (answers: Record<string, AnswerValue>): Promise<OfferDto> => {
+export const sendAnswers = async (
+  answers: Record<string, AnswerValue>,
+): Promise<OfferDto> => {
   const response = await fetch("/api/service-picker/submit", {
     method: "POST",
     headers: {

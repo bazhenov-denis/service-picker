@@ -13,7 +13,11 @@ import type { Question } from "./pages/ServicePickerPage/types/question";
 import type { ReferenceQuestion } from "./pages/ServicePickerPage/types/question";
 
 const App: React.FC = () => {
-  const { questions, isLoading: questionsLoading, error: questionsError } = useQuestions();
+  const {
+    questions,
+    isLoading: questionsLoading,
+    error: questionsError,
+  } = useQuestions();
   const { collection: regionsCollection } = useRegions();
   const { collection: professionsCollection } = useProfessions();
   const {

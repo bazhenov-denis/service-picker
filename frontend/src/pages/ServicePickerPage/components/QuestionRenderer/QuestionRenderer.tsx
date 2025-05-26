@@ -26,11 +26,17 @@ interface Props {
 }
 
 const isStringArray = (arr: unknown): arr is string[] => {
-  return Array.isArray(arr) && arr.every((item): item is string => typeof item === 'string');
+  return (
+    Array.isArray(arr) &&
+    arr.every((item): item is string => typeof item === "string")
+  );
 };
 
 const isNumberArray = (arr: unknown): arr is number[] => {
-  return Array.isArray(arr) && arr.every((item): item is number => typeof item === 'number');
+  return (
+    Array.isArray(arr) &&
+    arr.every((item): item is number => typeof item === "number")
+  );
 };
 
 const QuestionRenderer: React.FC<Props> = ({
@@ -59,8 +65,11 @@ const QuestionRenderer: React.FC<Props> = ({
       );
     }
 
-    const displayValue = getDisplayValue ? getDisplayValue(question.id, answer) : 
-      (isStringArray(answer) ? answer : []);
+    const displayValue = getDisplayValue
+      ? getDisplayValue(question.id, answer)
+      : isStringArray(answer)
+        ? answer
+        : [];
 
     return (
       <HierarchicalSelector
@@ -82,7 +91,7 @@ const QuestionRenderer: React.FC<Props> = ({
         onNumberChange={(value) => handleChange(value)}
         error={error}
         question={question as InputQuestion}
-        value={typeof value === 'number' ? value : undefined}
+        value={typeof value === "number" ? value : undefined}
       />
     );
   }
@@ -92,7 +101,7 @@ const QuestionRenderer: React.FC<Props> = ({
     return (
       <SingleChoice
         question={question as SingleChoiceQuestion}
-        selectedOption={typeof value === 'number' ? value : null}
+        selectedOption={typeof value === "number" ? value : null}
         onSelect={(id) => handleChange(id)}
         error={error}
       />
@@ -110,10 +119,14 @@ const QuestionRenderer: React.FC<Props> = ({
     );
   }
 
-  console.error(`Неизвестный тип вопроса: ${(question as QuestionBase).type}`, question);
+  console.error(
+    `Неизвестный тип вопроса: ${(question as QuestionBase).type}`,
+    question,
+  );
   return (
     <div className={styles.unknownQuestionType}>
-      ❌ Неизвестный тип вопроса: <strong>{(question as QuestionBase).type}</strong>
+      ❌ Неизвестный тип вопроса:{" "}
+      <strong>{(question as QuestionBase).type}</strong>
       <p>Пожалуйста, проверьте данные на сервере.</p>
     </div>
   );
