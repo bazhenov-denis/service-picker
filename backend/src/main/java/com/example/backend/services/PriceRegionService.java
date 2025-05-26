@@ -16,8 +16,11 @@ public class PriceRegionService {
     this.regionDao = regionDao;
   }
 
+  public String getRegionNameById(Long regionId) {
+    return regionDao.findRegionNameById(regionId);
+  }
 
   public List<Long> getAreaIdsByRegionIds(Collection<Long> priceRegionIds) {
-    return regionDao.findAreaIdsByRegionIds(priceRegionIds);
+    return regionDao.findRegionIdsByAreaIds(priceRegionIds);
   }
 }

@@ -3,6 +3,7 @@ package com.example.backend.DAO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -13,14 +14,24 @@ public class PriceRegionDao {
   private EntityManager entityManager;
 
 
-  public List<Long> findAreaIdsByRegionIds(Collection<Long> regionIds) {
-    if (regionIds == null || regionIds.isEmpty()) {
-      return List.of();
+  public List<Long> findRegionIdsByAreaIds(Collection<Long> areaIds) {
+    if (areaIds == null || areaIds.isEmpty()) {
+      return Collections.emptyList();
     }
-    List<Long> ids = entityManager.createQuery(
-            "select distinct a.id from PriceRegion r join r.areas a where r.id in :regionIds", Long.class)
-        .setParameter("regionIds", regionIds)
+    return entityManager.createQuery(
+            "select distinct r.id " +
+                "from PriceRegion r " +
+                " join r.areas a " +
+                "where a.id in :areaIds", Long.class)
+        .setParameter("areaIds", areaIds)
         .getResultList();
-    return ids;
   }
+
+  public String findRegionNameById(Long regionId) {
+    return entityManager.createQuery(
+            "select r.name from PriceRegion r where r.id = :regionId", String.class)
+        .setParameter("regionId", regionId)
+        .getSingleResult();
+  }
+
 }
