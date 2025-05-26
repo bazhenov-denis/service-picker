@@ -22,7 +22,8 @@ public class PriceRegionDao {
             "select distinct r.id " +
                 "from PriceRegion r " +
                 " join r.areas a " +
-                "where a.id in :areaIds", Long.class)
+                "where a.id in :areaIds", Long.class
+        )
         .setParameter("areaIds", areaIds)
         .getResultList();
   }

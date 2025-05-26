@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,7 +32,7 @@ public class PriceRegion {
       joinColumns = @JoinColumn(name = "price_region_id"),
       inverseJoinColumns = @JoinColumn(name = "area_id")
   )
-  private Set<Area> areas  = new HashSet<>();
+  private Set<Area> areas = new HashSet<>();
 
   public Long getId() {
     return id;
