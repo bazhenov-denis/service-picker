@@ -39,7 +39,9 @@ export const ServicePickerButton: FC<ServicePickerButtonProps> = ({
         onClick={onSubmit}
         data-qa="service-picker-button"
       >
-        {isLoading ? "Отправка..." : "Подобрать услугу"}
+        <span className={styles.buttonText}>
+          {isLoading ? "Отправка..." : "Подобрать услугу"}
+        </span>
       </Button>
       {error && <div className={styles.error}>{error}</div>}
     </div>
