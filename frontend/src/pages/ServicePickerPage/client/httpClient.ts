@@ -58,7 +58,7 @@ export const fetchQuestions = async (): Promise<any[]> => {
   }
 };
 
-type AnswerValue = string[] | number[] | number;
+type AnswerValue = string[];
 
 export const sendAnswers = async (
   answers: Record<string, AnswerValue>,
