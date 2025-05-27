@@ -21,7 +21,7 @@ public class ClaimDto {
   }
 
   public Integer getProfessionId() {
-    List<String> values = claimMap.get("1");
+    List<String> values = claimMap.get("2");
     if (values.size() != 1) {
       throw new ValidationException("ClaimDto: invalid professionId list size");
     }
@@ -35,7 +35,7 @@ public class ClaimDto {
   }
 
   public Integer getAreaId() {
-    List<String> values = claimMap.get("2");
+    List<String> values = claimMap.get("1");
     if (values.size() != 1) {
       throw new ValidationException("ClaimDto: invalid areaId list size");
     }
