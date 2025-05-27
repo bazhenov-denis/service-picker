@@ -35,7 +35,7 @@ public class OfferController {
           mediaType = "application/json", schema = @Schema(implementation = ClaimDto.class), examples = @ExampleObject(
           value = "{ \"professionId\": 5, \"amount\": 2, \"areaId\": 1 }"
       )))
-      @Validated @RequestBody ClaimDto claim
+      @RequestBody ClaimDto claim
   ) {
     // обращение в сервис подбора
     OfferListDto offerListDto = offerService.pick(claim);
