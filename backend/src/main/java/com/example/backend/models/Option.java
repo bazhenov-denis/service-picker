@@ -23,13 +23,17 @@ public class Option {
   @JoinColumn(name = "question_id", nullable = false)
   private Question question;
 
+  @Column(name = "position")
+  private Integer position;
+
   public Option() {
   }
 
-  public Option(Long id, String text, Question question) {
+  public Option(Long id, String text, Question question, Integer position) {
     this.id = id;
     this.text = text;
     this.question = question;
+    this.position = position;
   }
 
 
@@ -55,5 +59,13 @@ public class Option {
 
   public void setQuestion(Question question) {
     this.question = question;
+  }
+
+  public Integer getPosition() {
+    return position;
+  }
+
+  public void setPosition(Integer position) {
+    this.position = position;
   }
 }
