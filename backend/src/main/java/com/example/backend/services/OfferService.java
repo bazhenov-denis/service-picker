@@ -29,12 +29,12 @@ public class OfferService {
     Integer period = claim.getPeriod();
 
     // поход в API за кол-вом вакансий по региону и профессии
-    VacancyResult vacancyResult = apiService.getVacancyCount(areaId, professionId);
+    Integer vacancyCount = apiService.getVacancyCount(areaId, professionId).getCount();
 
     // алгоритм подбора
     List<Offer> offers = offerDao.getByRegionAndProfroleGroup(3000233L, 0)
         .parallelStream()
-        .filter(quantity > 1 ? o -> (o.getCode().equals("DI") || o.getCode().equals("CIV+VPPL")) : o -> true)
+        .filter(quantity * vacancyCount > 100 ? o -> (o.getCode().equals("DI") || o.getCode().equals("CIV+VPPL")) : o -> true)
         .filter(period != Integer.MAX_VALUE ? o -> o.getPeriod().equals(period) : o -> o.getPeriod() > 30)
         .sorted(Comparator.comparing(Offer::getPriceAll))
         .toList();
