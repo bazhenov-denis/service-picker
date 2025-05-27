@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Input } from "@hh.ru/magritte-ui-input";
 import styles from "./VacanciesNumber.module.css";
 import type { InputQuestion } from "../../types/question";
 
@@ -15,26 +16,63 @@ const VacanciesNumber: React.FC<Props> = ({
   error,
   value,
 }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseInt(e.target.value, 10);
-    if (!isNaN(newValue)) {
-      onNumberChange(newValue);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const min = question.validation?.min ?? 1;
+  const max = question.validation?.max ?? 100;
+
+  const validateValue = (newValue: string): string | null => {
+    if (newValue === "") {
+      return null;
     }
+
+    const numValue = Number(newValue);
+    
+    if (isNaN(numValue) || !Number.isInteger(numValue)) {
+      return `Введите число от ${min} до ${max}`;
+    }
+
+    if (numValue < min) {
+      return `Минимальное значение: ${min}`;
+    }
+
+    if (numValue > max) {
+      return `Максимальное значение: ${max}`;
+    }
+
+    return null;
+  };
+
+  const handleChange = (newValue: string) => {
+    const validationError = validateValue(newValue);
+    setLocalError(validationError);
+
+    if (validationError) {
+      return;
+    }
+
+    if (newValue === "") {
+      onNumberChange(0);
+      return;
+    }
+
+    const numValue = Number(newValue);
+    onNumberChange(numValue);
   };
 
   return (
     <div className={styles.container}>
       <h2 className={styles.questionTitle}>{question.questionText}</h2>
-      <input
-        type="number"
-        min={question.validation?.min ?? 1}
-        max={question.validation?.max ?? 100}
-        value={value ?? ""}
+      <Input
+        value={value === 0 ? "" : value?.toString() ?? ""}
         onChange={handleChange}
-        className={styles.input}
         placeholder={question.placeholder}
+        invalid={!!(error || localError)}
+        errorMessage={error || localError}
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        size="medium"
       />
-      {error && <div className={styles.errorMessage}>{error}</div>}
     </div>
   );
 };

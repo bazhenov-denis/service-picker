@@ -3,4 +3,10 @@
   width: 500px;
   max-width: 600px;
   padding: 0 1rem;
+  font-family: "Inter", sans-serif;
+}
+
+.buttonText {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
 }

@@ -24,8 +24,12 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
 
     return (
       <div className={styles.parameter} key={question.id}>
-        <Text>{question.questionText}</Text>
-        <Text weight="medium">{displayValues.join(", ")}</Text>
+        <Text typography="subtitle-1-semibold" className={styles.question}>
+          {question.questionText}
+        </Text>
+        <Text typography="label-3-regular" className={styles.answer}>
+          {displayValues.join(", ")}
+        </Text>
       </div>
     );
   };
