@@ -2,7 +2,8 @@
   position: fixed;
   top: 80px;
   right: calc((100% - 1200px) / 2 + 2rem);
-  width: 300px;
+  min-width: 300px;
+  max-width: 400px;
   padding-top: 1rem;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
@@ -27,7 +28,15 @@
 
 .parameter {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.question {
+  color: var(--color-text-primary);
+}
+
+.answer {
+  color: var(--color-text-secondary);
+  padding-left: 8px;
 }
