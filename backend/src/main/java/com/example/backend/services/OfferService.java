@@ -7,7 +7,6 @@ import com.example.backend.DTO.OfferListDto;
 import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.Offer;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,8 +22,12 @@ public class OfferService {
   private ApiService apiService;
 
   public OfferListDto pick(ClaimDto claim) {
+    // variables for querying
+    Integer areaId = claim.getAreaId();
+    Integer professionId = claim.getProfessionId();
+
     // поход в API за кол-вом вакансий по региону и профессии
-    VacancyResult vacancyResult = apiService.getVacancyCount(claim.areaId(), claim.professionId());
+    VacancyResult vacancyResult = apiService.getVacancyCount(areaId, professionId);
 
     // алгоритм подбора
     List<Offer> offers = offerDao.getByRegionAndProfroleGroup(0L, 0);
