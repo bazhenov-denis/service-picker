@@ -25,7 +25,7 @@ public class QuestionService {
 
   private QuestionDTO mapToDto(Question q) {
     List<OptionDTO> optionDto = q.getOptions().stream()
-        .map(o -> new OptionDTO(o.getId(),  o.getText(), o.getPosition()))
+        .map(o -> new OptionDTO(o.getId(), o.getText(), o.getPosition()))
         .toList();
 
     return new QuestionDTO(
@@ -40,3 +40,4 @@ public class QuestionService {
     );
   }
 }
+

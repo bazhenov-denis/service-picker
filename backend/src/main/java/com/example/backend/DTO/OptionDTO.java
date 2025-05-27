@@ -5,4 +5,5 @@ public record OptionDTO(
     String text,
     Integer position
 
-) {}
+) {
+}
