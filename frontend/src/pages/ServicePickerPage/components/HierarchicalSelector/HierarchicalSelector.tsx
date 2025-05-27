@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC } from "react";
 import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
@@ -28,7 +28,6 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   placeholder = "Выберите значение",
   dataQa,
 }) => {
-  const controlsRef = useRef<ListControls>(null);
   const isVisible = useDelayedRender(loadingDelay);
 
   const getSelectAllParentTrl = () => "Выбрать все";
@@ -57,22 +56,16 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   return (
     <div className={styles.selectorContainer}>
       <h2 className={styles.title}>{title}</h2>
-      <div className={styles.controls}>
-        <button
-          onClick={() => controlsRef.current?.back()}
-          className={styles.backButton}
-        >
-          ← Назад
-        </button>
-      </div>
       <TreeSelector
         collapseToParentId
         collection={collection}
         value={selectedItems}
         onChange={onItemsChange}
-        ref={controlsRef}
         getSelectAllParentTrl={getSelectAllParentTrl}
         data-qa={dataQa}
+        onMobileNavigationChange={(currentId) => {
+          console.log("Current navigation ID:", currentId);
+        }}
       >
         {({ renderTreeSelector, renderInput }) => (
           <div className={styles.treeWrapper}>

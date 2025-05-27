@@ -1,0 +1,33 @@
+.container {
+  position: fixed;
+  top: 80px;
+  right: calc((100% - 1200px) / 2 + 2rem);
+  width: 300px;
+  padding-top: 1rem;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.card {
+  width: 100%;
+}
+
+.title {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.parameter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}

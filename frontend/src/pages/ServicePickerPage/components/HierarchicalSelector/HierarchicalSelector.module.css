@@ -20,18 +20,51 @@
   width: 500px;
 }
 
-.controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+@media (max-width: 768px) {
+  .selectorContainer {
+    width: 100%;
+    height: 100vh;
+    padding: 16px;
+    border-radius: 0;
+    border: none;
+  }
+
+  .selectorContainer :global(.magritte-tree-selector) {
+    height: 100%;
+  }
 }
 
-.backButton {
-  padding: 8px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  background-color: #fff;
+.selectorContainer :global(.magritte-tree-selector) {
+  font-family: "Inter", sans-serif !important;
+}
+
+.selectorContainer :global(.magritte-tree-selector-item) {
+  font-family: "Inter", sans-serif !important;
+}
+
+.selectorContainer :global(.magritte-tree-selector-input) {
+  font-family: "Inter", sans-serif !important;
+}
+
+.mobileItem {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e0e0e0;
   cursor: pointer;
+}
+
+.mobileItem:hover {
+  background-color: #f5f5f5;
+}
+
+.mobileItemContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.expandIcon {
+  color: #666;
+  font-size: 12px;
 }
 
 .treeWrapper {
