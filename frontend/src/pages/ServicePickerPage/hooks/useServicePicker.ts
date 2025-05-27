@@ -109,7 +109,7 @@ export const useServicePicker = (questions: any[]) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { collection: regionsCollection } = useRegions();
-  const { collection: professionsCollection } = useProfessions();
+  const { collection: professionsCollection, getOriginalId } = useProfessions();
 
   const setAnswer = (questionId: number, value: any) => {
     let formattedValue: AnswerValue;
@@ -200,7 +200,30 @@ export const useServicePicker = (questions: any[]) => {
         regionPathMapSize: regionPathMap.size,
       });
 
-      const answersToSend = { ...answers };
+      const answersToSend = Object.entries(answers).reduce(
+        (acc, [key, value]) => {
+          const question = questions.find((q) => q.id.toString() === key);
+
+          // Преобразуем все значения в массивы строк
+          const stringValues = Array.isArray(value)
+            ? value.map((v) => {
+                // Для профессий извлекаем чистый ID
+                if (
+                  question?.type === "reference" &&
+                  question?.referenceType === "professions"
+                ) {
+                  return getOriginalId(String(v));
+                }
+                return String(v);
+              })
+            : [String(value)];
+
+          acc[key] = stringValues;
+          return acc;
+        },
+        {} as Record<string, string[]>,
+      );
+
       console.log("Финальные данные для отправки:", answersToSend);
       const result = await sendAnswers(answersToSend);
       setOffer(result);
