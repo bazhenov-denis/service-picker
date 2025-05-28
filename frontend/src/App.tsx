@@ -10,7 +10,6 @@ import { useRegions } from "./pages/ServicePickerPage/hooks/useRegions";
 import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
 import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
-import type { Question } from "./pages/ServicePickerPage/types/question";
 import type { ReferenceQuestion } from "./pages/ServicePickerPage/types/question";
 
 const App: React.FC = () => {
