@@ -1,11 +1,30 @@
 .offerContainer {
   width: 100%;
-  max-width: 600px;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.title {
+  margin-bottom: 8px;
+  color: var(--color-text-primary);
+}
+
+.offerItem {
+  width: 100%;
+  transition: transform 0.2s ease;
+}
+
+.offerItem:hover {
+  transform: translateY(-2px);
+}
+
+.itemDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--color-text-secondary);
 }
 
 .offerContainer h3 {
@@ -18,14 +37,13 @@
   color: #666;
 }
 
-.offerItem {
-  margin-bottom: 1rem;
-  padding: 1rem;
-  background-color: #f9f9f9;
-  border-radius: 4px;
-}
-
 .offerItem p {
   margin: 0.5rem 0;
   color: #444;
+}
+
+@media (max-width: 768px) {
+  .offerContainer {
+    padding: 0;
+  }
 }

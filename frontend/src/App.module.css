@@ -13,15 +13,22 @@
   margin: 0 auto;
   padding: 2rem;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .mainContent {
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  width: 500px;
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    width: 100%;
+    padding: 0 1rem;
+  }
 }
 
 .questionsContainer {
@@ -61,4 +68,10 @@
 .offerContainer p {
   margin: 0.5rem 0;
   color: #444;
+}
+
+.error {
+  color: var(--color-error);
+  text-align: center;
+  margin-top: 1rem;
 }
