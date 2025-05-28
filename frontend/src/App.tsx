@@ -46,10 +46,10 @@ const App: React.FC = () => {
       <div className={styles.container}>
         <GridLayout>
           <GridRow>
-            <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>
-              {/* Пустая колонка для центрирования */}
+            <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
+              {/* Пустые колонки слева */}
             </GridColumn>
-            <GridColumn xs={4} s={7} m={7} l={7} xl={7} xxl={7}>
+            <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
               <div className={styles.mainContent}>
                 <div className={styles.questionsContainer}>
                   {questions?.map((question) => {
@@ -91,7 +91,10 @@ const App: React.FC = () => {
                 {error && <div className={styles.error}>{error}</div>}
               </div>
             </GridColumn>
-            <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
+            <GridColumn xs={4} s={1} m={1} l={1} xl={1} xxl={1}>
+              {/* Пустая колонка между контентом */}
+            </GridColumn>
+            <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
               <SelectedState
                 questions={questions || []}
                 answers={answers}
@@ -99,6 +102,9 @@ const App: React.FC = () => {
                   getDisplayValue as (questionId: number, value: any) => string[]
                 }
               />
+            </GridColumn>
+            <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>
+              {/* Пустые колонки справа */}
             </GridColumn>
           </GridRow>
         </GridLayout>
