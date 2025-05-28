@@ -1,4 +1,5 @@
 import React from "react";
+import { GridLayout, GridRow, GridColumn } from "@hh.ru/magritte-ui-grid";
 import Header from "./pages/ServicePickerPage/components/Header/Header";
 import QuestionRenderer from "./pages/ServicePickerPage/components/QuestionRenderer/QuestionRenderer";
 import ServicePickerButton from "./pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton";
@@ -43,53 +44,64 @@ const App: React.FC = () => {
     <div className={styles.app}>
       <Header />
       <div className={styles.container}>
-        <div className={styles.mainContent}>
-          <div className={styles.questionsContainer}>
-            {questions?.map((question) => {
-              const collection =
-                question.type === "reference" &&
-                (question as ReferenceQuestion).referenceType === "regions"
-                  ? regionsCollection
-                  : question.type === "reference" &&
-                      (question as ReferenceQuestion).referenceType ===
-                        "professions"
-                    ? professionsCollection
-                    : undefined;
+        <GridLayout>
+          <GridRow>
+            <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>
+              {/* Пустая колонка для центрирования */}
+            </GridColumn>
+            <GridColumn xs={4} s={7} m={7} l={7} xl={7} xxl={7}>
+              <div className={styles.mainContent}>
+                <div className={styles.questionsContainer}>
+                  {questions?.map((question) => {
+                    const collection =
+                      question.type === "reference" &&
+                      (question as ReferenceQuestion).referenceType === "regions"
+                        ? regionsCollection
+                        : question.type === "reference" &&
+                            (question as ReferenceQuestion).referenceType ===
+                              "professions"
+                          ? professionsCollection
+                          : undefined;
 
-              return (
-                <QuestionRenderer
-                  key={question.id}
-                  question={question}
-                  answer={answers[question.id]}
-                  onChange={(value) => setAnswer(question.id, value)}
-                  error={validationErrors[question.id]}
-                  collection={collection}
-                  getDisplayValue={
-                    getDisplayValue as (
-                      questionId: number,
-                      value: any,
-                    ) => string[]
-                  }
+                    return (
+                      <QuestionRenderer
+                        key={question.id}
+                        question={question}
+                        answer={answers[question.id]}
+                        onChange={(value) => setAnswer(question.id, value)}
+                        error={validationErrors[question.id]}
+                        collection={collection}
+                        getDisplayValue={
+                          getDisplayValue as (
+                            questionId: number,
+                            value: any,
+                          ) => string[]
+                        }
+                      />
+                    );
+                  })}
+                </div>
+                <ServicePickerButton
+                  onSubmit={handleSubmit}
+                  isLoading={isLoading}
+                  questions={questions || []}
+                  answers={answers}
                 />
-              );
-            })}
-          </div>
-          <ServicePickerButton
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-            questions={questions || []}
-            answers={answers}
-          />
-          {offer && <OfferDisplay offer={offer} />}
-          {error && <div className={styles.error}>{error}</div>}
-        </div>
-        <SelectedState
-          questions={questions || []}
-          answers={answers}
-          getDisplayValue={
-            getDisplayValue as (questionId: number, value: any) => string[]
-          }
-        />
+                {offer && <OfferDisplay offer={offer} />}
+                {error && <div className={styles.error}>{error}</div>}
+              </div>
+            </GridColumn>
+            <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
+              <SelectedState
+                questions={questions || []}
+                answers={answers}
+                getDisplayValue={
+                  getDisplayValue as (questionId: number, value: any) => string[]
+                }
+              />
+            </GridColumn>
+          </GridRow>
+        </GridLayout>
       </div>
     </div>
   );
