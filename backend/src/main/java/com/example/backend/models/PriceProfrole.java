@@ -17,7 +17,7 @@ public class PriceProfrole {
 
   @ManyToMany
   @JoinTable(
-    name = "price_profrole_profrole",
+    name = "profrole_group_mapping",
     joinColumns = @JoinColumn(name = "price_profrole_id"),
     inverseJoinColumns = @JoinColumn(name = "profrole_id")
   )
