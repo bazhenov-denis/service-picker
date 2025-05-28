@@ -4,23 +4,20 @@ export interface ClaimDto {
   areaId: number;
 }
 
+export interface OfferItemDto {
+  label: string;
+  type: string;
+  title: string;
+  period: string;
+  region: string;
+  profroleGroup: string;
+  price: string;
+  vacancyType: string | null;
+  vacancyCount: string | null;
+  civCount: string | null;
+  apiLimitedCount: string | null;
+}
+
 export interface OfferDto {
-  vacancyOffers: Array<{
-    id: number;
-    areaId: number;
-    professionId: number;
-    packageVolume: number;
-    vacancyType: string;
-    publicationPeriod: number;
-    pricePerOne: number;
-    pricePerPackage: number;
-  }>;
-  resumesAccessOffers: Array<{
-    id: number;
-    areaId: number;
-    professionId: number;
-    accessDuration: number;
-    numberOfContacts: number;
-    price: number;
-  }>;
+  items: OfferItemDto[];
 }

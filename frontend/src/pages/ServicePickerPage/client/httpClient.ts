@@ -7,7 +7,6 @@ const api = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  // Включаем поддержку CORS
   withCredentials: true,
 });
 
@@ -63,12 +62,19 @@ type AnswerValue = string[];
 export const sendAnswers = async (
   answers: Record<string, AnswerValue>,
 ): Promise<OfferDto> => {
-  const response = await fetch("/api/service-picker/submit", {
+  // Преобразуем данные в формат, ожидаемый бэкендом
+  const formattedData = {
+    professionId: parseInt(answers["2"][0]),
+    areaId: parseInt(answers["1"][0].split(".")[1]),
+    amount: parseInt(answers["3"][0])
+  };
+
+  const response = await fetch("http://localhost:8080/service-offer", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(answers),
+    body: JSON.stringify(formattedData),
   });
 
   if (!response.ok) {
