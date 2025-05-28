@@ -62,7 +62,7 @@ public class PriceProfroleServiceTest {
 
     @Test
     public void testNotExistingGroupsByProfroleId() {
-        long differentProfroleId = profroleId + 1L;
+        long differentProfroleId = profroleId + 100L;
         List<PriceProfrole> result = priceProfroleService.getPriceGroupsByProfroleId(differentProfroleId);
         assertThat(result).hasSize(0);
     }
