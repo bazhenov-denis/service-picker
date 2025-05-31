@@ -2,6 +2,7 @@ package com.example.backend.DAO;
 
 import com.example.backend.models.PriceProfrole;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,17 @@ public class PriceProfroleDao {
     TypedQuery<PriceProfrole> query = entityManager.createQuery(jpql, PriceProfrole.class);
     query.setParameter("profroleId", profroleId);
     return query.getResultList();
+  }
+
+  public String findProfroleNameById(Long profroleId) {
+    try {
+      return entityManager.createQuery(
+              "select p.name from PriceProfrole p where p.id = :profroleId", String.class)
+          .setParameter("profroleId", profroleId)
+          .getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
 }
 

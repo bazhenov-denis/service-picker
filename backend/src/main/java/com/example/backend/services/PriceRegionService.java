@@ -17,7 +17,12 @@ public class PriceRegionService {
   }
 
   public String getRegionNameById(Long regionId) {
-    return regionDao.findRegionNameById(regionId);
+    String name = regionDao.findRegionNameById(regionId);
+
+    if (name == null) {
+      return "Все";
+    }
+    return name;
   }
 
   public List<Long> getAreaIdsByRegionIds(Collection<Long> priceRegionIds) {
