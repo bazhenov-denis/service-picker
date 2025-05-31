@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ClaimDto {
   private Map<String, List<String>> claimMap = new HashMap<>();
@@ -77,6 +78,13 @@ public class ClaimDto {
       case 4 -> Integer.MAX_VALUE;
       default -> throw new ValidationException("ClaimDto: invalid period");
     };
+  }
+
+  @Override
+  public String toString() {
+    return claimMap.keySet().stream()
+        .map(k -> k + "=" + claimMap.get(k))
+        .collect(Collectors.joining(", ", "{", "}"));
   }
 }
 
