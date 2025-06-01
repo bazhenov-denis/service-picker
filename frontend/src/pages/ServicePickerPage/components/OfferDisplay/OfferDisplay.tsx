@@ -29,27 +29,39 @@ export const OfferDisplay: FC<OfferDisplayProps> = ({ offer }) => {
           style="primary"
           shadow="level-2"
         >
-          <Text typography="subtitle-2-semibold">{item.title}</Text>
+          <Text typography="subtitle-1-semibold">{item.title}</Text>
           <div className={styles.itemDetails}>
-            <Text typography="label-3-regular">Тип: {item.type}</Text>
-            <Text typography="label-3-regular">Период: {item.period} дней</Text>
-            <Text typography="label-3-regular">
-              Цена: {parseFloat(item.price).toLocaleString('ru-RU')} ₽
-            </Text>
-            {item.civCount && (
+            <div className={styles.detailRow}>
+              <Text typography="subtitle-3-semibold">Тип:</Text>
+              <Text typography="label-3-regular">{item.type}</Text>
+            </div>
+            <div className={styles.detailRow}>
+              <Text typography="subtitle-3-semibold">Период:</Text>
+              <Text typography="label-3-regular">{item.period} дней</Text>
+            </div>
+            <div className={styles.detailRow}>
+              <Text typography="subtitle-3-semibold">Цена:</Text>
               <Text typography="label-3-regular">
-                Количество контактов: {item.civCount}
+                {parseFloat(item.price).toLocaleString('ru-RU')} ₽
               </Text>
+            </div>
+            {item.civCount && (
+              <div className={styles.detailRow}>
+                <Text typography="subtitle-3-semibold">Количество контактов:</Text>
+                <Text typography="label-3-regular">{item.civCount}</Text>
+              </div>
             )}
             {item.vacancyCount && (
-              <Text typography="label-3-regular">
-                Количество вакансий: {item.vacancyCount}
-              </Text>
+              <div className={styles.detailRow}>
+                <Text typography="subtitle-3-semibold">Количество вакансий:</Text>
+                <Text typography="label-3-regular">{item.vacancyCount}</Text>
+              </div>
             )}
             {item.apiLimitedCount && (
-              <Text typography="label-3-regular">
-                Лимит API: {item.apiLimitedCount}
-              </Text>
+              <div className={styles.detailRow}>
+                <Text typography="subtitle-3-semibold">Лимит API:</Text>
+                <Text typography="label-3-regular">{item.apiLimitedCount}</Text>
+              </div>
             )}
           </div>
         </Card>
