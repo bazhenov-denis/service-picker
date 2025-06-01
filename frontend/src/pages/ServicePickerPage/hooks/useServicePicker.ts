@@ -123,21 +123,12 @@ export const useServicePicker = (questions: any[]) => {
     });
 
     if (Array.isArray(value)) {
-      if (
-        question?.type === "reference" &&
-        question?.referenceType === "regions"
-      ) {
-        const paths = value.map((id) => {
+      if (question?.type === "reference" && question?.referenceType === "regions") {
+        // Для регионов сразу сохраняем полные пути
+        formattedValue = value.map(id => {
           const path = findRegionPath(regionsCollection, String(id)).join(".");
-          if (!path) {
-            console.warn(`Не удалось построить путь для региона с ID ${id}`);
-            return String(id);
-          }
-          return path;
+          return path || String(id);
         });
-
-        console.log("Сохранение путей регионов:", { questionId, paths, value });
-        formattedValue = paths;
       } else {
         formattedValue = value;
       }
@@ -200,25 +191,38 @@ export const useServicePicker = (questions: any[]) => {
         regionPathMapSize: regionPathMap.size,
       });
 
+      // Преобразуем данные в нужный формат с числовыми ключами
       const answersToSend = Object.entries(answers).reduce(
         (acc, [key, value]) => {
           const question = questions.find((q) => q.id.toString() === key);
+          
+          if (!question) return acc;
 
-          // Преобразуем все значения в массивы строк
-          const stringValues = Array.isArray(value)
-            ? value.map((v) => {
-                // Для профессий извлекаем чистый ID
-                if (
-                  question?.type === "reference" &&
-                  question?.referenceType === "professions"
-                ) {
-                  return getOriginalId(String(v));
-                }
-                return String(v);
-              })
-            : [String(value)];
+          let stringValue: string;
+          
+          if (question.type === "reference") {
+            if (question.referenceType === "regions") {
+              // Для регионов сохраняем полный путь
+              if (Array.isArray(value)) {
+                stringValue = value[0].toString();
+              } else {
+                const path = findRegionPath(regionsCollection, String(value)).join(".");
+                stringValue = path || String(value);
+              }
+            } else if (question.referenceType === "professions") {
+              // Для профессий используем чистый ID
+              stringValue = Array.isArray(value) 
+                ? getOriginalId(String(value[0]))
+                : getOriginalId(String(value));
+            } else {
+              stringValue = Array.isArray(value) ? String(value[0]) : String(value);
+            }
+          } else {
+            stringValue = Array.isArray(value) ? String(value[0]) : String(value);
+          }
 
-          acc[key] = stringValues;
+          // Используем числовой ключ из ID вопроса
+          acc[question.id.toString()] = [stringValue];
           return acc;
         },
         {} as Record<string, string[]>,
