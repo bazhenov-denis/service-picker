@@ -51,7 +51,13 @@ const SingleChoice: React.FC<Props> = ({
               checked={selectedOption === option.id}
               onChange={() => handleRadioChange(option.id)}
             />
-            <span className={styles.optionText}>{option.text}</span>
+            <span 
+              className={styles.optionText} 
+              onClick={() => handleRadioChange(option.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              {option.text}
+            </span>
           </div>
         ))}
       </div>
