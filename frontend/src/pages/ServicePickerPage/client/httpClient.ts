@@ -62,17 +62,11 @@ type AnswerValue = string[];
 export const sendAnswers = async (
   answers: Record<string, AnswerValue>,
 ): Promise<OfferDto> => {
-  const response = await fetch("http://localhost:8080/service-offer", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(answers),
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    const response = await api.post("/service-offer", answers);
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при отправке ответов:", error);
+    throw error;
   }
-
-  return response.json();
 };
