@@ -1,10 +1,11 @@
-import { FC, useRef } from "react";
+import { FC, useRef, useEffect } from "react";
 import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { useDelayedRender } from "../../hooks/useDelayedRender";
 import { BackIcon } from "./BackIcon";
 import styles from "./HierarchicalSelector.module.css";
+import "@hh.ru/magritte-ui-checkbox-radio/index.css";
 
 interface HierarchicalSelectorProps {
   title: string;
@@ -31,6 +32,13 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
 }) => {
   const isVisible = useDelayedRender(loadingDelay);
   const controlsRef = useRef<ListControls>(null);
+
+  useEffect(() => {
+    document.body.classList.add('magritte-old-layout');
+    return () => {
+      document.body.classList.remove('magritte-old-layout');
+    };
+  }, []);
 
   const getSelectAllParentTrl = () => "Выбрать все";
 

@@ -138,3 +138,8 @@
   font-size: 14px;
   color: #666;
 }
+
+.title {
+  margin-bottom: 1rem;
+  text-align: center;
+}
