@@ -15,60 +15,16 @@
   gap: 12px;
 }
 
-.optionLabel {
+.optionWrapper {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.radioInput {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.radioCustom {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  background-color: #fff;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  position: relative;
-  cursor: pointer;
-}
-
-.radioInput:focus + .radioCustom {
-  border-color: #0070fb;
-}
-
-.radioInput:checked + .radioCustom {
-  background-color: #0070fb;
-  border-color: #0070fb;
-}
-
-.radioInput:checked + .radioCustom::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 8px;
-  height: 8px;
-  background-color: #fff;
-  border-radius: 50%;
 }
 
 .optionText {
   font-size: 16px;
   color: #333;
-  cursor: pointer;
+  user-select: none;
 }
 
 .errorMessage {

@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { Radio } from "@hh.ru/magritte-ui-checkbox-radio";
+import "@hh.ru/magritte-ui-checkbox-radio/index.css";
 import styles from "./SingleChoice.module.css";
 
 interface Option {
@@ -23,6 +25,13 @@ const SingleChoice: React.FC<Props> = ({
   onSelect,
   error,
 }) => {
+  useEffect(() => {
+    document.body.classList.add('magritte-old-layout');
+    return () => {
+      document.body.classList.remove('magritte-old-layout');
+    };
+  }, []);
+
   const handleRadioChange = (optionId: number) => {
     if (selectedOption === optionId) {
       onSelect(null);
@@ -36,17 +45,14 @@ const SingleChoice: React.FC<Props> = ({
       <h2 className={styles.questionTitle}>{question.questionText}</h2>
       <div className={styles.optionsContainer}>
         {question.options?.map((option) => (
-          <label key={option.id} className={styles.optionLabel}>
-            <input
-              type="radio"
+          <div key={option.id} className={styles.optionWrapper}>
+            <Radio
               name={`question-${question.id}`}
               checked={selectedOption === option.id}
               onChange={() => handleRadioChange(option.id)}
-              className={styles.radioInput}
             />
-            <span className={styles.radioCustom}></span>
             <span className={styles.optionText}>{option.text}</span>
-          </label>
+          </div>
         ))}
       </div>
       {error && <div className={styles.errorMessage}>{error}</div>}
