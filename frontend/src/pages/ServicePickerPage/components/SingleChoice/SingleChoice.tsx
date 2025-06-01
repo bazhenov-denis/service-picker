@@ -24,7 +24,6 @@ const SingleChoice: React.FC<Props> = ({
   error,
 }) => {
   const handleRadioChange = (optionId: number) => {
-    // Если клик по уже выбранному варианту — сбросить выбор
     if (selectedOption === optionId) {
       onSelect(null);
     } else {

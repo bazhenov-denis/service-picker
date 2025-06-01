@@ -124,7 +124,6 @@ export const useServicePicker = (questions: any[]) => {
 
     if (Array.isArray(value)) {
       if (question?.type === "reference" && question?.referenceType === "regions") {
-        // Для регионов сразу сохраняем полные пути
         formattedValue = value.map(id => {
           const path = findRegionPath(regionsCollection, String(id)).join(".");
           return path || String(id);
@@ -191,7 +190,6 @@ export const useServicePicker = (questions: any[]) => {
         regionPathMapSize: regionPathMap.size,
       });
 
-      // Преобразуем данные в нужный формат с числовыми ключами
       const answersToSend = Object.entries(answers).reduce(
         (acc, [key, value]) => {
           const question = questions.find((q) => q.id.toString() === key);
@@ -202,7 +200,6 @@ export const useServicePicker = (questions: any[]) => {
           
           if (question.type === "reference") {
             if (question.referenceType === "regions") {
-              // Для регионов сохраняем полный путь
               if (Array.isArray(value)) {
                 stringValue = value[0].toString();
               } else {
@@ -210,7 +207,6 @@ export const useServicePicker = (questions: any[]) => {
                 stringValue = path || String(value);
               }
             } else if (question.referenceType === "professions") {
-              // Для профессий используем чистый ID
               stringValue = Array.isArray(value) 
                 ? getOriginalId(String(value[0]))
                 : getOriginalId(String(value));
@@ -221,7 +217,6 @@ export const useServicePicker = (questions: any[]) => {
             stringValue = Array.isArray(value) ? String(value[0]) : String(value);
           }
 
-          // Используем числовой ключ из ID вопроса
           acc[question.id.toString()] = [stringValue];
           return acc;
         },
