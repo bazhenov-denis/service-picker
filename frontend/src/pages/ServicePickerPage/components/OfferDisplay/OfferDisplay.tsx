@@ -6,9 +6,34 @@ import type { OfferItemDto } from "../../types/service";
 
 interface OfferDisplayProps {
   offer: {
-    items: OfferItemDto[];
+    items: (OfferItemDto & { label?: string })[];
   };
 }
+
+const formatFieldName = (field: string): string => {
+  const fieldNames: Record<string, string> = {
+    period: "Период",
+    price: "Цена",
+    civCount: "Количество контактов",
+    vacancyCount: "Количество вакансий",
+    apiLimitedCount: "Лимит API",
+    region: "Регион",
+    profroleGroup: "Группа профессий"
+  };
+  return fieldNames[field] || field;
+};
+
+const formatFieldValue = (field: string, value: string | number | null): string => {
+  if (value === null) return "";
+  
+  if (field === "price") {
+    return `${parseFloat(value.toString()).toLocaleString('ru-RU')} ₽`;
+  }
+  if (field === "period") {
+    return `${value} дней`;
+  }
+  return value.toString();
+};
 
 export const OfferDisplay: FC<OfferDisplayProps> = ({ offer }) => {
   if (!offer.items || offer.items.length === 0) {
@@ -29,40 +54,22 @@ export const OfferDisplay: FC<OfferDisplayProps> = ({ offer }) => {
           style="primary"
           shadow="level-2"
         >
-          <Text typography="subtitle-1-semibold">{item.title}</Text>
+          <div className={styles.headerRow}>
+            <Text typography="subtitle-1-semibold">
+              {item.label ? `${item.label}: ${item.title}` : item.title}
+            </Text>
+          </div>
           <div className={styles.itemDetails}>
-            <div className={styles.detailRow}>
-              <Text typography="subtitle-3-semibold">Тип:</Text>
-              <Text typography="label-3-regular">{item.type}</Text>
-            </div>
-            <div className={styles.detailRow}>
-              <Text typography="subtitle-3-semibold">Период:</Text>
-              <Text typography="label-3-regular">{item.period} дней</Text>
-            </div>
-            <div className={styles.detailRow}>
-              <Text typography="subtitle-3-semibold">Цена:</Text>
-              <Text typography="label-3-regular">
-                {parseFloat(item.price).toLocaleString('ru-RU')} ₽
-              </Text>
-            </div>
-            {item.civCount && (
-              <div className={styles.detailRow}>
-                <Text typography="subtitle-3-semibold">Количество контактов:</Text>
-                <Text typography="label-3-regular">{item.civCount}</Text>
-              </div>
-            )}
-            {item.vacancyCount && (
-              <div className={styles.detailRow}>
-                <Text typography="subtitle-3-semibold">Количество вакансий:</Text>
-                <Text typography="label-3-regular">{item.vacancyCount}</Text>
-              </div>
-            )}
-            {item.apiLimitedCount && (
-              <div className={styles.detailRow}>
-                <Text typography="subtitle-3-semibold">Лимит API:</Text>
-                <Text typography="label-3-regular">{item.apiLimitedCount}</Text>
-              </div>
-            )}
+            {Object.entries(item).map(([key, value]) => {
+              if (key === "type" || key === "title" || key === "label" || value === null) return null;
+              
+              return (
+                <div key={key} className={styles.detailRow}>
+                  <Text typography="subtitle-3-semibold">{formatFieldName(key)}:</Text>
+                  <Text typography="label-3-regular">{formatFieldValue(key, value)}</Text>
+                </div>
+              );
+            })}
           </div>
         </Card>
       ))}
