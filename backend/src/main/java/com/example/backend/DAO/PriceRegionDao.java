@@ -1,6 +1,7 @@
 package com.example.backend.DAO;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,10 +30,14 @@ public class PriceRegionDao {
   }
 
   public String findRegionNameById(Long regionId) {
-    return entityManager.createQuery(
-            "select r.name from PriceRegion r where r.id = :regionId", String.class)
-        .setParameter("regionId", regionId)
-        .getSingleResult();
+    try {
+      return entityManager.createQuery(
+              "select r.name from PriceRegion r where r.id = :regionId", String.class)
+          .setParameter("regionId", regionId)
+          .getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
 
 }
