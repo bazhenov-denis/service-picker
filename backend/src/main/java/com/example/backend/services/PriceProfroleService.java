@@ -10,15 +10,24 @@ import java.util.List;
 @Service
 public class PriceProfroleService {
 
-    private final PriceProfroleDao priceProfroleDao;
+  private final PriceProfroleDao priceProfroleDao;
 
-    public PriceProfroleService(PriceProfroleDao priceProfroleDao) {
-        this.priceProfroleDao = priceProfroleDao;
-    }
+  public PriceProfroleService(PriceProfroleDao priceProfroleDao) {
+    this.priceProfroleDao = priceProfroleDao;
+  }
 
-    @Transactional(readOnly = true)
-    public List<PriceProfrole> getPriceGroupsByProfroleId(Long profroleId) {
-        return priceProfroleDao.findByProfroleId(profroleId);
+  public String getProfroleNameById(Long profroleId) {
+    String name = priceProfroleDao.findProfroleNameById(profroleId);
+
+    if (name == null) {
+      return "Все";
     }
+    return name;
+  }
+
+  @Transactional(readOnly = true)
+  public List<PriceProfrole> getPriceGroupsByProfroleId(Long profroleId) {
+    return priceProfroleDao.findByProfroleId(profroleId);
+  }
 }
 

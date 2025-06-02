@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 
@@ -15,12 +16,28 @@ public class OfferDaoImpl implements OfferDao {
   private EntityManager entityManager;
 
   @Override
-  public List<Offer> getByRegionAndProfroleGroup(Long regionId, Integer profroleGroupId) {
-    TypedQuery<Offer> query = entityManager.createQuery(
-        "SELECT e FROM Offer e WHERE e.regionId=:regionId AND e.profroleGroupId=:profroleGroupId",
-        Offer.class);
-    query.setParameter("regionId", regionId);
-    query.setParameter("profroleGroupId", profroleGroupId);
+  public List<Offer> getByRegionAndProfroleGroup(
+      Collection<Long> regionIds,
+      Collection<Long> profroleGroupIds
+  ) {
+
+    String jpql = "SELECT e FROM Offer e WHERE 1=1";
+    if (regionIds != null && !regionIds.isEmpty()) {
+      jpql += " AND e.regionId IN :regionIds";
+    }
+    if (profroleGroupIds != null && !profroleGroupIds.isEmpty()) {
+      jpql += " AND e.profroleGroupId IN :profroleGroupIds";
+    }
+
+    TypedQuery<Offer> query = entityManager.createQuery(jpql, Offer.class);
+
+    if (regionIds != null && !regionIds.isEmpty()) {
+      query.setParameter("regionIds", regionIds);
+    }
+    if (profroleGroupIds != null && !profroleGroupIds.isEmpty()) {
+      query.setParameter("profroleGroupIds", profroleGroupIds);
+    }
+
     return query.getResultList();
   }
 
