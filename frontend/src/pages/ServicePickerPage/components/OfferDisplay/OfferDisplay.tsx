@@ -18,7 +18,8 @@ const formatFieldName = (field: string): string => {
     vacancyCount: "Количество вакансий",
     apiLimitedCount: "Лимит API",
     region: "Регион",
-    profroleGroup: "Группа профессий"
+    profroleGroup: "Группа профессий",
+    vacancyType: "Тип вакансии"
   };
   return fieldNames[field] || field;
 };
