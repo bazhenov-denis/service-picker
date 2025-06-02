@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +41,8 @@ public class OfferService {
     this.priceRegionService = priceRegionService;
   }
 
+  private static final Logger log = LoggerFactory.getLogger(OfferService.class);
+
   public OfferListDto pick(ClaimDto claim) {
     log.info("Начало pick(), claim = {}", claim);
     // variables for querying
@@ -45,6 +50,7 @@ public class OfferService {
     Integer professionId = claim.getProfessionId();
     Integer quantity = claim.getQuantity();
     Integer period = claim.getPeriod();
+    log.info("OfferService IN, claim = {}", claim);
 
     log.info(
         "Параметры: areaId={}, professionId={}, quantity={}, period={}",
