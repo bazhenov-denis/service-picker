@@ -4,12 +4,13 @@ import com.example.backend.DAO.OfferDaoImpl;
 import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferDto;
 import com.example.backend.DTO.OfferListDto;
-import com.example.backend.DTO.VacancyResult;
 import com.example.backend.models.Offer;
 
 import java.util.Comparator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +22,15 @@ public class OfferService {
   @Autowired
   private ApiService apiService;
 
+  private static final Logger log = LoggerFactory.getLogger(OfferService.class);
+
   public OfferListDto pick(ClaimDto claim) {
     // variables for querying
     Integer areaId = claim.getAreaId();
     Integer professionId = claim.getProfessionId();
     Integer quantity = claim.getQuantity();
     Integer period = claim.getPeriod();
+    log.info("OfferService IN, claim = {}", claim);
 
     // поход в API за кол-вом вакансий по региону и профессии
     Integer vacancyCount = apiService.getVacancyCount(areaId, professionId).getCount();
@@ -95,6 +99,7 @@ public class OfferService {
       offerListDto.add(offerDto);
     }
 
+    log.info("OfferService OUT, offer = {}", offerListDto);
     return offerListDto;
   }
 }
