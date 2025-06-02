@@ -26,7 +26,7 @@ const VacanciesNumber: React.FC<Props> = ({
     }
 
     const numValue = Number(newValue);
-    
+
     if (isNaN(numValue) || !Number.isInteger(numValue)) {
       return `Введите число от ${min} до ${max}`;
     }
@@ -63,7 +63,7 @@ const VacanciesNumber: React.FC<Props> = ({
     <div className={styles.container}>
       <h2 className={styles.questionTitle}>{question.questionText}</h2>
       <Input
-        value={value === 0 ? "" : value?.toString() ?? ""}
+        value={value === 0 ? "" : (value?.toString() ?? "")}
         onChange={handleChange}
         placeholder={question.placeholder}
         invalid={!!(error || localError)}

@@ -1,9 +1,11 @@
-import { FC } from "react";
+import { FC, useRef, useEffect } from "react";
 import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
 import { useDelayedRender } from "../../hooks/useDelayedRender";
+import { BackIcon } from "./BackIcon";
 import styles from "./HierarchicalSelector.module.css";
+import "@hh.ru/magritte-ui-checkbox-radio/index.css";
 
 interface HierarchicalSelectorProps {
   title: string;
@@ -29,8 +31,20 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   dataQa,
 }) => {
   const isVisible = useDelayedRender(loadingDelay);
+  const controlsRef = useRef<ListControls>(null);
+
+  useEffect(() => {
+    document.body.classList.add("magritte-old-layout");
+    return () => {
+      document.body.classList.remove("magritte-old-layout");
+    };
+  }, []);
 
   const getSelectAllParentTrl = () => "Выбрать все";
+
+  const handleBackClick = () => {
+    controlsRef.current?.back();
+  };
 
   if (!isVisible || loading) {
     return (
@@ -57,6 +71,7 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
     <div className={styles.selectorContainer}>
       <h2 className={styles.title}>{title}</h2>
       <TreeSelector
+        ref={controlsRef}
         collapseToParentId
         collection={collection}
         value={selectedItems}
@@ -69,7 +84,17 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
       >
         {({ renderTreeSelector, renderInput }) => (
           <div className={styles.treeWrapper}>
-            <div className={styles.inputContainer}>{renderInput()}</div>
+            <div className={styles.inputContainer}>
+              <button
+                className={styles.backButton}
+                onClick={handleBackClick}
+                data-qa={`${dataQa}-back-button`}
+                aria-label="Назад"
+              >
+                <BackIcon />
+              </button>
+              {renderInput()}
+            </div>
             <div className={styles.treeContainer}>{renderTreeSelector()}</div>
           </div>
         )}

@@ -54,7 +54,8 @@ const App: React.FC = () => {
                   {questions?.map((question) => {
                     const collection =
                       question.type === "reference" &&
-                      (question as ReferenceQuestion).referenceType === "regions"
+                      (question as ReferenceQuestion).referenceType ===
+                        "regions"
                         ? regionsCollection
                         : question.type === "reference" &&
                             (question as ReferenceQuestion).referenceType ===
@@ -98,7 +99,10 @@ const App: React.FC = () => {
                 questions={questions || []}
                 answers={answers}
                 getDisplayValue={
-                  getDisplayValue as (questionId: number, value: any) => string[]
+                  getDisplayValue as (
+                    questionId: number,
+                    value: any,
+                  ) => string[]
                 }
               />
             </GridColumn>

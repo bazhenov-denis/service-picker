@@ -127,17 +127,10 @@ export const useServicePicker = (questions: any[]) => {
         question?.type === "reference" &&
         question?.referenceType === "regions"
       ) {
-        const paths = value.map((id) => {
+        formattedValue = value.map((id) => {
           const path = findRegionPath(regionsCollection, String(id)).join(".");
-          if (!path) {
-            console.warn(`Не удалось построить путь для региона с ID ${id}`);
-            return String(id);
-          }
-          return path;
+          return path || String(id);
         });
-
-        console.log("Сохранение путей регионов:", { questionId, paths, value });
-        formattedValue = paths;
       } else {
         formattedValue = value;
       }
@@ -204,21 +197,37 @@ export const useServicePicker = (questions: any[]) => {
         (acc, [key, value]) => {
           const question = questions.find((q) => q.id.toString() === key);
 
-          // Преобразуем все значения в массивы строк
-          const stringValues = Array.isArray(value)
-            ? value.map((v) => {
-                // Для профессий извлекаем чистый ID
-                if (
-                  question?.type === "reference" &&
-                  question?.referenceType === "professions"
-                ) {
-                  return getOriginalId(String(v));
-                }
-                return String(v);
-              })
-            : [String(value)];
+          if (!question) return acc;
 
-          acc[key] = stringValues;
+          let stringValue: string;
+
+          if (question.type === "reference") {
+            if (question.referenceType === "regions") {
+              if (Array.isArray(value)) {
+                stringValue = value[0].toString();
+              } else {
+                const path = findRegionPath(
+                  regionsCollection,
+                  String(value),
+                ).join(".");
+                stringValue = path || String(value);
+              }
+            } else if (question.referenceType === "professions") {
+              stringValue = Array.isArray(value)
+                ? getOriginalId(String(value[0]))
+                : getOriginalId(String(value));
+            } else {
+              stringValue = Array.isArray(value)
+                ? String(value[0])
+                : String(value);
+            }
+          } else {
+            stringValue = Array.isArray(value)
+              ? String(value[0])
+              : String(value);
+          }
+
+          acc[question.id.toString()] = [stringValue];
           return acc;
         },
         {} as Record<string, string[]>,

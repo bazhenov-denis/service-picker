@@ -43,10 +43,6 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
     );
   });
 
-  if (!hasAnswers) {
-    return null;
-  }
-
   return (
     <div className={styles.container}>
       <Card
@@ -58,7 +54,13 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
       >
         <h3 className={styles.title}>Выбранные параметры</h3>
         <div className={styles.content}>
-          {questions.map((question) => renderAnswer(question))}
+          {hasAnswers ? (
+            questions.map((question) => renderAnswer(question))
+          ) : (
+            <Text typography="label-3-regular" className={styles.emptyState}>
+              Параметры не выбраны
+            </Text>
+          )}
         </div>
       </Card>
     </div>

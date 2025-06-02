@@ -19,12 +19,23 @@
   transform: translateY(-2px);
 }
 
+.headerRow {
+  margin-bottom: 16px;
+}
+
 .itemDetails {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-top: 12px;
   color: var(--color-text-secondary);
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
 }
 
 .offerContainer h3 {
