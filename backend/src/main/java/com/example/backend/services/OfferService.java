@@ -82,12 +82,7 @@ public class OfferService {
     List<Offer> offers = offerDao.getByRegionAndProfroleGroup(priceRegion, priceProfrole)
         .parallelStream()
         .filter(quantity * vacancyCount > 100 ? o -> (o.getCode().equals("DI") || o.getCode().equals("CIV+VPPL")) : o -> true)
-        .filter(o -> {
-          if (allowedPeriods == null) {
-            return true;
-          }
-          return allowedPeriods.contains(o.getPeriod());
-        })
+        .filter(allowedPeriods == null ? o -> true : o -> allowedPeriods.contains(o.getPeriod()))
         .sorted(Comparator.comparing(Offer::getPriceAll))
         .toList();
 

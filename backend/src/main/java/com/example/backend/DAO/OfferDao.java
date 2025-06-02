@@ -7,5 +7,8 @@ import java.util.List;
 public interface OfferDao {
   List<Offer> getByRegionAndProfroleGroup(
       Collection<Long> regionIds,
-      Collection<Long> profroleGroupIds);  void save(Offer offer);
+      Collection<Long> profroleGroupIds
+  );
+
+  void save(Offer offer);
 }
