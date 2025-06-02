@@ -50,13 +50,13 @@ export const OfferDisplay: FC<OfferDisplayProps> = ({ offer }) => {
         <Card
           key={index}
           className={styles.offerItem}
-          padding={16}
-          borderRadius={8}
+          padding={32}
+          borderRadius={16}
           style="primary"
           shadow="level-2"
         >
           <div className={styles.headerRow}>
-            <Text typography="subtitle-1-semibold">
+            <Text typography="title-5-semibold">
               {item.label ? `${item.label}: ${item.title}` : item.title}
             </Text>
           </div>
@@ -66,8 +66,8 @@ export const OfferDisplay: FC<OfferDisplayProps> = ({ offer }) => {
               
               return (
                 <div key={key} className={styles.detailRow}>
-                  <Text typography="subtitle-3-semibold">{formatFieldName(key)}:</Text>
-                  <Text typography="label-3-regular">{formatFieldValue(key, value)}</Text>
+                  <Text typography="subtitle-1-semibold">{formatFieldName(key)}:</Text>
+                  <Text typography="label-2-regular">{formatFieldValue(key, value)}</Text>
                 </div>
               );
             })}
