@@ -123,8 +123,11 @@ export const useServicePicker = (questions: any[]) => {
     });
 
     if (Array.isArray(value)) {
-      if (question?.type === "reference" && question?.referenceType === "regions") {
-        formattedValue = value.map(id => {
+      if (
+        question?.type === "reference" &&
+        question?.referenceType === "regions"
+      ) {
+        formattedValue = value.map((id) => {
           const path = findRegionPath(regionsCollection, String(id)).join(".");
           return path || String(id);
         });
@@ -193,28 +196,35 @@ export const useServicePicker = (questions: any[]) => {
       const answersToSend = Object.entries(answers).reduce(
         (acc, [key, value]) => {
           const question = questions.find((q) => q.id.toString() === key);
-          
+
           if (!question) return acc;
 
           let stringValue: string;
-          
+
           if (question.type === "reference") {
             if (question.referenceType === "regions") {
               if (Array.isArray(value)) {
                 stringValue = value[0].toString();
               } else {
-                const path = findRegionPath(regionsCollection, String(value)).join(".");
+                const path = findRegionPath(
+                  regionsCollection,
+                  String(value),
+                ).join(".");
                 stringValue = path || String(value);
               }
             } else if (question.referenceType === "professions") {
-              stringValue = Array.isArray(value) 
+              stringValue = Array.isArray(value)
                 ? getOriginalId(String(value[0]))
                 : getOriginalId(String(value));
             } else {
-              stringValue = Array.isArray(value) ? String(value[0]) : String(value);
+              stringValue = Array.isArray(value)
+                ? String(value[0])
+                : String(value);
             }
           } else {
-            stringValue = Array.isArray(value) ? String(value[0]) : String(value);
+            stringValue = Array.isArray(value)
+              ? String(value[0])
+              : String(value);
           }
 
           acc[question.id.toString()] = [stringValue];

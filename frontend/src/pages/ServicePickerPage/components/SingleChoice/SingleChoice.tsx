@@ -26,9 +26,9 @@ const SingleChoice: React.FC<Props> = ({
   error,
 }) => {
   useEffect(() => {
-    document.body.classList.add('magritte-old-layout');
+    document.body.classList.add("magritte-old-layout");
     return () => {
-      document.body.classList.remove('magritte-old-layout');
+      document.body.classList.remove("magritte-old-layout");
     };
   }, []);
 
@@ -51,10 +51,10 @@ const SingleChoice: React.FC<Props> = ({
               checked={selectedOption === option.id}
               onChange={() => handleRadioChange(option.id)}
             />
-            <span 
-              className={styles.optionText} 
+            <span
+              className={styles.optionText}
               onClick={() => handleRadioChange(option.id)}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: "pointer" }}
             >
               {option.text}
             </span>

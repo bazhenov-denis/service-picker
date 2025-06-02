@@ -34,9 +34,9 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   const controlsRef = useRef<ListControls>(null);
 
   useEffect(() => {
-    document.body.classList.add('magritte-old-layout');
+    document.body.classList.add("magritte-old-layout");
     return () => {
-      document.body.classList.remove('magritte-old-layout');
+      document.body.classList.remove("magritte-old-layout");
     };
   }, []);
 
@@ -85,7 +85,7 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
         {({ renderTreeSelector, renderInput }) => (
           <div className={styles.treeWrapper}>
             <div className={styles.inputContainer}>
-              <button 
+              <button
                 className={styles.backButton}
                 onClick={handleBackClick}
                 data-qa={`${dataQa}-back-button`}

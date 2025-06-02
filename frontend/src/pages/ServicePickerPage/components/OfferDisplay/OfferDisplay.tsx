@@ -19,16 +19,19 @@ const formatFieldName = (field: string): string => {
     apiLimitedCount: "Лимит API",
     region: "Регион",
     profroleGroup: "Группа профессий",
-    vacancyType: "Тип вакансии"
+    vacancyType: "Тип вакансии",
   };
   return fieldNames[field] || field;
 };
 
-const formatFieldValue = (field: string, value: string | number | null): string => {
+const formatFieldValue = (
+  field: string,
+  value: string | number | null,
+): string => {
   if (value === null) return "";
-  
+
   if (field === "price") {
-    return `${parseFloat(value.toString()).toLocaleString('ru-RU')} ₽`;
+    return `${parseFloat(value.toString()).toLocaleString("ru-RU")} ₽`;
   }
   if (field === "period") {
     return `${value} дней`;
@@ -62,12 +65,22 @@ export const OfferDisplay: FC<OfferDisplayProps> = ({ offer }) => {
           </div>
           <div className={styles.itemDetails}>
             {Object.entries(item).map(([key, value]) => {
-              if (key === "type" || key === "title" || key === "label" || value === null) return null;
-              
+              if (
+                key === "type" ||
+                key === "title" ||
+                key === "label" ||
+                value === null
+              )
+                return null;
+
               return (
                 <div key={key} className={styles.detailRow}>
-                  <Text typography="subtitle-1-semibold">{formatFieldName(key)}:</Text>
-                  <Text typography="label-2-regular">{formatFieldValue(key, value)}</Text>
+                  <Text typography="subtitle-1-semibold">
+                    {formatFieldName(key)}:
+                  </Text>
+                  <Text typography="label-2-regular">
+                    {formatFieldValue(key, value)}
+                  </Text>
                 </div>
               );
             })}
