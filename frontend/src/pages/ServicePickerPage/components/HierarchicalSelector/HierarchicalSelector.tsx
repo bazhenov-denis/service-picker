@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect } from "react";
+import { FC, useRef, useEffect, useCallback, useMemo, useState } from "react";
 import { TreeSelector } from "@hh.ru/magritte-ui-tree-selector";
 import type { ListControls } from "@hh.ru/magritte-ui-tree-selector";
 import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
@@ -6,11 +6,13 @@ import { useDelayedRender } from "../../hooks/useDelayedRender";
 import { BackIcon } from "./BackIcon";
 import styles from "./HierarchicalSelector.module.css";
 import "@hh.ru/magritte-ui-checkbox-radio/index.css";
+import "@hh.ru/magritte-ui-tree-selector/index.css";
+import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
 interface HierarchicalSelectorProps {
   title: string;
   collection: TreeCollection;
-  selectedItems: string[];
+  selectedItems: string[]; // массив путей вида ["113.1620.1621"]
   onItemsChange: (items: string[]) => void;
   loading: boolean;
   error: any;
@@ -19,7 +21,7 @@ interface HierarchicalSelectorProps {
   dataQa?: string;
 }
 
-export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
+const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   title,
   collection,
   selectedItems,
@@ -33,6 +35,67 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   const isVisible = useDelayedRender(loadingDelay);
   const controlsRef = useRef<ListControls>(null);
 
+  // Локальное состояние для выбранных ID
+  const [localSelectedIds, setLocalSelectedIds] = useState<string[]>([]);
+
+  /**
+   * Преобразование путей вида "113.1620.1621" в массив id терминальных нод ["1621"]
+   */
+  const selectedIds = useMemo(() => {
+    return selectedItems.map((path) => {
+      const parts = path.split(".");
+      return parts[parts.length - 1];
+    });
+  }, [selectedItems]);
+
+  // Синхронизируем локальное состояние с пропсами
+  useEffect(() => {
+    setLocalSelectedIds(selectedIds);
+  }, [selectedIds]);
+
+  /**
+   * Преобразование id обратно в путь вида "113.1620.1621"
+   */
+  const handleItemsChange = useCallback(
+    (newSelectedIds: string[]) => {
+      setLocalSelectedIds(newSelectedIds); // Обновляем локальное состояние
+
+      if (!newSelectedIds.length) {
+        onItemsChange([]);
+        return;
+      }
+
+      const newSelectedPaths = newSelectedIds.map((id) => {
+        const path: string[] = [];
+        let currentId: string | undefined = id;
+
+        while (currentId) {
+          const node: TreeModel | undefined = collection.getModel(currentId);
+          if (!node) break;
+
+          path.unshift(currentId);
+          const parent: TreeModel | undefined = collection.getParent(currentId);
+          currentId = parent?.id;
+        }
+
+        return path.join(".");
+      });
+
+      onItemsChange(newSelectedPaths);
+    },
+    [collection, onItemsChange]
+  );
+
+  /**
+   * Назад для мобильного режима
+   */
+  const handleBackClick = () => {
+    controlsRef.current?.back();
+  };
+
+  /**
+   * Применяем временный класс для совместимости
+   */
   useEffect(() => {
     document.body.classList.add("magritte-old-layout");
     return () => {
@@ -40,12 +103,14 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
     };
   }, []);
 
+  /**
+   * Локализация для кнопки "Выбрать все"
+   */
   const getSelectAllParentTrl = () => "Выбрать все";
 
-  const handleBackClick = () => {
-    controlsRef.current?.back();
-  };
-
+  /**
+   * Скелетон загрузки
+   */
   if (!isVisible || loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -54,6 +119,9 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
     );
   }
 
+  /**
+   * Ошибка загрузки данных
+   */
   if (error) {
     return (
       <div className={styles.errorContainer}>
@@ -67,6 +135,9 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
     );
   }
 
+  /**
+   * Основной рендер компонента
+   */
   return (
     <div className={styles.selectorContainer}>
       <h2 className={styles.title}>{title}</h2>
@@ -74,8 +145,8 @@ export const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
         ref={controlsRef}
         collapseToParentId
         collection={collection}
-        value={selectedItems}
-        onChange={onItemsChange}
+        value={localSelectedIds}
+        onChange={handleItemsChange}
         getSelectAllParentTrl={getSelectAllParentTrl}
         data-qa={dataQa}
         onMobileNavigationChange={(currentId) => {
