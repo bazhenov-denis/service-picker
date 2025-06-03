@@ -1,156 +1,106 @@
-Чтобы решить проблему с отсутствием обновления стилей выбранного элемента в TreeSelector, выполните следующие шаги:
+Чтобы решить проблему с миганием стиля выбранного элемента, необходимо исправить конфликт между локальным состоянием и внешними пропсами, а также настроить корректную стратегию выбора. Вот исправленный код:
 
----
-
-### 1. **Убедитесь, что состояние `selectedIds` правильно обновляется**
-   - В компоненте `HierarchicalSelector` проверьте, что `selectedIds` — это управляемое состояние (например, через `useState`), и оно обновляется при вызове `handleItemsChange`.
-   - Пример:
-     ```jsx
-     const [selectedIds, setSelectedIds] = useState<string[]>([]);
-     const handleItemsChange = (ids: string[]) => {
-       setSelectedIds(ids); // Обновление состояния
-       onItemsChange(idsToPaths(ids)); // Преобразование и передача в родительский компонент
-     };
-     ```
-
----
-
-### 2. **Проверьте передачу `value` в TreeSelector**
-   - Убедитесь, что `TreeSelector` получает актуальное значение `selectedIds` через проп `value`:
-     ```jsx
-     <TreeSelector
-       value={selectedIds} // Должно быть актуальным состоянием
-       // ... остальные пропсы
-     >
-     ```
-
----
-
-### 3. **Проверьте логику преобразования путей в ID**
-   - Если `selectedItems` — это массив путей (например, `["113.1620.1621"]`), убедитесь, что вы правильно преобразуете их в массив `selectedIds` (например, через `split('.')`).
-   - Пример:
-     ```jsx
-     const selectedIds = useMemo(() => {
-       return selectedItems.flatMap(path => path.split('.'));
-     }, [selectedItems]);
-     ```
-
----
-
-### 4. **Используйте стратегию выбора (SelectionStrategy)**
-   - Если TreeSelector требует специальной логики выбора (например, для иерархических элементов), используйте `ImmutableSelectionStrategy` из библиотеки:
-     ```jsx
-     import { ImmutableSelectionStrategy } from '@hh.ru/magritte-ui-tree-selector';
-
-     const strategy = useMemo(
-       () => new ImmutableSelectionStrategy(collection),
-       [collection]
-     );
-
-     // В TreeSelector добавьте проп strategy:
-     <TreeSelector
-       strategy={strategy}
-       // ... остальные пропсы
-     >
-     ```
-
----
-
-### 5. **Проверьте пропы `singleChoice` и `leavesOnly`**
-   - Если вы используете `collapseToParentId`, убедитесь, что это не конфликтует с другими пропами:
-     ```jsx
-     <TreeSelector
-       collapseToParentId // Если нужна коллапсация по родительскому ID
-       leavesOnly={false} // Если разрешен выбор нелистьев
-       // ... остальные пропсы
-     >
-     ```
-
----
-
-### 6. **Проверьте стили и конфликты CSS**
-   - Убедитесь, что стили TreeSelector не перебиваются вашими стилями. Добавьте временные стили для тестирования:
-     ```css
-     /* В вашем CSS-файле */
-     .magritte-tree-selector-item-selected {
-       background-color: yellow !important; /* Пример */
-     }
-     ```
-
----
-
-### 7. **Проверьте корректность TreeCollection**
-   - Убедитесь, что коллекция `collection` правильно построена и содержит идентификаторы элементов:
-     ```jsx
-     // В useRegions.txt:
-     const collection = useMemo(() => {
-       const coll = new TreeCollection();
-       regions.forEach(region => addModelRecursively(region));
-       return coll;
-     }, [regions]);
-     ```
-
----
-
-### 8. **Проверьте обработчик `onChange`**
-   - Убедитесь, что `handleItemsChange` правильно обрабатывает новые `ids` и обновляет состояние:
-     ```jsx
-     const handleItemsChange = (ids: string[]) => {
-       setSelectedIds(ids); // Обязательно обновите состояние
-       // Преобразуйте ids в пути и вызовите onItemsChange
-     };
-     ```
-
----
-
-### 9. **Проверьте наличие ошибок в консоли**
-   - Если в консоли браузера есть ошибки (например, `Warning` от React), они могут указать на проблему с пропами или состоянием.
-
----
-
-### Пример исправленного компонента
 ```jsx
-import { TreeSelector, TreeCollection, ImmutableSelectionStrategy } from '@hh.ru/magritte-ui-tree-selector';
-import { useState } from 'react';
+import { FC, useRef, useCallback, useMemo, useState } from "react";
+import { TreeSelector, ImmutableSelectionStrategy } from "@hh.ru/magritte-ui-tree-selector";
+import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeCollection";
+import { useDelayedRender } from "../../hooks/useDelayedRender";
+import { BackIcon } from "./BackIcon";
+import styles from "./HierarchicalSelector.module.css";
+import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
-const HierarchicalSelector = ({ selectedItems, onItemsChange, collection }) => {
-  // Преобразуем пути в массив ID
-  const selectedIds = useMemo(() => {
-    return selectedItems.flatMap(path => path.split('.'));
-  }, [selectedItems]);
+interface HierarchicalSelectorProps {
+  // ... (остальные пропсы)
+}
 
-  // Стратегия выбора
+const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
+  collection,
+  selectedItems,
+  onItemsChange,
+  // ... (остальные пропсы)
+}) => {
   const strategy = useMemo(
     () => new ImmutableSelectionStrategy(collection),
     [collection]
   );
 
-  // Обработчик выбора
-  const handleItemsChange = (ids) => {
-    setSelectedIds(ids); // Обновляем состояние
-    onItemsChange(idsToPaths(ids)); // Преобразуем обратно в пути
-  };
+  // Используем только локальное состояние для выбранных IDs
+  const [selectedIds, setSelectedIds] = useState(() => {
+    return selectedItems.flatMap(path => path.split('.'));
+  });
+
+  // Преобразование paths в массив всех выбранных IDs (включая родительские)
+  const selectedIdsFromProps = useMemo(() => {
+    return selectedItems.flatMap(path => path.split('.'));
+  }, [selectedItems]);
+
+  // Синхронизация с пропсами только при первом монтировании
+  useEffect(() => {
+    setSelectedIds(selectedIdsFromProps);
+  }, []);
+
+  const handleItemsChange = useCallback((newSelectedIds: string[]) => {
+    setSelectedIds(newSelectedIds); // Обновляем локальное состояние
+
+    const newPaths = newSelectedIds.map(id => {
+      const path: string[] = [];
+      let currentId = id;
+      while (currentId) {
+        const node = collection.getModel(currentId);
+        if (!node) break;
+        path.unshift(currentId);
+        currentId = collection.getParent(currentId)?.id;
+      }
+      return path.join(".");
+    });
+
+    onItemsChange(newPaths);
+  }, [collection, onItemsChange]);
 
   return (
     <TreeSelector
+      strategy={strategy} // Важно! Указываем стратегию
       collection={collection}
-      strategy={strategy} // Добавьте стратегию
       value={selectedIds}
       onChange={handleItemsChange}
-      collapseToParentId // Если нужно
+      collapseToParentId // Если нужно коллапсировать по родительскому ID
+      // ... остальные пропсы
     >
       {/* ... */}
     </TreeSelector>
   );
 };
+
+export default HierarchicalSelector;
 ```
 
----
+### Основные исправления:
+1. **Добавлена стратегия выбора**:
+   ```jsx
+   const strategy = useMemo(
+     () => new ImmutableSelectionStrategy(collection),
+     [collection]
+   );
+   ```
+   Это необходимо для корректного управления выбором в иерархическом дереве.
 
-### Итог
-Проблема, скорее всего, связана с:
-- Неправильным преобразованием `selectedItems` в `selectedIds`.
-- Отсутствием стратегии выбора (`ImmutableSelectionStrategy`).
-- Неверным обновлением состояния `selectedIds`.
+2. **Исправлено преобразование paths в IDs**:
+   Теперь мы включаем все элементы пути (не только терминальные):
+   ```jsx
+   const selectedIdsFromProps = useMemo(() => {
+     return selectedItems.flatMap(path => path.split('.'));
+   }, [selectedItems]);
+   ```
 
-Проверьте эти моменты, и стили выбранного элемента должны начать обновляться корректно.
+3. **Убраны лишние useEffect**:
+   Теперь локальное состояние `selectedIds` не перезаписывается из пропсов после первого монтирования, чтобы избежать конфликтов.
+
+4. **Исправлено обновление состояния**:
+   Теперь при изменении пропсов `selectedItems`, локальное состояние обновляется только при первом монтировании, а основное управление через `handleItemsChange`.
+
+### Дополнительные проверки:
+- Убедитесь, что `collection` корректно построен (все элементы имеют `id` и родительские связи).
+- Если используется `collapseToParentId`, убедитесь, что выбор включает родительские элементы.
+- Проверьте, что в CSS нет конфликтующих стилей (например, переопределение классов `magritte-tree-selector-item-selected`).
+
+Эти изменения должны устранить проблему с миганием стилей и обеспечить корректное сохранение состояния выбора.

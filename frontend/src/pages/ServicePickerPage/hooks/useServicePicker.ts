@@ -213,9 +213,14 @@ export const useServicePicker = (questions: any[]) => {
                 stringValue = path || String(value);
               }
             } else if (question.referenceType === "professions") {
+              const extractRoleId = (path: string) => {
+                const match = path.match(/role_(\d+)$/);
+                return match ? match[1] : path;
+              };
+
               stringValue = Array.isArray(value)
-                ? getOriginalId(String(value[0]))
-                : getOriginalId(String(value));
+                ? extractRoleId(String(value[0]))
+                : extractRoleId(String(value));
             } else {
               stringValue = Array.isArray(value)
                 ? String(value[0])

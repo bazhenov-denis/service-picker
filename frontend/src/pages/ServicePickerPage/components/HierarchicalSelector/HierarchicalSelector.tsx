@@ -35,23 +35,18 @@ const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   const isVisible = useDelayedRender(loadingDelay);
   const controlsRef = useRef<ListControls>(null);
 
-  // Локальное состояние для выбранных ID
-  const [localSelectedIds, setLocalSelectedIds] = useState<string[]>([]);
-
-  /**
-   * Преобразование путей вида "113.1620.1621" в массив id терминальных нод ["1621"]
-   */
+  // Используем все ID из пути, включая родительские
   const selectedIds = useMemo(() => {
-    return selectedItems.map((path) => {
-      const parts = path.split(".");
-      return parts[parts.length - 1];
-    });
+    return selectedItems.flatMap(path => path.split('.'));
   }, [selectedItems]);
 
-  // Синхронизируем локальное состояние с пропсами
+  // Локальное состояние для выбранных ID
+  const [localSelectedIds, setLocalSelectedIds] = useState<string[]>(selectedIds);
+
+  // Синхронизируем только при первом монтировании
   useEffect(() => {
     setLocalSelectedIds(selectedIds);
-  }, [selectedIds]);
+  }, []); // Пустой массив зависимостей
 
   /**
    * Преобразование id обратно в путь вида "113.1620.1621"
