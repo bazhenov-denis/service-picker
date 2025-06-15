@@ -9,6 +9,9 @@ interface SelectedStateProps {
   answers: Record<number, any>;
   getDisplayValue: (questionId: number, value: any) => string[];
   onQuestionClick?: (questionId: number) => void;
+  onSegmentChange?: (segment: number) => void;
+  currentSegment?: number;
+  questionsPerSegment?: number;
 }
 
 export const SelectedState: React.FC<SelectedStateProps> = ({
@@ -16,8 +19,21 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
   answers,
   getDisplayValue,
   onQuestionClick,
+  onSegmentChange,
+  currentSegment = 0,
+  questionsPerSegment = 3,
 }) => {
   const handleQuestionClick = (questionId: number) => {
+    if (onSegmentChange) {
+      const questionIndex = questions.findIndex(q => q.id === questionId);
+      if (questionIndex !== -1) {
+        const targetSegment = Math.floor(questionIndex / questionsPerSegment);
+        if (targetSegment !== currentSegment) {
+          onSegmentChange(targetSegment);
+        }
+      }
+    }
+    
     if (onQuestionClick) {
       onQuestionClick(questionId);
     }
