@@ -104,7 +104,7 @@ public class AnswerProcessingService {
     List<Long> optionIds = values.stream().map(s -> {
           try { return Long.parseLong(s); }
           catch (NumberFormatException ex) {
-            log.warn("    Неверный optionId '{}'");
+            log.warn("Неверный optionId '{}'");
             return null;
           }
         })

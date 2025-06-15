@@ -2,8 +2,6 @@ package com.example.backend.controllers;
 
 import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferListDto;
-import com.example.backend.services.OfferService;
-import com.example.backend.services.OfferServiceFilters;
 import com.example.backend.services.OfferServiceScoring;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

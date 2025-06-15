@@ -1,7 +1,6 @@
 package com.example.backend.services;
 
 import com.example.backend.DAO.PriceProfroleDao;
-import com.example.backend.models.PriceProfrole;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

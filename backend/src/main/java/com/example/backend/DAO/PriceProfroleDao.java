@@ -1,6 +1,5 @@
 package com.example.backend.DAO;
 
-import com.example.backend.models.PriceProfrole;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;

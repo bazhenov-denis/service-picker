@@ -5,8 +5,8 @@ import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferDto;
 import com.example.backend.DTO.OfferListDto;
 import com.example.backend.DTO.ProcessingResult;
-import com.example.backend.enums.ScoreCode;
 import com.example.backend.models.Offer;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -54,7 +54,7 @@ public class OfferServiceScoring implements OfferService {
 
     // 4) Ищем самый дорогой
     Optional<Offer> bestOpt = offers.stream()
-        .max((o1, o2) -> Double.compare(o1.getPriceAll(), o2.getPriceAll()));
+        .max(Comparator.comparingDouble(Offer::getPriceAll));
 
     Offer bestOffer = bestOpt.get();
 
