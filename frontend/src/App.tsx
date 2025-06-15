@@ -147,7 +147,8 @@ const App: React.FC = () => {
                   isLastSegment={isLastSegment}
                 />
 
-                {offer && <OfferDisplay offer={offer} />}
+                {/* OfferDisplay только в последнем сегменте */}
+                {isLastSegment && offer && <OfferDisplay offer={offer} />}
                 {error && <div className={styles.error}>{error}</div>}
               </div>
             </GridColumn>

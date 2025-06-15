@@ -4,7 +4,7 @@
   right: calc((100% - 1200px) / 2 + 2rem);
   min-width: 300px;
   max-width: 400px;
-  padding-top: 1rem;
+  padding-top: 32px;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
 }
