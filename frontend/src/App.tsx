@@ -31,6 +31,16 @@ const App: React.FC = () => {
     getDisplayValue,
   } = useServicePicker(questions || []);
 
+  const scrollToQuestion = (questionId: number) => {
+    const questionElement = document.getElementById(`question-${questionId}`);
+    if (questionElement) {
+      questionElement.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
+    }
+  };
+
   if (questionsLoading) {
     return <div>Загрузка вопросов...</div>;
   }
@@ -64,20 +74,21 @@ const App: React.FC = () => {
                           : undefined;
 
                     return (
-                      <QuestionRenderer
-                        key={question.id}
-                        question={question}
-                        answer={answers[question.id]}
-                        onChange={(value) => setAnswer(question.id, value)}
-                        error={validationErrors[question.id]}
-                        collection={collection}
-                        getDisplayValue={
-                          getDisplayValue as (
-                            questionId: number,
-                            value: any,
-                          ) => string[]
-                        }
-                      />
+                      <div key={question.id} id={`question-${question.id}`}>
+                        <QuestionRenderer
+                          question={question}
+                          answer={answers[question.id]}
+                          onChange={(value) => setAnswer(question.id, value)}
+                          error={validationErrors[question.id]}
+                          collection={collection}
+                          getDisplayValue={
+                            getDisplayValue as (
+                              questionId: number,
+                              value: any,
+                            ) => string[]
+                          }
+                        />
+                      </div>
                     );
                   })}
                 </div>
@@ -104,6 +115,7 @@ const App: React.FC = () => {
                     value: any,
                   ) => string[]
                 }
+                onQuestionClick={scrollToQuestion}
               />
             </GridColumn>
             <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>

@@ -8,13 +8,21 @@ interface SelectedStateProps {
   questions: Question[];
   answers: Record<number, any>;
   getDisplayValue: (questionId: number, value: any) => string[];
+  onQuestionClick?: (questionId: number) => void;
 }
 
 export const SelectedState: React.FC<SelectedStateProps> = ({
   questions,
   answers,
   getDisplayValue,
+  onQuestionClick,
 }) => {
+  const handleQuestionClick = (questionId: number) => {
+    if (onQuestionClick) {
+      onQuestionClick(questionId);
+    }
+  };
+
   const renderAnswer = (question: Question) => {
     const value = answers[question.id];
     if (value === undefined || value === null) return null;
@@ -23,7 +31,11 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
     if (!displayValues?.length) return null;
 
     return (
-      <div className={styles.parameter} key={question.id}>
+      <div 
+        className={styles.parameter} 
+        key={question.id}
+        onClick={() => handleQuestionClick(question.id)}
+      >
         <Text typography="subtitle-1-semibold" className={styles.question}>
           {question.questionText}
         </Text>

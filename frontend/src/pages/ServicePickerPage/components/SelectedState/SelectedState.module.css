@@ -30,13 +30,45 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.parameter:hover {
+  background-color: var(--color-background-secondary);
+  border-color: var(--color-border-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.parameter:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .question {
   color: var(--color-text-primary);
+  transition: color 0.2s ease;
+}
+
+.parameter:hover .question {
+  color: var(--color-primary);
 }
 
 .answer {
   color: var(--color-text-secondary);
   padding-left: 8px;
+  transition: color 0.2s ease;
+}
+
+.parameter:hover .answer {
+  color: var(--color-text-primary);
+}
+
+.emptyState {
+  color: var(--color-text-secondary);
+  font-style: italic;
 }
