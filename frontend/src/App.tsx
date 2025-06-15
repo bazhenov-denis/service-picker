@@ -65,9 +65,9 @@ const App: React.FC = () => {
   const scrollToQuestion = (questionId: number) => {
     const questionElement = document.getElementById(`question-${questionId}`);
     if (questionElement) {
-      questionElement.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
+      questionElement.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
     }
   };

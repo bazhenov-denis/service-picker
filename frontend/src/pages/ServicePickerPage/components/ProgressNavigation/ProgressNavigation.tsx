@@ -34,14 +34,14 @@ export const ProgressNavigation: React.FC<ProgressNavigationProps> = ({
 
   return (
     <div className={styles.container}>
-      <ProgressBar 
-        progress={currentSegment + 1} 
+      <ProgressBar
+        progress={currentSegment + 1}
         segments={totalSegments}
         style="accent"
         aria-label="Прогресс заполнения вопросов"
         data-qa="progress-navigation-bar"
       />
-      
+
       <div className={styles.navigationButtons}>
         <Button
           mode="secondary"
@@ -52,7 +52,7 @@ export const ProgressNavigation: React.FC<ProgressNavigationProps> = ({
         >
           <span className={styles.buttonText}>Назад</span>
         </Button>
-        
+
         <Button
           mode="primary"
           size="medium"
@@ -67,4 +67,4 @@ export const ProgressNavigation: React.FC<ProgressNavigationProps> = ({
   );
 };
 
-export default ProgressNavigation; 
+export default ProgressNavigation;

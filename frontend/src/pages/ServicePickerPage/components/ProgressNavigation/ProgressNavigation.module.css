@@ -31,8 +31,8 @@
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .navigationButtons button {
     max-width: 100%;
   }
-} 
+}

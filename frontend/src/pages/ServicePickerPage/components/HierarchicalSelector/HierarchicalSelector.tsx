@@ -10,12 +10,10 @@ import "@hh.ru/magritte-ui-tree-selector/index.css";
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
 // Простой компонент скелетона с анимацией
-const Skeleton: FC<{ width: string | number; height: string | number }> = ({ width, height }) => (
-  <div 
-    className={styles.skeleton}
-    style={{ width, height }}
-  />
-);
+const Skeleton: FC<{ width: string | number; height: string | number }> = ({
+  width,
+  height,
+}) => <div className={styles.skeleton} style={{ width, height }} />;
 
 interface HierarchicalSelectorProps {
   title: string;
@@ -44,10 +42,11 @@ const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   const controlsRef = useRef<ListControls>(null);
 
   const selectedIds = useMemo(() => {
-    return selectedItems.flatMap(path => path.split('.'));
+    return selectedItems.flatMap((path) => path.split("."));
   }, [selectedItems]);
 
-  const [localSelectedIds, setLocalSelectedIds] = useState<string[]>(selectedIds);
+  const [localSelectedIds, setLocalSelectedIds] =
+    useState<string[]>(selectedIds);
 
   useEffect(() => {
     setLocalSelectedIds(selectedIds);
@@ -80,7 +79,7 @@ const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
 
       onItemsChange(newSelectedPaths);
     },
-    [collection, onItemsChange]
+    [collection, onItemsChange],
   );
 
   const handleBackClick = () => {

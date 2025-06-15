@@ -25,7 +25,7 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
 }) => {
   const handleQuestionClick = (questionId: number) => {
     if (onSegmentChange) {
-      const questionIndex = questions.findIndex(q => q.id === questionId);
+      const questionIndex = questions.findIndex((q) => q.id === questionId);
       if (questionIndex !== -1) {
         const targetSegment = Math.floor(questionIndex / questionsPerSegment);
         if (targetSegment !== currentSegment) {
@@ -33,7 +33,7 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
         }
       }
     }
-    
+
     if (onQuestionClick) {
       onQuestionClick(questionId);
     }
@@ -47,8 +47,8 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
     if (!displayValues?.length) return null;
 
     return (
-      <div 
-        className={styles.parameter} 
+      <div
+        className={styles.parameter}
         key={question.id}
         onClick={() => handleQuestionClick(question.id)}
       >

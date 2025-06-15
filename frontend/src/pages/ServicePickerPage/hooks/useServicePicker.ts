@@ -196,11 +196,11 @@ export const useServicePicker = (questions: any[]) => {
       const answersToSend = Object.entries(answers).reduce(
         (acc, [key, value]) => {
           const question = questions.find((q) => q.id.toString() === key);
-          
+
           console.log(`Обработка вопроса ${key}:`, {
             value,
             questionType: question?.type,
-            referenceType: question?.referenceType
+            referenceType: question?.referenceType,
           });
 
           if (!question) return acc;
@@ -211,20 +211,26 @@ export const useServicePicker = (questions: any[]) => {
             if (question.referenceType === "regions") {
               if (Array.isArray(value)) {
                 stringValue = value[0].toString();
-                console.log(`Регион: преобразование ${value[0]} -> ${stringValue}`);
+                console.log(
+                  `Регион: преобразование ${value[0]} -> ${stringValue}`,
+                );
               } else {
                 const path = findRegionPath(
                   regionsCollection,
                   String(value),
                 ).join(".");
                 stringValue = path || String(value);
-                console.log(`Регион: преобразование ${value} -> ${stringValue}`);
+                console.log(
+                  `Регион: преобразование ${value} -> ${stringValue}`,
+                );
               }
             } else if (question.referenceType === "professions") {
               const extractRoleId = (path: string) => {
                 const categoryMatch = path.match(/category_(\d+)$/);
                 if (categoryMatch) {
-                  console.log(`Найдена категория в профессиях: ${path} -> ${categoryMatch[1]}`);
+                  console.log(
+                    `Найдена категория в профессиях: ${path} -> ${categoryMatch[1]}`,
+                  );
                   return categoryMatch[1];
                 }
                 const roleMatch = path.match(/role_(\d+)$/);
@@ -234,7 +240,9 @@ export const useServicePicker = (questions: any[]) => {
               stringValue = Array.isArray(value)
                 ? extractRoleId(String(value[0]))
                 : extractRoleId(String(value));
-              console.log(`Профессия/Категория: преобразование ${value} -> ${stringValue}`);
+              console.log(
+                `Профессия/Категория: преобразование ${value} -> ${stringValue}`,
+              );
             } else {
               const extractCategoryId = (path: string) => {
                 const match = path.match(/category_(\d+)$/);
@@ -251,7 +259,9 @@ export const useServicePicker = (questions: any[]) => {
             stringValue = Array.isArray(value)
               ? String(value[0])
               : String(value);
-            console.log(`Обычное значение: преобразование ${value} -> ${stringValue}`);
+            console.log(
+              `Обычное значение: преобразование ${value} -> ${stringValue}`,
+            );
           }
 
           acc[question.id.toString()] = [stringValue];
