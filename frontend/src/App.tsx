@@ -34,15 +34,12 @@ const App: React.FC = () => {
     getDisplayValue,
   } = useServicePicker(questions || []);
 
-  // Состояние для пошаговой навигации
   const [currentSegment, setCurrentSegment] = useState(0);
 
-  // Вычисляем общее количество сегментов
   const totalSegments = useMemo(() => {
     return Math.ceil((questions?.length || 0) / QUESTIONS_PER_SEGMENT);
   }, [questions]);
 
-  // Получаем вопросы для текущего сегмента
   const currentSegmentQuestions = useMemo(() => {
     if (!questions) return [];
     const startIndex = currentSegment * QUESTIONS_PER_SEGMENT;
@@ -50,7 +47,6 @@ const App: React.FC = () => {
     return questions.slice(startIndex, endIndex);
   }, [questions, currentSegment]);
 
-  // Проверяем, можно ли перейти к следующему сегменту
   const canProceedToNext = useMemo(() => {
     return currentSegmentQuestions.every((question) => {
       if (!question.isRequired) return true;
@@ -59,7 +55,6 @@ const App: React.FC = () => {
     });
   }, [currentSegmentQuestions, answers]);
 
-  // Проверяем, является ли текущий сегмент последним
   const isLastSegment = currentSegment === totalSegments - 1;
 
   const scrollToQuestion = (questionId: number) => {
