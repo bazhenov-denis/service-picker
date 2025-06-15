@@ -9,10 +9,18 @@ import "@hh.ru/magritte-ui-checkbox-radio/index.css";
 import "@hh.ru/magritte-ui-tree-selector/index.css";
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
+// Простой компонент скелетона с анимацией
+const Skeleton: FC<{ width: string | number; height: string | number }> = ({ width, height }) => (
+  <div 
+    className={styles.skeleton}
+    style={{ width, height }}
+  />
+);
+
 interface HierarchicalSelectorProps {
   title: string;
   collection: TreeCollection;
-  selectedItems: string[]; // массив путей вида ["113.1620.1621"]
+  selectedItems: string[];
   onItemsChange: (items: string[]) => void;
   loading: boolean;
   error: any;
@@ -35,25 +43,19 @@ const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
   const isVisible = useDelayedRender(loadingDelay);
   const controlsRef = useRef<ListControls>(null);
 
-  // Используем все ID из пути, включая родительские
   const selectedIds = useMemo(() => {
     return selectedItems.flatMap(path => path.split('.'));
   }, [selectedItems]);
 
-  // Локальное состояние для выбранных ID
   const [localSelectedIds, setLocalSelectedIds] = useState<string[]>(selectedIds);
 
-  // Синхронизируем только при первом монтировании
   useEffect(() => {
     setLocalSelectedIds(selectedIds);
-  }, []); // Пустой массив зависимостей
+  }, []);
 
-  /**
-   * Преобразование id обратно в путь вида "113.1620.1621"
-   */
   const handleItemsChange = useCallback(
     (newSelectedIds: string[]) => {
-      setLocalSelectedIds(newSelectedIds); // Обновляем локальное состояние
+      setLocalSelectedIds(newSelectedIds);
 
       if (!newSelectedIds.length) {
         onItemsChange([]);
@@ -81,16 +83,10 @@ const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
     [collection, onItemsChange]
   );
 
-  /**
-   * Назад для мобильного режима
-   */
   const handleBackClick = () => {
     controlsRef.current?.back();
   };
 
-  /**
-   * Применяем временный класс для совместимости
-   */
   useEffect(() => {
     document.body.classList.add("magritte-old-layout");
     return () => {
@@ -98,25 +94,22 @@ const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
     };
   }, []);
 
-  /**
-   * Локализация для кнопки "Выбрать все"
-   */
   const getSelectAllParentTrl = () => "Выбрать все";
 
-  /**
-   * Скелетон загрузки
-   */
   if (!isVisible || loading) {
     return (
       <div className={styles.loadingContainer}>
-        <div>Загрузка...</div>
+        <div style={{ marginBottom: 12 }}>
+          <Skeleton width={180} height={24} />
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <Skeleton width="100%" height={36} />
+        </div>
+        <Skeleton width="100%" height="calc(100% - 80px)" />
       </div>
     );
   }
 
-  /**
-   * Ошибка загрузки данных
-   */
   if (error) {
     return (
       <div className={styles.errorContainer}>
@@ -130,9 +123,6 @@ const HierarchicalSelector: FC<HierarchicalSelectorProps> = ({
     );
   }
 
-  /**
-   * Основной рендер компонента
-   */
   return (
     <div className={styles.selectorContainer}>
       <h2 className={styles.title}>{title}</h2>
