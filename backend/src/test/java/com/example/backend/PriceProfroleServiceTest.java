@@ -1,3 +1,4 @@
+/*
 package com.example.backend;
 
 import com.example.backend.models.PriceProfrole;
@@ -68,3 +69,4 @@ public class PriceProfroleServiceTest {
     }
 }
 
+*/

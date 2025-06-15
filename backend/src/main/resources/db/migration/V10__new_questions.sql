@@ -2,9 +2,9 @@
 -- 2) Вставляем заново, сразу со всеми новыми колонками
 INSERT INTO questions (id, type, question_text, reference_type, is_required,
                        short_title, position)
-VALUES (5, 'reference', 'Как часто вы ищете сотрудников?', 'hiring_frequency', FALSE,
+VALUES (5, 'single-choice', 'Как часто вы ищете сотрудников?', 'hiring_frequency', FALSE,
         'Частота найма:', 5),
-       (6, 'reference', 'Есть ли у вас время на самостоятельный поиск?:', 'search_time', FALSE,
+       (6, 'single-choice', 'Есть ли у вас время на самостоятельный поиск?:', 'search_time', FALSE,
         'Время на поиск', 6)
 ;
 

@@ -7,48 +7,39 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "options")
-public class Option {
+@Table(name = "score_types")
+public class ScoreType {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false)
   private Long id;
 
-  private String text;
+  @Column(name = "code", nullable = false)
+  private String code;
 
-  @ManyToOne
-  @JoinColumn(name = "question_id", nullable = false)
-  private Question question;
+  @Column(name = "title")
+  private String title;
 
-  @Column(name = "position")
-  private Integer position;
+  public ScoreType(Long id, String code, String title, List<OptionScore> optionScores) {
+    this.id = id;
+    this.code = code;
+    this.title = title;
+    this.optionScores = optionScores;
+  }
 
   @OneToMany(
-      mappedBy = "option",
+      mappedBy = "scoreType",
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       fetch = FetchType.LAZY
   )
   private List<OptionScore> optionScores = new ArrayList<>();
-
-  public Option() {
-  }
-
-  public Option(Long id, String text, Question question, Integer position) {
-    this.id = id;
-    this.text = text;
-    this.question = question;
-    this.position = position;
-  }
-
 
   public Long getId() {
     return id;
@@ -58,28 +49,20 @@ public class Option {
     this.id = id;
   }
 
-  public String getText() {
-    return text;
+  public String getCode() {
+    return code;
   }
 
-  public void setText(String text) {
-    this.text = text;
+  public void setCode(String code) {
+    this.code = code;
   }
 
-  public Question getQuestion() {
-    return question;
+  public String getTitle() {
+    return title;
   }
 
-  public void setQuestion(Question question) {
-    this.question = question;
-  }
-
-  public Integer getPosition() {
-    return position;
-  }
-
-  public void setPosition(Integer position) {
-    this.position = position;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public List<OptionScore> getOptionScores() {
@@ -89,4 +72,9 @@ public class Option {
   public void setOptionScores(List<OptionScore> optionScores) {
     this.optionScores = optionScores;
   }
+
+  public ScoreType() {
+
+  }
 }
+

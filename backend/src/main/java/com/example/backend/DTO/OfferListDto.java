@@ -12,6 +12,7 @@ public class OfferListDto {
     this.items = new ArrayList<>();
   }
 
+
   public List<OfferDto> getItems() {
     return items;
   }

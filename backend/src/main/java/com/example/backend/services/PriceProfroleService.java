@@ -26,7 +26,7 @@ public class PriceProfroleService {
   }
 
   @Transactional(readOnly = true)
-  public List<PriceProfrole> getPriceGroupsByProfroleId(Long profroleId) {
+  public List<Long> getPriceGroupsByProfroleId(List<Long> profroleId) {
     return priceProfroleDao.findByProfroleId(profroleId);
   }
 }
