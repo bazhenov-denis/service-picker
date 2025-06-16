@@ -2,7 +2,7 @@ package com.example.backend.controllers;
 
 import com.example.backend.DTO.ClaimDto;
 import com.example.backend.DTO.OfferListDto;
-import com.example.backend.services.OfferService;
+import com.example.backend.services.OfferServiceScoring;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OfferController {
   @Autowired
-  private OfferService offerService;
+  private OfferServiceScoring offerService;
 
   @Operation(summary = "Pick offers by user data")
   @ApiResponses(value = {

@@ -1,7 +1,7 @@
 package com.example.backend.services;
 
 import com.example.backend.DTO.*;
-import com.example.backend.exception.ApiException;
+import com.example.backend.exceptions.ApiException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;

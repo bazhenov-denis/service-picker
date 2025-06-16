@@ -1,10 +1,11 @@
 package com.example.backend.DAO;
 
-import com.example.backend.models.PriceProfrole;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import java.util.Collection;
+import java.util.Collections;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,12 +16,17 @@ public class PriceProfroleDao {
   @PersistenceContext
   private EntityManager entityManager;
 
-  public List<PriceProfrole> findByProfroleId(Long profroleId) {
-    String jpql = "SELECT p FROM PriceProfrole p JOIN p.profroles pr WHERE pr.id = :profroleId";
-    TypedQuery<PriceProfrole> query = entityManager.createQuery(jpql, PriceProfrole.class);
-    query.setParameter("profroleId", profroleId);
+  public List<Long> findByProfroleId(Collection<Long> profroleIds) {
+    if (profroleIds == null || profroleIds.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    String jpql = "SELECT DISTINCT p.id FROM PriceProfrole p JOIN p.profroles pr WHERE pr.id IN :profroleIds";
+    TypedQuery<Long> query = entityManager.createQuery(jpql, Long.class);
+    query.setParameter("profroleIds", profroleIds);
     return query.getResultList();
   }
+
 
   public String findProfroleNameById(Long profroleId) {
     try {
