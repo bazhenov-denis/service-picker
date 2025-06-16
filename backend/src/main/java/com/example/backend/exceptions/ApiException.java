@@ -1,4 +1,4 @@
-package com.example.backend.exception;
+package com.example.backend.exceptions;
 
 public class ApiException extends RuntimeException {
 

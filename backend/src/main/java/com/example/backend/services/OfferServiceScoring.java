@@ -1,15 +1,16 @@
 package com.example.backend.services;
 
-import com.example.backend.DAO.OfferDao;
+import com.example.backend.DAO.OfferDaoImpl;
 import com.example.backend.DTO.ClaimDto;
-import com.example.backend.DTO.OfferDto;
 import com.example.backend.DTO.OfferListDto;
 import com.example.backend.DTO.ProcessingResult;
+import com.example.backend.handlers.CriteriaHandler;
 import com.example.backend.models.Offer;
+import com.example.backend.query.OfferMapper;
+import com.example.backend.query.QueryBuilder;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,68 +20,45 @@ public class OfferServiceScoring implements OfferService {
 
   private static final Logger log = LoggerFactory.getLogger(OfferServiceScoring.class);
   private final AnswerProcessingService answerProcessingService;
-  private final OfferDao offerDao;
-  private final PriceRegionService priceRegionService;
-  private final PriceProfroleService priceProfroleService;
-  private final Random random = new Random();
+  private final List<CriteriaHandler> handlers;
+  private final OfferMapper offerMapper;
+  private final OfferDaoImpl offerDaoImpl;
 
-  public OfferServiceScoring(AnswerProcessingService answerProcessingService,
-      OfferDao offerDao,
-      PriceRegionService priceRegionService,
-      PriceProfroleService priceProfroleService) {
+  public OfferServiceScoring(
+      AnswerProcessingService answerProcessingService,
+      List<CriteriaHandler> handlers, OfferMapper offerMapper,
+      OfferDaoImpl offerDaoImpl
+  ) {
     this.answerProcessingService = answerProcessingService;
-    this.offerDao = offerDao;
-    this.priceRegionService = priceRegionService;
-    this.priceProfroleService = priceProfroleService;
+    this.handlers = handlers;
+
+    this.offerMapper = offerMapper;
+    this.offerDaoImpl = offerDaoImpl;
   }
 
   @Override
   public OfferListDto pick(ClaimDto claim) {
-    // 1) Сначала скорим
+    log.info(claim.toString());
     ProcessingResult result = answerProcessingService.process(claim);
     log.info("ProcessingResult: {}", result);
-    log.info(claim.toString());
 
-    // 2) Из ProcessingResult вытягиваем списки фильтров
-    List<Long> regionIds = result.getRegionIds();
-    List<Long> profroleIds = result.getProfRoleIds();
 
-    // 3) Получаем все подходящие офферы
-    List<Offer> offers = offerDao.getByRegionAndProfroleGroup(regionIds, profroleIds);
-    if (offers.isEmpty()) {
-      // нет ни одного — вернём пустой список
-      return new OfferListDto();
+    QueryBuilder qb = new QueryBuilder();
+    for (CriteriaHandler handler : handlers) {
+      handler.apply(result, qb);
     }
+    log.debug("SQL: {}", qb.buildSql());
+    log.debug("Params: {}", qb.getParams());
+    List<Offer> offers = offerDaoImpl.findOffers(qb.buildSql(), qb.getParams());
 
-    // 4) Ищем самый дорогой
-    Optional<Offer> bestOpt = offers.stream()
-        .max(Comparator.comparingDouble(Offer::getPriceAll));
+    offers.sort(Comparator.comparingDouble(Offer::getPriceAll));
 
-    Offer bestOffer = bestOpt.get();
+    OfferListDto dtoList = new OfferListDto();
+    offers.stream()
+        .map(offerMapper::toDto)
+        .forEach(dtoList::add);
 
-    // 5) Генерим «случайные» vacancyType и apiLimitedCount
-    String[] types = {"open", "closed", "limited"};
-    String vacancyType = types[random.nextInt(types.length)];
-    String apiLimitedCount = String.valueOf(10 + random.nextInt(91)); // от 10 до 100
+    return dtoList;
 
-    // 6) Составляем OfferDto (как в вашем примере)
-    OfferDto dto = new OfferDto(
-        "Оптимальный",                                      // label
-        bestOffer.getCode(),                                // type
-        bestOffer.getTariff(),                              // title
-        bestOffer.getPeriod().toString(),                   // period
-        priceRegionService.getRegionNameById(bestOffer.getRegionId()),
-        priceProfroleService.getProfroleNameById(
-            bestOffer.getProfroleGroupId().longValue()
-        ),
-        Double.toString(bestOffer.getPriceAll() / 100.0),   // цена в рублях
-        vacancyType,
-        String.valueOf(bestOffer.getChildCount1()),        // vacancyCount
-        String.valueOf(bestOffer.getChildCount2()),        // civCount
-        apiLimitedCount
-    );
-    OfferListDto offerListDto = new OfferListDto();
-    offerListDto.add(dto);
-    return offerListDto;
   }
 }

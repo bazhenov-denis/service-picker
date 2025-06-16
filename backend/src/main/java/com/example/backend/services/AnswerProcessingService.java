@@ -26,10 +26,12 @@ public class AnswerProcessingService {
   private final PriceRegionService priceRegionService;
   private final ApiService apiService;
 
-  public AnswerProcessingService(QuestionDao questionDao,
+  public AnswerProcessingService(
+      QuestionDao questionDao,
       PriceProfroleService priceProfroleService,
       PriceRegionService priceRegionService,
-      ApiService apiService) {
+      ApiService apiService
+  ) {
     this.questionDao = questionDao;
     this.priceProfroleService = priceProfroleService;
     this.priceRegionService = priceRegionService;
@@ -62,93 +64,82 @@ public class AnswerProcessingService {
 
       log.info("Обработка вопроса {} типа '{}' с ответами {}", id, type, values);
       switch (type) {
-        case "reference"     -> handleReference(id, values, result, regionIds, profRoleIds);
-        case "input"         -> handleInput(values, result);
+        case "reference" -> handleReference(id, values, result, regionIds, profRoleIds);
+        case "input" -> handleInput(values, result);
         case "single-choice" -> handleChoice(values, result);
-        default               -> log.warn("Неизвестный тип вопроса '{}' для ID {}", type, id);
+        default -> log.warn("Неизвестный тип вопроса '{}' для ID {}", type, id);
       }
     }
 
     if (!regionIds.isEmpty() && !profRoleIds.isEmpty()) {
-      log.info("Вызываем API подсчёта вакансий с регионами {} и профессиями {}", regionIds, profRoleIds);
       VacancyResult vacancy = apiService.getVacancyCount(
           regionIds.get(0).intValue(),
           profRoleIds.get(0).intValue()
       );
-      log.info("API вернул количество вакансий = {}", vacancy.getCount());
       result.addScore(ScoreCode.COMPETITION, vacancy.getCount());
     }
-
-    log.info("Итоговый ProcessingResult: {}", result);
     return result;
   }
 
   private void handleInput(List<String> values, ProcessingResult result) {
-    log.debug("  [handleInput] получены значения {}", values);
-    if (values == null || values.isEmpty()) return;
+    if (values == null || values.isEmpty()) {
+      return;
+    }
 
     try {
       long quantity = Long.parseLong(values.get(0));
-      log.debug("  Распознано MASS = {}", quantity);
       result.addScore(ScoreCode.MASS, quantity);
     } catch (NumberFormatException e) {
-      log.warn("  Не удалось распарсить MASS из '{}'", values.get(0));
+      log.warn("Incorrect input");
     }
   }
 
   private void handleChoice(List<String> values, ProcessingResult result) {
 
     log.info("  [handleChoice] получены значения {}", values);
-    if (values == null || values.isEmpty()) return;
+    if (values == null || values.isEmpty()) {
+      return;
+    }
 
     List<Long> optionIds = values.stream().map(s -> {
-          try { return Long.parseLong(s); }
-          catch (NumberFormatException ex) {
-            log.warn("Неверный optionId '{}'");
+          try {
+            return Long.parseLong(s);
+          } catch (NumberFormatException ex) {
+            log.warn("Incorrect optionId");
             return null;
           }
         })
         .filter(Objects::nonNull)
         .toList();
 
-    log.info("    Распознанные optionIds = {}", optionIds);
-
-    if (optionIds.isEmpty()) return;
-
+    if (optionIds.isEmpty()) {
+      return;
+    }
     List<OptionScore> allScores = questionDao.findScoresByOptionIds(optionIds);
-
-    log.info("    Загружены OptionScore = {}", allScores);
-
     for (OptionScore os : allScores) {
       ScoreCode code = ScoreCode.fromCode(os.getScoreType().getCode());
       if (code != null) {
         long weight = os.getWeight();
-
-        log.info("      Добавляем балл {} = {}", code, weight);
-
         result.addScore(code, weight);
       }
     }
   }
 
-  private void handleReference(Long id,
+  private void handleReference(
+      Long id,
       List<String> values,
       ProcessingResult result,
       List<Long> regionIds,
-      List<Long> profRoleIds) {
-    log.debug("  [handleReference] вопрос {} значения {}", id, values);
+      List<Long> profRoleIds
+  ) {
     String refType = questionDao.findReferenceTypeByQuestionId(id).orElse("");
-    log.debug("    referenceType = '{}'", refType);
-
     if ("regions".equals(refType)) {
       for (String raw : values) {
         String[] parts = raw.split("\\.");
         long areaId = Long.parseLong(parts[1]);
         regionIds.add(areaId);
-        log.debug("      Распознан regionId = {}", areaId);
       }
       List<Long> priceRegion = priceRegionService.getAreaIdsByRegionIds(regionIds);
-      log.debug("    Идентификаторы региональных цен = {}", priceRegion);
       result.setRegionIds(priceRegion);
 
     } else if ("professions".equals(refType)) {
@@ -156,13 +147,11 @@ public class AnswerProcessingService {
           .map(Long::valueOf)
           .toList();
       profRoleIds.addAll(list);
-      log.debug("    Распознанные profRoleIds = {}", list);
       List<Long> priceProf = priceProfroleService.getPriceGroupsByProfroleId(list);
-      log.debug("    Идентификаторы цен по профессиям = {}", priceProf);
       result.setProfRoleIds(priceProf);
 
     } else {
-      log.warn("    Неизвестный referenceType = '{}'", refType);
+      log.warn("Неизвестный referenceType = '{}'", refType);
     }
   }
 }

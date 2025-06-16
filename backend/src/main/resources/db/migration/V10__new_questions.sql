@@ -1,5 +1,3 @@
-
--- 2) Вставляем заново, сразу со всеми новыми колонками
 INSERT INTO questions (id, type, question_text, reference_type, is_required,
                        short_title, position)
 VALUES (5, 'single-choice', 'Как часто вы ищете сотрудников?', 'hiring_frequency', FALSE,
