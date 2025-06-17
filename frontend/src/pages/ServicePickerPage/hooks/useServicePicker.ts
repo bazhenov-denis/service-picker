@@ -197,6 +197,12 @@ export const useServicePicker = (questions: any[]) => {
         (acc, [key, value]) => {
           const question = questions.find((q) => q.id.toString() === key);
 
+          console.log(`Обработка вопроса ${key}:`, {
+            value,
+            questionType: question?.type,
+            referenceType: question?.referenceType,
+          });
+
           if (!question) return acc;
 
           let stringValue: string;
@@ -205,29 +211,61 @@ export const useServicePicker = (questions: any[]) => {
             if (question.referenceType === "regions") {
               if (Array.isArray(value)) {
                 stringValue = value[0].toString();
+                console.log(
+                  `Регион: преобразование ${value[0]} -> ${stringValue}`,
+                );
               } else {
                 const path = findRegionPath(
                   regionsCollection,
                   String(value),
                 ).join(".");
                 stringValue = path || String(value);
+                console.log(
+                  `Регион: преобразование ${value} -> ${stringValue}`,
+                );
               }
             } else if (question.referenceType === "professions") {
+              const extractRoleId = (path: string) => {
+                const categoryMatch = path.match(/category_(\d+)$/);
+                if (categoryMatch) {
+                  console.log(
+                    `Найдена категория в профессиях: ${path} -> ${categoryMatch[1]}`,
+                  );
+                  return categoryMatch[1];
+                }
+                const roleMatch = path.match(/role_(\d+)$/);
+                return roleMatch ? roleMatch[1] : path;
+              };
+
               stringValue = Array.isArray(value)
-                ? getOriginalId(String(value[0]))
-                : getOriginalId(String(value));
+                ? extractRoleId(String(value[0]))
+                : extractRoleId(String(value));
+              console.log(
+                `Профессия/Категория: преобразование ${value} -> ${stringValue}`,
+              );
             } else {
+              const extractCategoryId = (path: string) => {
+                const match = path.match(/category_(\d+)$/);
+                const result = match ? match[1] : path;
+                console.log(`Категория: преобразование ${path} -> ${result}`);
+                return result;
+              };
+
               stringValue = Array.isArray(value)
-                ? String(value[0])
-                : String(value);
+                ? extractCategoryId(String(value[0]))
+                : extractCategoryId(String(value));
             }
           } else {
             stringValue = Array.isArray(value)
               ? String(value[0])
               : String(value);
+            console.log(
+              `Обычное значение: преобразование ${value} -> ${stringValue}`,
+            );
           }
 
           acc[question.id.toString()] = [stringValue];
+          console.log(`Итоговое значение для вопроса ${key}:`, [stringValue]);
           return acc;
         },
         {} as Record<string, string[]>,

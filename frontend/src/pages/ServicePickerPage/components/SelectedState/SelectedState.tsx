@@ -8,13 +8,37 @@ interface SelectedStateProps {
   questions: Question[];
   answers: Record<number, any>;
   getDisplayValue: (questionId: number, value: any) => string[];
+  onQuestionClick?: (questionId: number) => void;
+  onSegmentChange?: (segment: number) => void;
+  currentSegment?: number;
+  questionsPerSegment?: number;
 }
 
 export const SelectedState: React.FC<SelectedStateProps> = ({
   questions,
   answers,
   getDisplayValue,
+  onQuestionClick,
+  onSegmentChange,
+  currentSegment = 0,
+  questionsPerSegment = 3,
 }) => {
+  const handleQuestionClick = (questionId: number) => {
+    if (onSegmentChange) {
+      const questionIndex = questions.findIndex((q) => q.id === questionId);
+      if (questionIndex !== -1) {
+        const targetSegment = Math.floor(questionIndex / questionsPerSegment);
+        if (targetSegment !== currentSegment) {
+          onSegmentChange(targetSegment);
+        }
+      }
+    }
+
+    if (onQuestionClick) {
+      onQuestionClick(questionId);
+    }
+  };
+
   const renderAnswer = (question: Question) => {
     const value = answers[question.id];
     if (value === undefined || value === null) return null;
@@ -23,7 +47,11 @@ export const SelectedState: React.FC<SelectedStateProps> = ({
     if (!displayValues?.length) return null;
 
     return (
-      <div className={styles.parameter} key={question.id}>
+      <div
+        className={styles.parameter}
+        key={question.id}
+        onClick={() => handleQuestionClick(question.id)}
+      >
         <Text typography="subtitle-1-semibold" className={styles.question}>
           {question.questionText}
         </Text>
