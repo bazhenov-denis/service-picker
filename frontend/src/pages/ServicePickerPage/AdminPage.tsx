@@ -21,6 +21,7 @@ const AdminPage: React.FC = () => {
     handleMoveQuestionUp,
     handleMoveQuestionDown,
     handleToggleActive,
+    handleQuestionTypeChange,
   } = useAdminQuestions();
 
   return (
@@ -182,6 +183,7 @@ const AdminPage: React.FC = () => {
                       };
                       setAdminQuestions(newQuestions);
                     }}
+                    onQuestionTypeChange={handleQuestionTypeChange}
                   />
                 </div>
                 <div

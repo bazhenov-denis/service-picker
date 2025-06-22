@@ -36,6 +36,10 @@ interface Props {
   onOptionChange?: (optIdx: number, field: string, value: any) => void;
   onOptionAdd?: () => void;
   onOptionRemove?: (optIdx: number) => void;
+  onQuestionTypeChange?: (
+    questionId: number,
+    newType: "single-choice" | "multiple-choice",
+  ) => void;
 }
 
 const SingleChoice: React.FC<Props> = ({
@@ -49,6 +53,7 @@ const SingleChoice: React.FC<Props> = ({
   onOptionChange,
   onOptionAdd,
   onOptionRemove,
+  onQuestionTypeChange,
 }) => {
   useEffect(() => {
     document.body.classList.add("magritte-old-layout");
@@ -81,6 +86,33 @@ const SingleChoice: React.FC<Props> = ({
             marginBottom: 8,
           }}
         />
+        <div style={{ marginBottom: 16 }}>
+          <span style={{ marginRight: 8 }}>Тип вопроса:</span>
+          <label style={{ marginRight: 8 }}>
+            <input
+              type="radio"
+              name={`question-type-${question.id}`}
+              value="single-choice"
+              checked={true}
+              onChange={() =>
+                onQuestionTypeChange?.(question.id, "single-choice")
+              }
+            />
+            Одиночный выбор
+          </label>
+          <label>
+            <input
+              type="radio"
+              name={`question-type-${question.id}`}
+              value="multiple-choice"
+              checked={false}
+              onChange={() =>
+                onQuestionTypeChange?.(question.id, "multiple-choice")
+              }
+            />
+            Множественный выбор
+          </label>
+        </div>
         <div style={{ marginLeft: 16 }}>
           {question.options?.map((opt, optIdx) => (
             <div

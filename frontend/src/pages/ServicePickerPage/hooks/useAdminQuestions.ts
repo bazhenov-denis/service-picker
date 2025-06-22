@@ -54,6 +54,23 @@ export function useAdminQuestions() {
     setAdminQuestions(newQuestions);
   }
 
+  function handleQuestionTypeChange(
+    questionId: number,
+    newType: "single-choice" | "multiple-choice",
+  ) {
+    setAdminQuestions((prevQuestions) =>
+      prevQuestions.map((q) => {
+        if (q.id === questionId) {
+          if (q.type === "single-choice" || q.type === "multiple-choice") {
+            // @ts-ignore
+            return { ...q, type: newType };
+          }
+        }
+        return q;
+      }),
+    );
+  }
+
   return {
     adminQuestions,
     setAdminQuestions,
@@ -63,5 +80,6 @@ export function useAdminQuestions() {
     handleMoveQuestionUp,
     handleMoveQuestionDown,
     handleToggleActive,
+    handleQuestionTypeChange,
   };
 }

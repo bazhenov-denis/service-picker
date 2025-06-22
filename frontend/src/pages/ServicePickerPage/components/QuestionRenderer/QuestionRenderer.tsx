@@ -30,6 +30,10 @@ interface Props {
   onOptionChange?: (optIdx: number, field: string, value: any) => void;
   onOptionAdd?: () => void;
   onOptionRemove?: (optIdx: number) => void;
+  onQuestionTypeChange?: (
+    questionId: number,
+    newType: "single-choice" | "multiple-choice",
+  ) => void;
 }
 
 const isStringArray = (arr: unknown): arr is string[] => {
@@ -59,6 +63,7 @@ const QuestionRenderer: React.FC<Props> = ({
   onOptionChange,
   onOptionAdd,
   onOptionRemove,
+  onQuestionTypeChange,
 }) => {
   const handleChange = (value: unknown) => {
     onChange(value);
@@ -123,6 +128,7 @@ const QuestionRenderer: React.FC<Props> = ({
         onOptionChange={onOptionChange}
         onOptionAdd={onOptionAdd}
         onOptionRemove={onOptionRemove}
+        onQuestionTypeChange={onQuestionTypeChange}
       />
     );
   }
@@ -140,6 +146,7 @@ const QuestionRenderer: React.FC<Props> = ({
         onOptionChange={onOptionChange}
         onOptionAdd={onOptionAdd}
         onOptionRemove={onOptionRemove}
+        onQuestionTypeChange={onQuestionTypeChange}
       />
     );
   }
