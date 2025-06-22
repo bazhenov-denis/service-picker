@@ -96,112 +96,103 @@ const App: React.FC = () => {
     return <div>Ошибка: {questionsError}</div>;
   }
 
+  function renderServicePickerContent({ showSelectedState, showProgress, showButton, allQuestions }: { showSelectedState: boolean, showProgress: boolean, showButton: boolean, allQuestions: boolean }) {
+    const questionsToRender = allQuestions ? (questions || []) : currentSegmentQuestions;
+    return (
+      <div className={styles.container}>
+        <GridLayout>
+          <GridRow>
+            <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
+              {/* Пустые колонки слева */}
+            </GridColumn>
+            <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
+              <div className={styles.mainContent}>
+                <div className={styles.questionsContainer}>
+                  {questionsToRender.map((question) => {
+                    const collection =
+                      question.type === "reference" &&
+                      (question as ReferenceQuestion).referenceType === "regions"
+                        ? regionsCollection
+                        : question.type === "reference" &&
+                          (question as ReferenceQuestion).referenceType === "professions"
+                          ? professionsCollection
+                          : undefined;
+                    return (
+                      <div key={question.id} id={`question-${question.id}`}>
+                        <QuestionRenderer
+                          question={question}
+                          answer={answers[question.id]}
+                          onChange={(value) => setAnswer(question.id, value)}
+                          error={validationErrors[question.id]}
+                          collection={collection}
+                          getDisplayValue={
+                            getDisplayValue as (
+                              questionId: number,
+                              value: any,
+                            ) => string[]
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                {showButton && isLastSegment && (
+                  <ServicePickerButton
+                    onSubmit={handleSubmit}
+                    isLoading={isLoading}
+                    questions={questions || []}
+                    answers={answers}
+                  />
+                )}
+                {showProgress && (
+                  <ProgressNavigation
+                    currentSegment={currentSegment}
+                    totalSegments={totalSegments}
+                    onSegmentChange={handleSegmentChange}
+                    canProceed={canProceedToNext}
+                    isLastSegment={isLastSegment}
+                  />
+                )}
+                {isLastSegment && offer && <OfferDisplay offer={offer} />}
+                {error && <div className={styles.error}>{error}</div>}
+              </div>
+            </GridColumn>
+            <GridColumn xs={4} s={1} m={1} l={1} xl={1} xxl={1}>
+              {/* Пустая колонка между контентом */}
+            </GridColumn>
+            {showSelectedState && (
+              <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
+                <SelectedState
+                  questions={questions || []}
+                  answers={answers}
+                  getDisplayValue={
+                    getDisplayValue as (
+                      questionId: number,
+                      value: any,
+                    ) => string[]
+                  }
+                  onQuestionClick={scrollToQuestion}
+                  onSegmentChange={handleSegmentChange}
+                  currentSegment={currentSegment}
+                  questionsPerSegment={QUESTIONS_PER_SEGMENT}
+                />
+              </GridColumn>
+            )}
+            <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>
+              {/* Пустые колонки справа */}
+            </GridColumn>
+          </GridRow>
+        </GridLayout>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.app}>
       <Header title={headerTitle} />
-      {/* Блок навигации удалён по требованию пользователя */}
       <Routes>
-        {/* Маршрут для главной страницы (Подборщик услуг) */}
-        <Route path="/" element={
-          <div className={styles.container}>
-            <GridLayout>
-              <GridRow>
-                <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
-                  {/* Пустые колонки слева */}
-                </GridColumn>
-                <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
-                  <div className={styles.mainContent}>
-                    <div className={styles.questionsContainer}>
-                      {currentSegmentQuestions.map((question) => {
-                        const collection =
-                          question.type === "reference" &&
-                          (question as ReferenceQuestion).referenceType ===
-                            "regions"
-                            ? regionsCollection
-                            : question.type === "reference" &&
-                              (question as ReferenceQuestion).referenceType ===
-                                "professions"
-                              ? professionsCollection
-                              : undefined;
-
-                        return (
-                          <div key={question.id} id={`question-${question.id}`}>
-                            <QuestionRenderer
-                              question={question}
-                              answer={answers[question.id]}
-                              onChange={(value) => setAnswer(question.id, value)}
-                              error={validationErrors[question.id]}
-                              collection={collection}
-                              getDisplayValue={
-                                getDisplayValue as (
-                                  questionId: number,
-                                  value: any,
-                                ) => string[]
-                              }
-                            />
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Кнопка отправки только в последнем сегменте */}
-                    {isLastSegment && (
-                      <ServicePickerButton
-                        onSubmit={handleSubmit}
-                        isLoading={isLoading}
-                        questions={questions || []}
-                        answers={answers}
-                      />
-                    )}
-
-                    {/* Компонент навигации с прогресс-баром в самом низу */}
-                    <ProgressNavigation
-                      currentSegment={currentSegment}
-                      totalSegments={totalSegments}
-                      onSegmentChange={handleSegmentChange}
-                      canProceed={canProceedToNext}
-                      isLastSegment={isLastSegment}
-                    />
-
-                    {/* OfferDisplay только в последнем сегменте */}
-                    {isLastSegment && offer && <OfferDisplay offer={offer} />}
-                    {error && <div className={styles.error}>{error}</div>}
-                  </div>
-                </GridColumn>
-                <GridColumn xs={4} s={1} m={1} l={1} xl={1} xxl={1}>
-                  {/* Пустая колонка между контентом */}
-                </GridColumn>
-                <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
-                  <SelectedState
-                    questions={questions || []}
-                    answers={answers}
-                    getDisplayValue={
-                      getDisplayValue as (
-                        questionId: number,
-                        value: any,
-                      ) => string[]
-                    }
-                    onQuestionClick={scrollToQuestion}
-                    onSegmentChange={handleSegmentChange}
-                    currentSegment={currentSegment}
-                    questionsPerSegment={QUESTIONS_PER_SEGMENT}
-                  />
-                </GridColumn>
-                <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>
-                  {/* Пустые колонки справа */}
-                </GridColumn>
-              </GridRow>
-            </GridLayout>
-          </div>
-        } />
-
-        {/* Маршрут для админ-панели */}
-        <Route path="/admin" element={
-          <div style={{ padding: '20px', textAlign: 'center' }}>
-            <p>Это место для будущего контента админ-панели.</p>
-            {/* Здесь можно добавить компоненты для управления административными функциями */}
-          </div>
-        } />
+        <Route path="/" element={renderServicePickerContent({ showSelectedState: true, showProgress: true, showButton: true, allQuestions: false })} />
+        <Route path="/admin" element={renderServicePickerContent({ showSelectedState: false, showProgress: false, showButton: false, allQuestions: true })} />
       </Routes>
     </div>
   );
