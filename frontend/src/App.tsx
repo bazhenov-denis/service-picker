@@ -1,7 +1,6 @@
-import React, { useState, useMemo, useEffect } from "react"; // Добавлен useEffect для использования в App
+import React, { useState, useMemo, useEffect } from "react";
 import { GridLayout, GridRow, GridColumn } from "@hh.ru/magritte-ui-grid";
-import { Routes, Route, useLocation, Link } from "react-router-dom"; // Импортируем Routes, Route, useLocation, Link
-// Убедитесь, что все следующие импорты существуют в вашем проекте
+import { Routes, Route, useLocation, Link } from "react-router-dom";
 import QuestionRenderer from "./pages/ServicePickerPage/components/QuestionRenderer/QuestionRenderer";
 import ServicePickerButton from "./pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton";
 import OfferDisplay from "./pages/ServicePickerPage/components/OfferDisplay/OfferDisplay";
@@ -18,9 +17,9 @@ import Header from "./pages/ServicePickerPage/components/Header/Header";
 const QUESTIONS_PER_SEGMENT = 3;
 
 const App: React.FC = () => {
-  const location = useLocation(); // Хук useLocation для определения текущего пути
+  const location = useLocation();
   const headerTitle =
-    location.pathname === "/admin" ? "Админ-панель" : "Подборщик услуг"; // Динамический заголовок
+    location.pathname === "/admin" ? "Админ-панель" : "Подборщик услуг";
 
   const questionsRole = location.pathname === "/admin" ? "admin" : "client";
   const {
@@ -78,24 +77,14 @@ const App: React.FC = () => {
     setCurrentSegment(newSegment);
   };
 
-  // Если App сам по себе загружает вопросы, это должно происходить всегда
-  // Если логика загрузки вопросов должна быть только на главной, можно добавить условие
   useEffect(() => {
-    // Этот useEffect вызывается при монтировании App.
-    // Если useQuestions уже управляет своей загрузкой, то явно dispatch fetchQuestions здесь не нужно,
-    // так как хуки useServicePicker, useRegions, useProfessions, useQuestions уже это делают.
-    // Если App должен диспатчить глобальный fetchRegions из Redux store, то нужно использовать useAppDispatch.
-    // Для данного контекста, считаем, что useQuestions уже инициирует загрузку.
-  }, []); // Пустой массив зависимостей означает, что эффект запустится один раз при монтировании
+  }, []);
 
-  // Блокируем отображение основного контента подборщика, если есть ошибки или загрузка вопросов
   if (questionsLoading && location.pathname !== "/admin") {
-    // Показываем загрузку только для подборщика
     return <div>Загрузка вопросов...</div>;
   }
 
   if (questionsError && location.pathname !== "/admin") {
-    // Показываем ошибку только для подборщика
     return <div>Ошибка: {questionsError}</div>;
   }
 
