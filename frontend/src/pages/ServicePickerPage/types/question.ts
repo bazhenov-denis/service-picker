@@ -5,6 +5,8 @@ export interface QuestionBase {
   questionText: string;
   isRequired: boolean;
   type: string;
+  active: boolean;
+  position: number;
 }
 
 export interface ReferenceQuestion extends QuestionBase {

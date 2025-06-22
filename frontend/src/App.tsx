@@ -13,6 +13,7 @@ import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
 import type { ReferenceQuestion } from "./pages/ServicePickerPage/types/question";
 import Header from "./pages/ServicePickerPage/components/Header/Header";
+import { PenOutlinedSize24, EyeOutlinedSize24, EyeCrossedOutlinedSize24, ArrowUpOutlinedSize24, ArrowDownOutlinedSize24, CrossOutlinedSize24 } from '@hh.ru/magritte-ui-icon/variants/icon';
 
 const QUESTIONS_PER_SEGMENT = 3;
 
@@ -41,6 +42,7 @@ const App: React.FC = () => {
   } = useServicePicker(questions || []);
 
   const [currentSegment, setCurrentSegment] = useState(0);
+  const [editModeId, setEditModeId] = useState<number | null>(null);
 
   const totalSegments = useMemo(() => {
     return Math.ceil((questions?.length || 0) / QUESTIONS_PER_SEGMENT);
@@ -112,7 +114,7 @@ const App: React.FC = () => {
             <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
               <div className={styles.mainContent}>
                 <div className={styles.questionsContainer}>
-                  {questionsToRender.map((question) => {
+                  {questionsToRender.map((question, idx) => {
                     const collection =
                       question.type === "reference" &&
                       (question as ReferenceQuestion).referenceType ===
@@ -123,21 +125,124 @@ const App: React.FC = () => {
                               "professions"
                           ? professionsCollection
                           : undefined;
+                    const isAdmin = location.pathname === "/admin";
                     return (
-                      <div key={question.id} id={`question-${question.id}`}>
-                        <QuestionRenderer
-                          question={question}
-                          answer={answers[question.id]}
-                          onChange={(value) => setAnswer(question.id, value)}
-                          error={validationErrors[question.id]}
-                          collection={collection}
-                          getDisplayValue={
-                            getDisplayValue as (
-                              questionId: number,
-                              value: any,
-                            ) => string[]
-                          }
-                        />
+                      <div key={question.id} id={`question-${question.id}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                        <div style={{ flex: 1 }}>
+                          <QuestionRenderer
+                            question={question}
+                            answer={answers[question.id]}
+                            onChange={(value) => setAnswer(question.id, value)}
+                            error={validationErrors[question.id]}
+                            collection={collection}
+                            getDisplayValue={
+                              getDisplayValue as (
+                                questionId: number,
+                                value: any,
+                              ) => string[]
+                            }
+                          />
+                        </div>
+                        {isAdmin && (
+                          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 8, marginLeft: 16 }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minHeight: 144, justifyContent: 'center' }}>
+                              {editModeId === question.id && (
+                                <button
+                                  aria-label="Вверх"
+                                  disabled={idx === 0}
+                                  onClick={() => {
+                                    // TODO: обработчик перемещения вверх
+                                  }}
+                                  style={{ cursor: idx === 0 ? 'not-allowed' : 'pointer', background: 'none', border: 'none', padding: 0 }}
+                                >
+                                  <ArrowUpOutlinedSize24
+                                    initialColor={idx === 0 ? 'secondary' : 'primary'}
+                                    backgroundStyle={'primary'}
+                                    borderRadius={12}
+                                    shadow="level-1"
+                                    padding={16}
+                                    increaseShadow={true}
+                                  />
+                                </button>
+                              )}
+                              <button
+                                aria-label={editModeId === question.id ? "Закрыть режим редактирования" : "Редактировать"}
+                                onClick={() => setEditModeId(editModeId === question.id ? null : question.id)}
+                                style={{ background: 'none', border: 'none', padding: 0 }}
+                              >
+                                {editModeId === question.id ? (
+                                  <CrossOutlinedSize24
+                                    initialColor="primary"
+                                    backgroundStyle={'primary'}
+                                    borderRadius={12}
+                                    shadow="level-1"
+                                    padding={16}
+                                    increaseShadow={true}
+                                  />
+                                ) : (
+                                  <PenOutlinedSize24
+                                    initialColor="primary"
+                                    backgroundStyle={'primary'}
+                                    borderRadius={12}
+                                    shadow="level-1"
+                                    padding={16}
+                                    increaseShadow={true}
+                                  />
+                                )}
+                              </button>
+                              {editModeId === question.id && (
+                                <button
+                                  aria-label="Вниз"
+                                  disabled={idx === questionsToRender.length - 1}
+                                  onClick={() => {
+                                    // TODO: обработчик перемещения вниз
+                                  }}
+                                  style={{ cursor: idx === questionsToRender.length - 1 ? 'not-allowed' : 'pointer', background: 'none', border: 'none', padding: 0 }}
+                                >
+                                  <ArrowDownOutlinedSize24
+                                    initialColor={idx === questionsToRender.length - 1 ? 'secondary' : 'primary'}
+                                    backgroundStyle={'primary'}
+                                    borderRadius={12}
+                                    shadow="level-1"
+                                    padding={16}
+                                    increaseShadow={true}
+                                  />
+                                </button>
+                              )}
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 144 }}>
+                              {editModeId === question.id && (
+                                <button
+                                  aria-label={question.active ? "Сделать неактивным" : "Сделать активным"}
+                                  onClick={() => {
+                                    // TODO: обработчик изменения активности
+                                  }}
+                                  style={{ background: 'none', border: 'none', padding: 0 }}
+                                >
+                                  {question.active ? (
+                                    <EyeOutlinedSize24
+                                      initialColor="primary"
+                                      backgroundStyle={'primary'}
+                                      borderRadius={12}
+                                      shadow="level-1"
+                                      padding={16}
+                                      increaseShadow={true}
+                                    />
+                                  ) : (
+                                    <EyeCrossedOutlinedSize24
+                                      initialColor="secondary"
+                                      backgroundStyle={'primary'}
+                                      borderRadius={12}
+                                      shadow="level-1"
+                                      padding={16}
+                                      increaseShadow={true}
+                                    />
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
