@@ -2,11 +2,15 @@
 import { FC } from "react";
 import styles from "./Header.module.css"; // Импорт CSS-модуля
 
-const Header: FC = () => {
+interface HeaderProps {
+  title: string;
+}
+
+const Header: FC<HeaderProps> = ({ title }) => {
   return (
     <div className={styles.headerContainer}>
       <img className={styles.logo} src="/hh-logo.svg" alt="Логотип" />
-      <h1 className={styles.title}>Подборщик услуг</h1>
+      <h1 className={styles.title}>{title}</h1>
     </div>
   );
 };

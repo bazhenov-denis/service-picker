@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react"; // Добавлен useEffect для использования в App
 import { GridLayout, GridRow, GridColumn } from "@hh.ru/magritte-ui-grid";
-import Header from "./pages/ServicePickerPage/components/Header/Header";
+import { Routes, Route, useLocation, Link } from "react-router-dom"; // Импортируем Routes, Route, useLocation, Link
+// Убедитесь, что все следующие импорты существуют в вашем проекте
 import QuestionRenderer from "./pages/ServicePickerPage/components/QuestionRenderer/QuestionRenderer";
 import ServicePickerButton from "./pages/ServicePickerPage/components/ServicePickerButton/ServicePickerButton";
 import OfferDisplay from "./pages/ServicePickerPage/components/OfferDisplay/OfferDisplay";
@@ -12,10 +13,15 @@ import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
 import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
 import type { ReferenceQuestion } from "./pages/ServicePickerPage/types/question";
+import Header from "./pages/ServicePickerPage/components/Header/Header";
 
 const QUESTIONS_PER_SEGMENT = 3;
 
 const App: React.FC = () => {
+  const location = useLocation(); // Хук useLocation для определения текущего пути
+  const headerTitle = location.pathname === "/admin" ? "Админ-панель" : "Подборщик услуг"; // Динамический заголовок
+
+  // Здесь оставлена существующая логика для подборщика услуг
   const {
     questions,
     isLoading: questionsLoading,
@@ -71,107 +77,132 @@ const App: React.FC = () => {
     setCurrentSegment(newSegment);
   };
 
-  if (questionsLoading) {
+  // Если App сам по себе загружает вопросы, это должно происходить всегда
+  // Если логика загрузки вопросов должна быть только на главной, можно добавить условие
+  useEffect(() => {
+    // Этот useEffect вызывается при монтировании App.
+    // Если useQuestions уже управляет своей загрузкой, то явно dispatch fetchQuestions здесь не нужно,
+    // так как хуки useServicePicker, useRegions, useProfessions, useQuestions уже это делают.
+    // Если App должен диспатчить глобальный fetchRegions из Redux store, то нужно использовать useAppDispatch.
+    // Для данного контекста, считаем, что useQuestions уже инициирует загрузку.
+  }, []); // Пустой массив зависимостей означает, что эффект запустится один раз при монтировании
+
+  // Блокируем отображение основного контента подборщика, если есть ошибки или загрузка вопросов
+  if (questionsLoading && location.pathname !== "/admin") { // Показываем загрузку только для подборщика
     return <div>Загрузка вопросов...</div>;
   }
 
-  if (questionsError) {
+  if (questionsError && location.pathname !== "/admin") { // Показываем ошибку только для подборщика
     return <div>Ошибка: {questionsError}</div>;
   }
 
   return (
     <div className={styles.app}>
-      <Header />
-      <div className={styles.container}>
-        <GridLayout>
-          <GridRow>
-            <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
-              {/* Пустые колонки слева */}
-            </GridColumn>
-            <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
-              <div className={styles.mainContent}>
-                <div className={styles.questionsContainer}>
-                  {currentSegmentQuestions.map((question) => {
-                    const collection =
-                      question.type === "reference" &&
-                      (question as ReferenceQuestion).referenceType ===
-                        "regions"
-                        ? regionsCollection
-                        : question.type === "reference" &&
-                            (question as ReferenceQuestion).referenceType ===
-                              "professions"
-                          ? professionsCollection
-                          : undefined;
+      <Header title={headerTitle} />
+      {/* Блок навигации удалён по требованию пользователя */}
+      <Routes>
+        {/* Маршрут для главной страницы (Подборщик услуг) */}
+        <Route path="/" element={
+          <div className={styles.container}>
+            <GridLayout>
+              <GridRow>
+                <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
+                  {/* Пустые колонки слева */}
+                </GridColumn>
+                <GridColumn xs={4} s={4} m={4} l={4} xl={4} xxl={4}>
+                  <div className={styles.mainContent}>
+                    <div className={styles.questionsContainer}>
+                      {currentSegmentQuestions.map((question) => {
+                        const collection =
+                          question.type === "reference" &&
+                          (question as ReferenceQuestion).referenceType ===
+                            "regions"
+                            ? regionsCollection
+                            : question.type === "reference" &&
+                              (question as ReferenceQuestion).referenceType ===
+                                "professions"
+                              ? professionsCollection
+                              : undefined;
 
-                    return (
-                      <div key={question.id} id={`question-${question.id}`}>
-                        <QuestionRenderer
-                          question={question}
-                          answer={answers[question.id]}
-                          onChange={(value) => setAnswer(question.id, value)}
-                          error={validationErrors[question.id]}
-                          collection={collection}
-                          getDisplayValue={
-                            getDisplayValue as (
-                              questionId: number,
-                              value: any,
-                            ) => string[]
-                          }
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
+                        return (
+                          <div key={question.id} id={`question-${question.id}`}>
+                            <QuestionRenderer
+                              question={question}
+                              answer={answers[question.id]}
+                              onChange={(value) => setAnswer(question.id, value)}
+                              error={validationErrors[question.id]}
+                              collection={collection}
+                              getDisplayValue={
+                                getDisplayValue as (
+                                  questionId: number,
+                                  value: any,
+                                ) => string[]
+                              }
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
 
-                {/* Кнопка отправки только в последнем сегменте */}
-                {isLastSegment && (
-                  <ServicePickerButton
-                    onSubmit={handleSubmit}
-                    isLoading={isLoading}
+                    {/* Кнопка отправки только в последнем сегменте */}
+                    {isLastSegment && (
+                      <ServicePickerButton
+                        onSubmit={handleSubmit}
+                        isLoading={isLoading}
+                        questions={questions || []}
+                        answers={answers}
+                      />
+                    )}
+
+                    {/* Компонент навигации с прогресс-баром в самом низу */}
+                    <ProgressNavigation
+                      currentSegment={currentSegment}
+                      totalSegments={totalSegments}
+                      onSegmentChange={handleSegmentChange}
+                      canProceed={canProceedToNext}
+                      isLastSegment={isLastSegment}
+                    />
+
+                    {/* OfferDisplay только в последнем сегменте */}
+                    {isLastSegment && offer && <OfferDisplay offer={offer} />}
+                    {error && <div className={styles.error}>{error}</div>}
+                  </div>
+                </GridColumn>
+                <GridColumn xs={4} s={1} m={1} l={1} xl={1} xxl={1}>
+                  {/* Пустая колонка между контентом */}
+                </GridColumn>
+                <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
+                  <SelectedState
                     questions={questions || []}
                     answers={answers}
+                    getDisplayValue={
+                      getDisplayValue as (
+                        questionId: number,
+                        value: any,
+                      ) => string[]
+                    }
+                    onQuestionClick={scrollToQuestion}
+                    onSegmentChange={handleSegmentChange}
+                    currentSegment={currentSegment}
+                    questionsPerSegment={QUESTIONS_PER_SEGMENT}
                   />
-                )}
+                </GridColumn>
+                <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>
+                  {/* Пустые колонки справа */}
+                </GridColumn>
+              </GridRow>
+            </GridLayout>
+          </div>
+        } />
 
-                {/* Компонент навигации с прогресс-баром в самом низу */}
-                <ProgressNavigation
-                  currentSegment={currentSegment}
-                  totalSegments={totalSegments}
-                  onSegmentChange={handleSegmentChange}
-                  canProceed={canProceedToNext}
-                  isLastSegment={isLastSegment}
-                />
-
-                {/* OfferDisplay только в последнем сегменте */}
-                {isLastSegment && offer && <OfferDisplay offer={offer} />}
-                {error && <div className={styles.error}>{error}</div>}
-              </div>
-            </GridColumn>
-            <GridColumn xs={4} s={1} m={1} l={1} xl={1} xxl={1}>
-              {/* Пустая колонка между контентом */}
-            </GridColumn>
-            <GridColumn xs={4} s={2} m={2} l={2} xl={2} xxl={2}>
-              <SelectedState
-                questions={questions || []}
-                answers={answers}
-                getDisplayValue={
-                  getDisplayValue as (
-                    questionId: number,
-                    value: any,
-                  ) => string[]
-                }
-                onQuestionClick={scrollToQuestion}
-                onSegmentChange={handleSegmentChange}
-                currentSegment={currentSegment}
-                questionsPerSegment={QUESTIONS_PER_SEGMENT}
-              />
-            </GridColumn>
-            <GridColumn xs={4} s={5} m={5} l={5} xl={5} xxl={5}>
-              {/* Пустые колонки справа */}
-            </GridColumn>
-          </GridRow>
-        </GridLayout>
-      </div>
+        {/* Маршрут для админ-панели */}
+        <Route path="/admin" element={
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <p>Это место для будущего контента админ-панели.</p>
+            {/* Здесь можно добавить компоненты для управления административными функциями */}
+          </div>
+        } />
+      </Routes>
     </div>
   );
 };
