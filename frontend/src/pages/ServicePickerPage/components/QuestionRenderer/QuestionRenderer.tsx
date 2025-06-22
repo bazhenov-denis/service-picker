@@ -23,6 +23,13 @@ interface Props {
   error: string | null;
   collection?: TreeCollection;
   getDisplayValue?: (questionId: number, value: AnswerValue) => string[];
+  // admin mode
+  isAdmin?: boolean;
+  scoreTypes?: { id: number; code: string; title: string }[];
+  onQuestionTextChange?: (newText: string) => void;
+  onOptionChange?: (optIdx: number, field: string, value: any) => void;
+  onOptionAdd?: () => void;
+  onOptionRemove?: (optIdx: number) => void;
 }
 
 const isStringArray = (arr: unknown): arr is string[] => {
@@ -46,6 +53,12 @@ const QuestionRenderer: React.FC<Props> = ({
   error,
   collection,
   getDisplayValue,
+  isAdmin,
+  scoreTypes,
+  onQuestionTextChange,
+  onOptionChange,
+  onOptionAdd,
+  onOptionRemove,
 }) => {
   const handleChange = (value: unknown) => {
     onChange(value);
@@ -104,6 +117,12 @@ const QuestionRenderer: React.FC<Props> = ({
         selectedOption={typeof value === "number" ? value : null}
         onSelect={(id) => handleChange(id)}
         error={error}
+        isAdmin={isAdmin}
+        scoreTypes={scoreTypes}
+        onQuestionTextChange={onQuestionTextChange}
+        onOptionChange={onOptionChange}
+        onOptionAdd={onOptionAdd}
+        onOptionRemove={onOptionRemove}
       />
     );
   }
@@ -115,6 +134,12 @@ const QuestionRenderer: React.FC<Props> = ({
         selectedOptions={isNumberArray(answer) ? answer : []}
         onToggle={(ids) => handleChange(ids)}
         error={error}
+        isAdmin={isAdmin}
+        scoreTypes={scoreTypes}
+        onQuestionTextChange={onQuestionTextChange}
+        onOptionChange={onOptionChange}
+        onOptionAdd={onOptionAdd}
+        onOptionRemove={onOptionRemove}
       />
     );
   }
