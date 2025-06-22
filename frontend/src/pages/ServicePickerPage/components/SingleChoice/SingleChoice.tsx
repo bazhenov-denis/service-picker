@@ -71,37 +71,76 @@ const SingleChoice: React.FC<Props> = ({
         <input
           type="text"
           value={question.questionText}
-          onChange={e => onQuestionTextChange && onQuestionTextChange(e.target.value)}
-          style={{ fontWeight: 'bold', fontSize: 18, width: '100%', marginBottom: 8 }}
+          onChange={(e) =>
+            onQuestionTextChange && onQuestionTextChange(e.target.value)
+          }
+          style={{
+            fontWeight: "bold",
+            fontSize: 18,
+            width: "100%",
+            marginBottom: 8,
+          }}
         />
         <div style={{ marginLeft: 16 }}>
           {question.options?.map((opt, optIdx) => (
-            <div key={opt.id} style={{ display: 'flex', alignItems: 'center', marginBottom: 4, gap: 8 }}>
+            <div
+              key={opt.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: 4,
+                gap: 8,
+              }}
+            >
               <input
                 type="text"
                 value={opt.text}
-                onChange={e => onOptionChange && onOptionChange(optIdx, 'text', e.target.value)}
+                onChange={(e) =>
+                  onOptionChange &&
+                  onOptionChange(optIdx, "text", e.target.value)
+                }
                 style={{ width: 320 }}
               />
               <select
-                value={opt.scores && opt.scores[0] ? opt.scores[0].code : ''}
-                onChange={e => onOptionChange && onOptionChange(optIdx, 'scoreType', e.target.value)}
+                value={opt.scores && opt.scores[0] ? opt.scores[0].code : ""}
+                onChange={(e) =>
+                  onOptionChange &&
+                  onOptionChange(optIdx, "scoreType", e.target.value)
+                }
                 style={{ width: 180 }}
               >
-                <option value="" disabled>Выберите оценку</option>
-                {scoreTypes.map(st => (
-                  <option key={st.code} value={st.code}>{st.title}</option>
+                <option value="" disabled>
+                  Выберите оценку
+                </option>
+                {scoreTypes.map((st) => (
+                  <option key={st.code} value={st.code}>
+                    {st.title}
+                  </option>
                 ))}
               </select>
               <input
                 type="number"
-                value={opt.scores && opt.scores[0] && opt.scores[0].weight !== undefined ? String(opt.scores[0].weight) : ''}
-                onChange={e => onOptionChange && onOptionChange(optIdx, 'weight', e.target.value)}
+                value={
+                  opt.scores &&
+                  opt.scores[0] &&
+                  opt.scores[0].weight !== undefined
+                    ? String(opt.scores[0].weight)
+                    : ""
+                }
+                onChange={(e) =>
+                  onOptionChange &&
+                  onOptionChange(optIdx, "weight", e.target.value)
+                }
                 style={{ width: 60 }}
               />
               <button
                 onClick={() => onOptionRemove && onOptionRemove(optIdx)}
-                style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}
+                style={{
+                  color: "red",
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                }}
                 title="Удалить вариант"
               >
                 ×
@@ -110,7 +149,13 @@ const SingleChoice: React.FC<Props> = ({
           ))}
           <button
             onClick={() => onOptionAdd && onOptionAdd()}
-            style={{ marginTop: 4, color: '#1976d2', border: 'none', background: 'none', cursor: 'pointer' }}
+            style={{
+              marginTop: 4,
+              color: "#1976d2",
+              border: "none",
+              background: "none",
+              cursor: "pointer",
+            }}
           >
             + Добавить вариант
           </button>

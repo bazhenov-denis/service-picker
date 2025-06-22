@@ -41,4 +41,4 @@ export function useQuestionSegments(questions: Question[], answers: Answers) {
     handleSegmentChange,
     QUESTIONS_PER_SEGMENT,
   };
-} 
+}

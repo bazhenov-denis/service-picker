@@ -64,11 +64,13 @@ const ClientPage: React.FC = () => {
         <div className={styles.questionsContainer}>
           {currentSegmentQuestions.map((question) => {
             const collection =
-              question.type === "reference" && question.referenceType === "regions"
+              question.type === "reference" &&
+              question.referenceType === "regions"
                 ? regionsCollection
-                : question.type === "reference" && question.referenceType === "professions"
-                ? professionsCollection
-                : undefined;
+                : question.type === "reference" &&
+                    question.referenceType === "professions"
+                  ? professionsCollection
+                  : undefined;
             return (
               <div key={question.id} id={`question-${question.id}`}>
                 <QuestionRenderer
@@ -77,7 +79,12 @@ const ClientPage: React.FC = () => {
                   onChange={(value) => setAnswer(question.id, value)}
                   error={validationErrors[question.id]}
                   collection={collection}
-                  getDisplayValue={getDisplayValue as (questionId: number, value: any) => string[]}
+                  getDisplayValue={
+                    getDisplayValue as (
+                      questionId: number,
+                      value: any,
+                    ) => string[]
+                  }
                 />
               </div>
             );
@@ -104,7 +111,9 @@ const ClientPage: React.FC = () => {
       <SelectedState
         questions={questions || []}
         answers={answers}
-        getDisplayValue={getDisplayValue as (questionId: number, value: any) => string[]}
+        getDisplayValue={
+          getDisplayValue as (questionId: number, value: any) => string[]
+        }
         onQuestionClick={scrollToQuestion}
         onSegmentChange={handleSegmentChange}
         currentSegment={currentSegment}
@@ -114,4 +123,4 @@ const ClientPage: React.FC = () => {
   );
 };
 
-export default ClientPage; 
+export default ClientPage;

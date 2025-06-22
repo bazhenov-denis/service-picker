@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchQuestions } from "../client/httpClient";
 import type { Question } from "../types/question";
 
-export const useQuestions = (role: 'client' | 'admin' = 'client') => {
+export const useQuestions = (role: "client" | "admin" = "client") => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
