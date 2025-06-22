@@ -12,6 +12,7 @@ import { useProfessions } from "./pages/ServicePickerPage/hooks/useProfessions";
 import { useQuestions } from "./pages/ServicePickerPage/hooks/useQuestions";
 import styles from "./App.module.css";
 import type { ReferenceQuestion } from "./pages/ServicePickerPage/types/question";
+import type { Question } from "./pages/ServicePickerPage/types/question";
 import Header from "./pages/ServicePickerPage/components/Header/Header";
 import { PenOutlinedSize24, EyeOutlinedSize24, EyeCrossedOutlinedSize24, ArrowUpOutlinedSize24, ArrowDownOutlinedSize24, CrossOutlinedSize24 } from '@hh.ru/magritte-ui-icon/variants/icon';
 
@@ -43,6 +44,7 @@ const App: React.FC = () => {
 
   const [currentSegment, setCurrentSegment] = useState(0);
   const [editModeId, setEditModeId] = useState<number | null>(null);
+  const [adminQuestions, setAdminQuestions] = useState<Question[] | null>(null);
 
   const totalSegments = useMemo(() => {
     return Math.ceil((questions?.length || 0) / QUESTIONS_PER_SEGMENT);
@@ -80,7 +82,31 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-  }, []);
+    if (location.pathname === "/admin" && questions) {
+      setAdminQuestions([...questions]);
+    }
+  }, [questions, location.pathname]);
+
+  function handleMoveQuestionUp(idx: number) {
+    if (!adminQuestions || idx === 0) return;
+    const newQuestions = [...adminQuestions];
+    [newQuestions[idx - 1], newQuestions[idx]] = [newQuestions[idx], newQuestions[idx - 1]];
+    setAdminQuestions(newQuestions.map((q, i) => ({ ...q, position: i + 1 })));
+  }
+
+  function handleMoveQuestionDown(idx: number) {
+    if (!adminQuestions || idx === adminQuestions.length - 1) return;
+    const newQuestions = [...adminQuestions];
+    [newQuestions[idx], newQuestions[idx + 1]] = [newQuestions[idx + 1], newQuestions[idx]];
+    setAdminQuestions(newQuestions.map((q, i) => ({ ...q, position: i + 1 })));
+  }
+
+  function handleToggleActive(idx: number) {
+    if (!adminQuestions) return;
+    const newQuestions = [...adminQuestions];
+    newQuestions[idx] = { ...newQuestions[idx], active: !newQuestions[idx].active };
+    setAdminQuestions(newQuestions);
+  }
 
   if (questionsLoading && location.pathname !== "/admin") {
     return <div>Загрузка вопросов...</div>;
@@ -101,9 +127,11 @@ const App: React.FC = () => {
     showButton: boolean;
     allQuestions: boolean;
   }) {
-    const questionsToRender = allQuestions
-      ? questions || []
-      : currentSegmentQuestions;
+    const questionsToRender = location.pathname === "/admin"
+      ? adminQuestions || []
+      : allQuestions
+        ? questions || []
+        : currentSegmentQuestions;
     return (
       <div className={styles.container}>
         <GridLayout>
@@ -128,7 +156,7 @@ const App: React.FC = () => {
                     const isAdmin = location.pathname === "/admin";
                     return (
                       <div key={question.id} id={`question-${question.id}`} style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: 1 }} className={isAdmin && !question.active ? styles.inactiveQuestion : undefined}>
                           <QuestionRenderer
                             question={question}
                             answer={answers[question.id]}
@@ -148,11 +176,10 @@ const App: React.FC = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minHeight: 144, justifyContent: 'center' }}>
                               {editModeId === question.id && (
                                 <button
+                                  className={styles.adminEditButton}
                                   aria-label="Вверх"
                                   disabled={idx === 0}
-                                  onClick={() => {
-                                    // TODO: обработчик перемещения вверх
-                                  }}
+                                  onClick={() => handleMoveQuestionUp(idx)}
                                   style={{ cursor: idx === 0 ? 'not-allowed' : 'pointer', background: 'none', border: 'none', padding: 0 }}
                                 >
                                   <ArrowUpOutlinedSize24
@@ -166,6 +193,7 @@ const App: React.FC = () => {
                                 </button>
                               )}
                               <button
+                                className={styles.adminEditButton}
                                 aria-label={editModeId === question.id ? "Закрыть режим редактирования" : "Редактировать"}
                                 onClick={() => setEditModeId(editModeId === question.id ? null : question.id)}
                                 style={{ background: 'none', border: 'none', padding: 0 }}
@@ -192,11 +220,10 @@ const App: React.FC = () => {
                               </button>
                               {editModeId === question.id && (
                                 <button
+                                  className={styles.adminEditButton}
                                   aria-label="Вниз"
                                   disabled={idx === questionsToRender.length - 1}
-                                  onClick={() => {
-                                    // TODO: обработчик перемещения вниз
-                                  }}
+                                  onClick={() => handleMoveQuestionDown(idx)}
                                   style={{ cursor: idx === questionsToRender.length - 1 ? 'not-allowed' : 'pointer', background: 'none', border: 'none', padding: 0 }}
                                 >
                                   <ArrowDownOutlinedSize24
@@ -213,10 +240,9 @@ const App: React.FC = () => {
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 144 }}>
                               {editModeId === question.id && (
                                 <button
+                                  className={styles.adminEditButton}
                                   aria-label={question.active ? "Сделать неактивным" : "Сделать активным"}
-                                  onClick={() => {
-                                    // TODO: обработчик изменения активности
-                                  }}
+                                  onClick={() => handleToggleActive(idx)}
                                   style={{ background: 'none', border: 'none', padding: 0 }}
                                 >
                                   {question.active ? (
