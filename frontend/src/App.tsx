@@ -19,7 +19,8 @@ const QUESTIONS_PER_SEGMENT = 3;
 
 const App: React.FC = () => {
   const location = useLocation(); // Хук useLocation для определения текущего пути
-  const headerTitle = location.pathname === "/admin" ? "Админ-панель" : "Подборщик услуг"; // Динамический заголовок
+  const headerTitle =
+    location.pathname === "/admin" ? "Админ-панель" : "Подборщик услуг"; // Динамический заголовок
 
   // Здесь оставлена существующая логика для подборщика услуг
   const {
@@ -88,16 +89,30 @@ const App: React.FC = () => {
   }, []); // Пустой массив зависимостей означает, что эффект запустится один раз при монтировании
 
   // Блокируем отображение основного контента подборщика, если есть ошибки или загрузка вопросов
-  if (questionsLoading && location.pathname !== "/admin") { // Показываем загрузку только для подборщика
+  if (questionsLoading && location.pathname !== "/admin") {
+    // Показываем загрузку только для подборщика
     return <div>Загрузка вопросов...</div>;
   }
 
-  if (questionsError && location.pathname !== "/admin") { // Показываем ошибку только для подборщика
+  if (questionsError && location.pathname !== "/admin") {
+    // Показываем ошибку только для подборщика
     return <div>Ошибка: {questionsError}</div>;
   }
 
-  function renderServicePickerContent({ showSelectedState, showProgress, showButton, allQuestions }: { showSelectedState: boolean, showProgress: boolean, showButton: boolean, allQuestions: boolean }) {
-    const questionsToRender = allQuestions ? (questions || []) : currentSegmentQuestions;
+  function renderServicePickerContent({
+    showSelectedState,
+    showProgress,
+    showButton,
+    allQuestions,
+  }: {
+    showSelectedState: boolean;
+    showProgress: boolean;
+    showButton: boolean;
+    allQuestions: boolean;
+  }) {
+    const questionsToRender = allQuestions
+      ? questions || []
+      : currentSegmentQuestions;
     return (
       <div className={styles.container}>
         <GridLayout>
@@ -111,10 +126,12 @@ const App: React.FC = () => {
                   {questionsToRender.map((question) => {
                     const collection =
                       question.type === "reference" &&
-                      (question as ReferenceQuestion).referenceType === "regions"
+                      (question as ReferenceQuestion).referenceType ===
+                        "regions"
                         ? regionsCollection
                         : question.type === "reference" &&
-                          (question as ReferenceQuestion).referenceType === "professions"
+                            (question as ReferenceQuestion).referenceType ===
+                              "professions"
                           ? professionsCollection
                           : undefined;
                     return (
@@ -191,8 +208,24 @@ const App: React.FC = () => {
     <div className={styles.app}>
       <Header title={headerTitle} />
       <Routes>
-        <Route path="/" element={renderServicePickerContent({ showSelectedState: true, showProgress: true, showButton: true, allQuestions: false })} />
-        <Route path="/admin" element={renderServicePickerContent({ showSelectedState: false, showProgress: false, showButton: false, allQuestions: true })} />
+        <Route
+          path="/"
+          element={renderServicePickerContent({
+            showSelectedState: true,
+            showProgress: true,
+            showButton: true,
+            allQuestions: false,
+          })}
+        />
+        <Route
+          path="/admin"
+          element={renderServicePickerContent({
+            showSelectedState: false,
+            showProgress: false,
+            showButton: false,
+            allQuestions: true,
+          })}
+        />
       </Routes>
     </div>
   );
