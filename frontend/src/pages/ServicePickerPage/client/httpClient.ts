@@ -47,9 +47,10 @@ export const fetchProfessions = async (): Promise<any[]> => {
   }
 };
 
-export const fetchQuestions = async (): Promise<any[]> => {
+export const fetchQuestions = async (role: 'client' | 'admin' = 'client'): Promise<any[]> => {
   try {
-    const response = await api.get("/questions");
+    const params = role === 'client' ? {} : { role };
+    const response = await api.get("/questions", { params });
     return response.data;
   } catch (error) {
     console.error("Ошибка при получении вопросов:", error);

@@ -22,12 +22,12 @@ const App: React.FC = () => {
   const headerTitle =
     location.pathname === "/admin" ? "Админ-панель" : "Подборщик услуг"; // Динамический заголовок
 
-  // Здесь оставлена существующая логика для подборщика услуг
+  const questionsRole = location.pathname === "/admin" ? "admin" : "client";
   const {
     questions,
     isLoading: questionsLoading,
     error: questionsError,
-  } = useQuestions();
+  } = useQuestions(questionsRole);
   const { collection: regionsCollection } = useRegions();
   const { collection: professionsCollection } = useProfessions();
   const {
