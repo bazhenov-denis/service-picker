@@ -2,6 +2,7 @@ package com.example.backend.services;
 
 import com.example.backend.DAO.QuestionDao;
 import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
+import com.example.backend.DTO.questionsDTO.CreateQuestionDTO;
 import com.example.backend.DTO.questionsDTO.OptionDTO;
 import com.example.backend.DTO.questionsDTO.OptionScoreDTO;
 import com.example.backend.DTO.questionsDTO.QuestionDTO;
@@ -44,6 +45,10 @@ public class QuestionService {
     return questions.stream()
         .map(q -> mapToAdminDto(q, scoresByOption))
         .toList();
+  }
+
+  public AdminQuestionDTO createQuestion(CreateQuestionDTO createQuestionDTO) {
+
   }
 
   private QuestionDTO mapToClientDto(Question q) {
