@@ -38,6 +38,9 @@ public class Question {
   @Column(name = "position")
   private Integer position;
 
+  @Column(name = "active", nullable = false)
+  private Boolean active = true;
+
   @OneToMany(
       mappedBy = "question",
       fetch = FetchType.EAGER,
@@ -50,14 +53,16 @@ public class Question {
 
   }
 
-  public Question(Long id,
+  public Question(
+      Long id,
       String questionText,
       String type,
       Boolean isRequired,
       String referenceType,
       String shortTitle,
       Integer position,
-      List<Option> options) {
+      List<Option> options
+  ) {
     this.id = id;
     this.questionText = questionText;
     this.type = type;
@@ -137,4 +142,11 @@ public class Question {
     this.position = position;
   }
 
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
 }
