@@ -2,10 +2,16 @@ package com.example.backend.services;
 
 import com.example.backend.DAO.QuestionDao;
 import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
+import com.example.backend.DTO.questionsDTO.CreateOptionDTO;
 import com.example.backend.DTO.questionsDTO.CreateQuestionDTO;
 import com.example.backend.DTO.questionsDTO.OptionDTO;
 import com.example.backend.DTO.questionsDTO.OptionScoreDTO;
 import com.example.backend.DTO.questionsDTO.QuestionDTO;
+import com.example.backend.enums.QuestionErrorType;
+import com.example.backend.enums.QuestionReference;
+import com.example.backend.enums.QuestionType;
+import com.example.backend.enums.ScoreCode;
+import com.example.backend.exceptions.QuestionException;
 import com.example.backend.models.Option;
 import com.example.backend.models.OptionScore;
 import com.example.backend.models.Question;
@@ -48,6 +54,43 @@ public class QuestionService {
   }
 
   public AdminQuestionDTO createQuestion(CreateQuestionDTO createQuestionDTO) {
+    if (createQuestionDTO.questionText().isBlank()) {
+      throw new QuestionException(QuestionErrorType.BLANK_QUESTION_TEXT, null);
+    }
+
+    if (createQuestionDTO.shortTitle().isBlank()) {
+      throw new QuestionException(QuestionErrorType.BLANK_SHORT_TITLE, null);
+    }
+
+    if (!QuestionType.contains(createQuestionDTO.type())) {
+      throw new QuestionException(QuestionErrorType.INVALID_TYPE, null);
+    }
+
+    if (createQuestionDTO.type().equals(QuestionType.REFERENCE.getType())) {
+      if (!QuestionReference.contains(createQuestionDTO.referenceType())) {
+        throw new QuestionException(QuestionErrorType.INVALID_REFERENCE_TYPE, null);
+      }
+    } else if (createQuestionDTO.referenceType() != null) {
+      throw new QuestionException(QuestionErrorType.INVALID_REFERENCE_TYPE, null);
+    }
+
+    if (createQuestionDTO.type().equals(QuestionType.SINGLE_CHOICE.getType())
+        || createQuestionDTO.type().equals(QuestionType.MULTIPLE_CHOICE.getType())) {
+      if (createQuestionDTO.options().size() < 2) {
+        throw new QuestionException(QuestionErrorType.NOT_ENOUGH_OPTIONS, null);
+      }
+    }
+
+    for (CreateOptionDTO createOptionDTO : createQuestionDTO.options()) {
+      if (createOptionDTO.getText().isBlank()) {
+        throw new QuestionException(QuestionErrorType.BLANK_OPTION_TEXT, null);
+      }
+
+      if (createOptionDTO.getScores().size() != ScoreCode.values().length) {
+        throw new QuestionException(QuestionErrorType.NOT_ENOUGH_SCORES, null);
+      }
+    }
+
 
   }
 

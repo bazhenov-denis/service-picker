@@ -30,4 +30,8 @@ public enum ScoreCode {
   public static ScoreCode fromCode(String code) {
     return BY_CODE.get(code);
   }
+
+  public static boolean contains(String code) {
+    return BY_CODE.containsKey(code);
+  }
 }

@@ -6,18 +6,16 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CreateOptionDTO {
   private String text;
-  private Integer position;
-  private List<OptionScoreDTO> scores;
+  private List<Integer> scores;
 
   public CreateOptionDTO() {}
 
-  public CreateOptionDTO(String text, Integer position) {
+  public CreateOptionDTO(String text) {
     this.text = text;
-    this.position = position;
   }
 
-  public CreateOptionDTO(String text, Integer position, List<OptionScoreDTO> scores) {
-    this(text, position);
+  public CreateOptionDTO(String text, List<Integer> scores) {
+    this(text);
     this.scores = scores;
   }
 
@@ -25,11 +23,7 @@ public class CreateOptionDTO {
     return text;
   }
 
-  public Integer getPosition() {
-    return position;
-  }
-
-  public List<OptionScoreDTO> getScores() {
+  public List<Integer> getScores() {
     return scores;
   }
 }

@@ -10,7 +10,6 @@ public record CreateQuestionDTO(
     Boolean isRequired,
     String referenceType,
     String shortTitle,
-    Integer position,
     Boolean active,
     List<CreateOptionDTO> options
 ) {}

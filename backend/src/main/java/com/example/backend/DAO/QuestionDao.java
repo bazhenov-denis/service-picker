@@ -61,4 +61,9 @@ public class QuestionDao{
         .setParameter("ids", optionIds)
         .getResultList();
   }
+
+  public Integer getNextPosition() {
+    String query = "SELECT max(q.position) FROM Question q";
+    return entityManager.createQuery(query, Question.class).getFirstResult();
+  }
 }
