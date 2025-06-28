@@ -1,5 +1,7 @@
 package com.example.backend.models;
 
+import com.example.backend.DTO.questionsDTO.OptionDTO;
+import com.example.backend.DTO.questionsDTO.OptionScoreDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +21,6 @@ import java.util.List;
 public class Option {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
   private Long id;
 
   private String text;
@@ -88,5 +89,16 @@ public class Option {
 
   public void setOptionScores(List<OptionScore> optionScores) {
     this.optionScores = optionScores;
+  }
+
+  public OptionDTO toDto() {
+    List<OptionScoreDTO> optionScoreDTOList = this.optionScores.stream().map(OptionScore::toDto).toList();
+
+    return new OptionDTO(
+        this.id,
+        this.text,
+        this.position,
+        optionScoreDTOList
+    );
   }
 }

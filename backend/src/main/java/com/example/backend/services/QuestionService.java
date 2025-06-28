@@ -1,6 +1,9 @@
 package com.example.backend.services;
 
+import com.example.backend.DAO.OptionDao;
+import com.example.backend.DAO.OptionScoreDao;
 import com.example.backend.DAO.QuestionDao;
+import com.example.backend.DAO.ScoreTypeDao;
 import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
 import com.example.backend.DTO.questionsDTO.CreateOptionDTO;
 import com.example.backend.DTO.questionsDTO.CreateQuestionDTO;
@@ -15,9 +18,12 @@ import com.example.backend.exceptions.QuestionException;
 import com.example.backend.models.Option;
 import com.example.backend.models.OptionScore;
 import com.example.backend.models.Question;
+import com.example.backend.models.ScoreType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +31,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class QuestionService {
   private final QuestionDao dao;
+
+  @Autowired
+  private ScoreTypeDao scoreTypeDao;
+
+  @Autowired
+  private OptionDao optionDao;
+
+  @Autowired
+  private OptionScoreDao optionScoreDao;
+
   public QuestionService(QuestionDao dao) { this.dao = dao; }
 
   public List<QuestionDTO> getClientQuestions() {
@@ -53,6 +69,7 @@ public class QuestionService {
         .toList();
   }
 
+  @Transactional
   public AdminQuestionDTO createQuestion(CreateQuestionDTO createQuestionDTO) {
     if (createQuestionDTO.questionText().isBlank()) {
       throw new QuestionException(QuestionErrorType.BLANK_QUESTION_TEXT, null);
@@ -87,11 +104,54 @@ public class QuestionService {
       }
 
       if (createOptionDTO.getScores().size() != ScoreCode.values().length) {
-        throw new QuestionException(QuestionErrorType.NOT_ENOUGH_SCORES, null);
+        throw new QuestionException(QuestionErrorType.WRONG_NUMBER_OF_SCORES, null);
       }
     }
 
+    Question question = new Question();
+    question.setQuestionText(createQuestionDTO.questionText());
+    question.setActive(createQuestionDTO.active());
+    question.setPosition(dao.getNextPosition());
+    question.setType(createQuestionDTO.type());
+    question.setReferenceType(createQuestionDTO.referenceType());
+    question.setShortTitle(createQuestionDTO.shortTitle());
+    question.setRequired(createQuestionDTO.isRequired());
 
+    if (createQuestionDTO.type().equals(QuestionType.SINGLE_CHOICE.getType())
+        || createQuestionDTO.type().equals(QuestionType.MULTIPLE_CHOICE.getType())) {
+      List<Option> options = new ArrayList<>();
+      for (int i = 0; i < createQuestionDTO.options().size(); i++) {
+        List<ScoreType> scoreTypes = scoreTypeDao.findAll();
+        Option option = new Option();
+        List<OptionScore> scores = new ArrayList<>();
+        for (int j = 0; j < scoreTypes.size(); j++) {
+          OptionScore optionScore = new OptionScore();
+          optionScore.setScoreType(scoreTypes.get(j));
+          optionScore.setWeight(createQuestionDTO.options().get(i).getScores().get(j));
+          optionScore.setOption(option);
+          scores.add(optionScore);
+        }
+
+        option.setPosition(i + 1);
+        option.setText(createQuestionDTO.options().get(i).getText());
+        option.setOptionScores(scores);
+        option.setQuestion(question);
+
+        options.add(option);
+      }
+
+      question.setOptions(options);
+    }
+
+    dao.save(question);
+    for (Option option : question.getOptions()) {
+      optionDao.save(option);
+      for (OptionScore optionScore : option.getOptionScores()) {
+        optionScoreDao.save(optionScore);
+      }
+    }
+
+    return question.toDto();
   }
 
   private QuestionDTO mapToClientDto(Question q) {

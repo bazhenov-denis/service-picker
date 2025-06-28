@@ -1,5 +1,6 @@
 package com.example.backend.models;
 
+import com.example.backend.DTO.questionsDTO.OptionScoreDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,7 +16,6 @@ import jakarta.persistence.Table;
 public class OptionScore {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -70,5 +70,14 @@ public class OptionScore {
 
   public OptionScore() {
 
+  }
+
+  public OptionScoreDTO toDto() {
+    return new OptionScoreDTO(
+        this.id,
+        this.scoreType.getCode(),
+        this.scoreType.getTitle(),
+        this.weight
+    );
   }
 }

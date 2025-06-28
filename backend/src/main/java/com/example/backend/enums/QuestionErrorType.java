@@ -7,7 +7,7 @@ public enum QuestionErrorType {
   BLANK_SHORT_TITLE("Short title is blank"),
   NOT_ENOUGH_OPTIONS("Not enough options provided"),
   BLANK_OPTION_TEXT("Option text is blank"),
-  NOT_ENOUGH_SCORES("Not enough scores provided");
+  WRONG_NUMBER_OF_SCORES("Wrong quantity of scores provided");
 
   private final String msg;
 

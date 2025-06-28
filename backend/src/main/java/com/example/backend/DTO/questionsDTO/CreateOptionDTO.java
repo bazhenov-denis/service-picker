@@ -6,7 +6,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CreateOptionDTO {
   private String text;
-  private List<Integer> scores;
+  private List<Long> scores;
 
   public CreateOptionDTO() {}
 
@@ -14,7 +14,7 @@ public class CreateOptionDTO {
     this.text = text;
   }
 
-  public CreateOptionDTO(String text, List<Integer> scores) {
+  public CreateOptionDTO(String text, List<Long> scores) {
     this(text);
     this.scores = scores;
   }
@@ -23,7 +23,7 @@ public class CreateOptionDTO {
     return text;
   }
 
-  public List<Integer> getScores() {
+  public List<Long> getScores() {
     return scores;
   }
 }

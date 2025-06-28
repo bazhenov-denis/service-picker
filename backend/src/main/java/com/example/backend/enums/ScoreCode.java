@@ -9,10 +9,8 @@ public enum ScoreCode {
   ACCESS_RESUMES("access_resumes"),
   COMPETITION("competition"),
   URGENCY("urgency"),
-  CONSISTENCY("consistency"),
   MASS("mass"),
-  REGION("region"),
-  PROFESSION("profession");
+  CONSISTENCY("consistency");
 
   private final String code;
 
