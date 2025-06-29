@@ -5,8 +5,11 @@ import com.example.backend.models.Question;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -64,12 +67,61 @@ public class QuestionDao{
   }
 
   public Integer getNextPosition() {
-    String query = "SELECT max(q.position) FROM Question q";
-    return (Integer)entityManager.createQuery(query).getSingleResult() + 1;
+    return entityManager.createQuery("""
+        SELECT max(q.position)
+        FROM Question q
+        """, Integer.class)
+        .getSingleResult() + 1;
+  }
+
+  public Long getMaxId() {
+    return entityManager.createQuery("""
+        SELECT max(q.id)
+        FROM Question q
+        """, Long.class)
+        .getSingleResult();
+  }
+
+  public List<Question> getQuestionsByIds(Collection<Long> ids) {
+    return entityManager.createQuery("""
+        SELECT q
+        FROM Question q
+        WHERE q.id IN :ids
+        """, Question.class)
+        .setParameter("ids", ids)
+        .getResultList();
+  }
+
+  public Question getQuestionById(Long id) {
+    return entityManager.createQuery("""
+        SELECT q
+        FROM Question q
+        WHERE q.id = :id
+        """, Question.class)
+        .setParameter("id", id)
+        .getSingleResult();
   }
 
   @Transactional
   public void save(Question question) {
     entityManager.persist(question);
+  }
+
+  @Transactional
+  public void saveMultiple(List<Question> questions) {
+    for (Question question : questions) {
+      entityManager.persist(question);
+    }
+  }
+
+  public Set<Integer> getPositionsByIds(Set<Long> ids) {
+    return entityManager.createQuery("""
+        SELECT q.position
+        FROM Question q
+        WHERE q.id IN :ids
+        """, Integer.class)
+        .setParameter("ids", ids)
+        .getResultStream()
+        .collect(Collectors.toSet());
   }
 }
