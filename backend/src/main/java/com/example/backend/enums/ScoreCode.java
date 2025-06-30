@@ -9,10 +9,8 @@ public enum ScoreCode {
   ACCESS_RESUMES("access_resumes"),
   COMPETITION("competition"),
   URGENCY("urgency"),
-  CONSISTENCY("consistency"),
   MASS("mass"),
-  REGION("region"),
-  PROFESSION("profession");
+  CONSISTENCY("consistency");
 
   private final String code;
 
@@ -29,5 +27,9 @@ public enum ScoreCode {
 
   public static ScoreCode fromCode(String code) {
     return BY_CODE.get(code);
+  }
+
+  public static boolean contains(String code) {
+    return BY_CODE.containsKey(code);
   }
 }

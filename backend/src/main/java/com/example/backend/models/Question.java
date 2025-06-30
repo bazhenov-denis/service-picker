@@ -1,5 +1,7 @@
 package com.example.backend.models;
 
+import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
+import com.example.backend.DTO.questionsDTO.OptionDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(name = "questions")
@@ -17,7 +20,6 @@ public class Question {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
   private Long id;
 
   @Column(name = "question_text", nullable = false)
@@ -38,6 +40,9 @@ public class Question {
   @Column(name = "position")
   private Integer position;
 
+  @Column(name = "active", nullable = false)
+  private Boolean active = true;
+
   @OneToMany(
       mappedBy = "question",
       fetch = FetchType.EAGER,
@@ -50,14 +55,16 @@ public class Question {
 
   }
 
-  public Question(Long id,
+  public Question(
+      Long id,
       String questionText,
       String type,
       Boolean isRequired,
       String referenceType,
       String shortTitle,
       Integer position,
-      List<Option> options) {
+      List<Option> options
+  ) {
     this.id = id;
     this.questionText = questionText;
     this.type = type;
@@ -137,4 +144,27 @@ public class Question {
     this.position = position;
   }
 
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
+
+  public AdminQuestionDTO toDto() {
+    List<OptionDTO> optionDTOList = this.options != null ? this.options.stream().map(Option::toDto).toList() : null;
+
+    return new AdminQuestionDTO(
+        this.id,
+        this.questionText,
+        this.type,
+        this.isRequired,
+        this.referenceType,
+        this.shortTitle,
+        this.position,
+        this.active,
+        optionDTOList
+    );
+  }
 }

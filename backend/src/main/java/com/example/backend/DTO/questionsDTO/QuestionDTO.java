@@ -1,4 +1,4 @@
-package com.example.backend.DTO;
+package com.example.backend.DTO.questionsDTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
