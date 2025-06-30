@@ -7,14 +7,10 @@ import com.example.backend.DAO.ScoreTypeDao;
 import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
 import com.example.backend.DTO.questionsDTO.CreateOptionDTO;
 import com.example.backend.DTO.questionsDTO.CreateQuestionDTO;
-import com.example.backend.DTO.questionsDTO.ErrorDTO;
-import com.example.backend.DTO.questionsDTO.ErrorListDTO;
-import com.example.backend.DTO.questionsDTO.ModifiableQuestionDTO;
 import com.example.backend.DTO.questionsDTO.OptionDTO;
 import com.example.backend.DTO.questionsDTO.OptionScoreDTO;
 import com.example.backend.DTO.questionsDTO.QuestionDTO;
-import com.example.backend.DTO.questionsDTO.UpdateQuestionsDTO;
-import com.example.backend.enums.QuestionErrorType;
+import com.example.backend.enums.QuestionExceptionType;
 import com.example.backend.enums.QuestionReference;
 import com.example.backend.enums.QuestionType;
 import com.example.backend.enums.ScoreCode;
@@ -24,10 +20,8 @@ import com.example.backend.models.OptionScore;
 import com.example.backend.models.Question;
 import com.example.backend.models.ScoreType;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,40 +71,28 @@ public class QuestionService {
 
   @Transactional
   public AdminQuestionDTO createQuestion(CreateQuestionDTO createQuestionDTO) {
-    if (createQuestionDTO.questionText().isBlank()) {
-      throw new QuestionException(QuestionErrorType.BLANK_QUESTION_TEXT, null);
-    }
-
-    if (createQuestionDTO.shortTitle().isBlank()) {
-      throw new QuestionException(QuestionErrorType.BLANK_SHORT_TITLE, null);
-    }
-
     if (!QuestionType.contains(createQuestionDTO.type())) {
-      throw new QuestionException(QuestionErrorType.INVALID_TYPE, null);
+      throw new QuestionException(QuestionExceptionType.INVALID_TYPE, null);
     }
 
     if (createQuestionDTO.type().equals(QuestionType.REFERENCE.getType())) {
       if (!QuestionReference.contains(createQuestionDTO.referenceType())) {
-        throw new QuestionException(QuestionErrorType.INVALID_REFERENCE_TYPE, null);
+        throw new QuestionException(QuestionExceptionType.INVALID_REFERENCE_TYPE, null);
       }
     } else if (createQuestionDTO.referenceType() != null) {
-      throw new QuestionException(QuestionErrorType.INVALID_REFERENCE_TYPE, null);
+      throw new QuestionException(QuestionExceptionType.INVALID_REFERENCE_TYPE, null);
     }
 
     if (createQuestionDTO.type().equals(QuestionType.SINGLE_CHOICE.getType())
         || createQuestionDTO.type().equals(QuestionType.MULTIPLE_CHOICE.getType())) {
       if (createQuestionDTO.options().size() < 2) {
-        throw new QuestionException(QuestionErrorType.NOT_ENOUGH_OPTIONS, null);
+        throw new QuestionException(QuestionExceptionType.NOT_ENOUGH_OPTIONS, null);
       }
     }
 
     for (CreateOptionDTO createOptionDTO : createQuestionDTO.options()) {
-      if (createOptionDTO.getText().isBlank()) {
-        throw new QuestionException(QuestionErrorType.BLANK_OPTION_TEXT, null);
-      }
-
       if (createOptionDTO.getScores().size() != ScoreCode.values().length) {
-        throw new QuestionException(QuestionErrorType.WRONG_NUMBER_OF_SCORES, null);
+        throw new QuestionException(QuestionExceptionType.WRONG_NUMBER_OF_SCORES, null);
       }
     }
 
@@ -125,9 +107,11 @@ public class QuestionService {
 
     if (createQuestionDTO.type().equals(QuestionType.SINGLE_CHOICE.getType())
         || createQuestionDTO.type().equals(QuestionType.MULTIPLE_CHOICE.getType())) {
+
       List<Option> options = new ArrayList<>();
+      List<ScoreType> scoreTypes = scoreTypeDao.findAll();
+
       for (int i = 0; i < createQuestionDTO.options().size(); i++) {
-        List<ScoreType> scoreTypes = scoreTypeDao.findAll();
         Option option = new Option();
         List<OptionScore> scores = new ArrayList<>();
         for (int j = 0; j < scoreTypes.size(); j++) {
@@ -150,91 +134,14 @@ public class QuestionService {
     }
 
     dao.save(question);
-    for (Option option : question.getOptions()) {
-      optionDao.save(option);
-      for (OptionScore optionScore : option.getOptionScores()) {
-        optionScoreDao.save(optionScore);
-      }
-    }
+//    for (Option option : question.getOptions()) {
+//      optionDao.save(option);
+//      for (OptionScore optionScore : option.getOptionScores()) {
+//        optionScoreDao.save(optionScore);
+//      }
+//    }
 
     return question.toDto();
-  }
-
-  @Transactional
-  public ErrorListDTO updateQuestions(UpdateQuestionsDTO updateQuestionsDTO) {
-    List<ErrorDTO> errors = new ArrayList<>();
-
-    // null fields in request dto are not allowed
-    for (ModifiableQuestionDTO item : updateQuestionsDTO.modifiableQuestionDTOList()) {
-      if (item.id() == null || item.position() == null || item.isActive() == null) {
-        errors.add(new ErrorDTO(QuestionErrorType.NULL_FIELD, item.id(), QuestionErrorType.NULL_FIELD.getMsg()));
-      }
-    }
-
-    // null fields are destructive for further checks
-    if (!errors.isEmpty()) {
-      return new ErrorListDTO(errors);
-    }
-
-    // source and destination position sets must match
-    Set<Long> ids = updateQuestionsDTO.modifiableQuestionDTOList()
-        .stream()
-        .map(ModifiableQuestionDTO::id)
-        .collect(Collectors.toSet());
-    Set<Integer> oldPositions = dao.getPositionsByIds(ids);
-    Set<Integer> newPositions = updateQuestionsDTO.modifiableQuestionDTOList()
-        .stream()
-        .map(ModifiableQuestionDTO::position)
-        .collect(Collectors.toSet());
-    if (!oldPositions.equals(newPositions)) {
-      errors.add(new ErrorDTO(QuestionErrorType.WRONG_ORDER, null, QuestionErrorType.WRONG_ORDER.getMsg()));
-    }
-
-    // question id must exist
-    long maxId = dao.getMaxId();
-    List<Long> wrongIds = updateQuestionsDTO.modifiableQuestionDTOList()
-        .stream()
-        .map(ModifiableQuestionDTO::id)
-        .filter(e -> e < 1 || e > maxId)
-        .toList();
-    for (Long wrongId : wrongIds) {
-      errors.add(new ErrorDTO(QuestionErrorType.WRONG_ID, wrongId, QuestionErrorType.WRONG_ID.getMsg()));
-    }
-
-    // question position must fit order
-    int maxPosition = dao.getNextPosition() - 1;
-    List<ModifiableQuestionDTO> wrongPositionedItems = updateQuestionsDTO.modifiableQuestionDTOList()
-        .stream()
-        .filter(e -> e.position() < 1 || e.position() > maxPosition)
-        .toList();
-    for (ModifiableQuestionDTO q : wrongPositionedItems) {
-      errors.add(new ErrorDTO(QuestionErrorType.WRONG_POSITION, q.id(), QuestionErrorType.WRONG_POSITION.getMsg()));
-    }
-
-    // no duplicated ids allowed
-    List<Long> duplicatedIds = updateQuestionsDTO.modifiableQuestionDTOList()
-        .stream()
-        .collect(Collectors.groupingBy(ModifiableQuestionDTO::id, Collectors.counting()))
-        .entrySet()
-        .stream()
-        .filter(e -> e.getValue() > 1)
-        .map(Map.Entry::getKey)
-        .toList();
-    for (Long id : duplicatedIds) {
-      errors.add(new ErrorDTO(QuestionErrorType.DUPLICATED_ID, id, QuestionErrorType.DUPLICATED_ID.getMsg()));
-    }
-
-    // apply changes if no errors found
-    if (errors.isEmpty()) {
-      for (ModifiableQuestionDTO item : updateQuestionsDTO.modifiableQuestionDTOList()) {
-        Question question = dao.getQuestionById(item.id());
-        question.setPosition(item.position());
-        question.setActive(item.isActive());
-        dao.save(question);
-      }
-    }
-
-    return new ErrorListDTO(errors);
   }
 
   private QuestionDTO mapToClientDto(Question q) {

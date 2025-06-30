@@ -1,16 +1,16 @@
 package com.example.backend.exceptions;
 
-import com.example.backend.enums.QuestionErrorType;
+import com.example.backend.enums.QuestionExceptionType;
 
 public class QuestionException extends RuntimeException {
-  private QuestionErrorType errorType;
+  private QuestionExceptionType errorType;
   private Long questionId;
 
-  public QuestionErrorType getErrorType() {
+  public QuestionExceptionType getErrorType() {
     return errorType;
   }
 
-  public void setErrorType(QuestionErrorType errorType) {
+  public void setErrorType(QuestionExceptionType errorType) {
     this.errorType = errorType;
   }
 
@@ -22,7 +22,7 @@ public class QuestionException extends RuntimeException {
     this.questionId = questionId;
   }
 
-  public QuestionException(QuestionErrorType errorType, Long questionId) {
+  public QuestionException(QuestionExceptionType errorType, Long questionId) {
     this.errorType = errorType;
     this.questionId = questionId;
   }
