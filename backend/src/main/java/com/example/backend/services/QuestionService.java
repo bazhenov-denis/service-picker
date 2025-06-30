@@ -10,7 +10,7 @@ import com.example.backend.DTO.questionsDTO.CreateQuestionDTO;
 import com.example.backend.DTO.questionsDTO.OptionDTO;
 import com.example.backend.DTO.questionsDTO.OptionScoreDTO;
 import com.example.backend.DTO.questionsDTO.QuestionDTO;
-import com.example.backend.enums.QuestionErrorType;
+import com.example.backend.enums.QuestionExceptionType;
 import com.example.backend.enums.QuestionReference;
 import com.example.backend.enums.QuestionType;
 import com.example.backend.enums.ScoreCode;
@@ -71,40 +71,28 @@ public class QuestionService {
 
   @Transactional
   public AdminQuestionDTO createQuestion(CreateQuestionDTO createQuestionDTO) {
-    if (createQuestionDTO.questionText().isBlank()) {
-      throw new QuestionException(QuestionErrorType.BLANK_QUESTION_TEXT, null);
-    }
-
-    if (createQuestionDTO.shortTitle().isBlank()) {
-      throw new QuestionException(QuestionErrorType.BLANK_SHORT_TITLE, null);
-    }
-
     if (!QuestionType.contains(createQuestionDTO.type())) {
-      throw new QuestionException(QuestionErrorType.INVALID_TYPE, null);
+      throw new QuestionException(QuestionExceptionType.INVALID_TYPE, null);
     }
 
     if (createQuestionDTO.type().equals(QuestionType.REFERENCE.getType())) {
       if (!QuestionReference.contains(createQuestionDTO.referenceType())) {
-        throw new QuestionException(QuestionErrorType.INVALID_REFERENCE_TYPE, null);
+        throw new QuestionException(QuestionExceptionType.INVALID_REFERENCE_TYPE, null);
       }
     } else if (createQuestionDTO.referenceType() != null) {
-      throw new QuestionException(QuestionErrorType.INVALID_REFERENCE_TYPE, null);
+      throw new QuestionException(QuestionExceptionType.INVALID_REFERENCE_TYPE, null);
     }
 
     if (createQuestionDTO.type().equals(QuestionType.SINGLE_CHOICE.getType())
         || createQuestionDTO.type().equals(QuestionType.MULTIPLE_CHOICE.getType())) {
       if (createQuestionDTO.options().size() < 2) {
-        throw new QuestionException(QuestionErrorType.NOT_ENOUGH_OPTIONS, null);
+        throw new QuestionException(QuestionExceptionType.NOT_ENOUGH_OPTIONS, null);
       }
     }
 
     for (CreateOptionDTO createOptionDTO : createQuestionDTO.options()) {
-      if (createOptionDTO.getText().isBlank()) {
-        throw new QuestionException(QuestionErrorType.BLANK_OPTION_TEXT, null);
-      }
-
       if (createOptionDTO.getScores().size() != ScoreCode.values().length) {
-        throw new QuestionException(QuestionErrorType.WRONG_NUMBER_OF_SCORES, null);
+        throw new QuestionException(QuestionExceptionType.WRONG_NUMBER_OF_SCORES, null);
       }
     }
 
@@ -119,9 +107,11 @@ public class QuestionService {
 
     if (createQuestionDTO.type().equals(QuestionType.SINGLE_CHOICE.getType())
         || createQuestionDTO.type().equals(QuestionType.MULTIPLE_CHOICE.getType())) {
+
       List<Option> options = new ArrayList<>();
+      List<ScoreType> scoreTypes = scoreTypeDao.findAll();
+
       for (int i = 0; i < createQuestionDTO.options().size(); i++) {
-        List<ScoreType> scoreTypes = scoreTypeDao.findAll();
         Option option = new Option();
         List<OptionScore> scores = new ArrayList<>();
         for (int j = 0; j < scoreTypes.size(); j++) {
@@ -144,12 +134,12 @@ public class QuestionService {
     }
 
     dao.save(question);
-    for (Option option : question.getOptions()) {
-      optionDao.save(option);
-      for (OptionScore optionScore : option.getOptionScores()) {
-        optionScoreDao.save(optionScore);
-      }
-    }
+//    for (Option option : question.getOptions()) {
+//      optionDao.save(option);
+//      for (OptionScore optionScore : option.getOptionScores()) {
+//        optionScoreDao.save(optionScore);
+//      }
+//    }
 
     return question.toDto();
   }
