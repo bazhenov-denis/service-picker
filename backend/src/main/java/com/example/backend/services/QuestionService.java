@@ -7,9 +7,13 @@ import com.example.backend.DAO.ScoreTypeDao;
 import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
 import com.example.backend.DTO.questionsDTO.CreateOptionDTO;
 import com.example.backend.DTO.questionsDTO.CreateQuestionDTO;
+import com.example.backend.DTO.questionsDTO.QuestionExceptionDTO;
+import com.example.backend.DTO.questionsDTO.QuestionExceptionListDTO;
+import com.example.backend.DTO.questionsDTO.ModifiableQuestionDTO;
 import com.example.backend.DTO.questionsDTO.OptionDTO;
 import com.example.backend.DTO.questionsDTO.OptionScoreDTO;
 import com.example.backend.DTO.questionsDTO.QuestionDTO;
+import com.example.backend.DTO.questionsDTO.UpdateQuestionsDTO;
 import com.example.backend.enums.QuestionExceptionType;
 import com.example.backend.enums.QuestionReference;
 import com.example.backend.enums.QuestionType;
@@ -22,6 +26,7 @@ import com.example.backend.models.ScoreType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -134,14 +139,73 @@ public class QuestionService {
     }
 
     dao.save(question);
-//    for (Option option : question.getOptions()) {
-//      optionDao.save(option);
-//      for (OptionScore optionScore : option.getOptionScores()) {
-//        optionScoreDao.save(optionScore);
-//      }
-//    }
 
     return question.toDto();
+  }
+
+  @Transactional
+  public QuestionExceptionListDTO updateQuestions(UpdateQuestionsDTO updateQuestionsDTO) {
+    List<QuestionExceptionDTO> exceptions = new ArrayList<>();
+
+    // source and destination position sets must match
+    Set<Long> ids = updateQuestionsDTO.modifiableQuestionDTOList()
+        .stream()
+        .map(ModifiableQuestionDTO::id)
+        .collect(Collectors.toSet());
+    Set<Integer> oldPositions = dao.getPositionsByIds(ids);
+    Set<Integer> newPositions = updateQuestionsDTO.modifiableQuestionDTOList()
+        .stream()
+        .map(ModifiableQuestionDTO::position)
+        .collect(Collectors.toSet());
+    if (!oldPositions.equals(newPositions)) {
+      exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.WRONG_ORDER, null, QuestionExceptionType.WRONG_ORDER.getMsg()));
+    }
+
+    // question id must exist
+    long maxId = dao.getMaxId();
+    List<Long> wrongIds = updateQuestionsDTO.modifiableQuestionDTOList()
+        .stream()
+        .map(ModifiableQuestionDTO::id)
+        .filter(e -> e < 1 || e > maxId)
+        .toList();
+    for (Long wrongId : wrongIds) {
+      exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.WRONG_ID, wrongId, QuestionExceptionType.WRONG_ID.getMsg()));
+    }
+
+    // question position must fit order
+    int maxPosition = dao.getNextPosition() - 1;
+    List<ModifiableQuestionDTO> wrongPositionedItems = updateQuestionsDTO.modifiableQuestionDTOList()
+        .stream()
+        .filter(e -> e.position() < 1 || e.position() > maxPosition)
+        .toList();
+    for (ModifiableQuestionDTO q : wrongPositionedItems) {
+      exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.WRONG_POSITION, q.id(), QuestionExceptionType.WRONG_POSITION.getMsg()));
+    }
+
+    // no duplicated ids allowed
+    List<Long> duplicatedIds = updateQuestionsDTO.modifiableQuestionDTOList()
+        .stream()
+        .collect(Collectors.groupingBy(ModifiableQuestionDTO::id, Collectors.counting()))
+        .entrySet()
+        .stream()
+        .filter(e -> e.getValue() > 1)
+        .map(Map.Entry::getKey)
+        .toList();
+    for (Long id : duplicatedIds) {
+      exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.DUPLICATED_ID, id, QuestionExceptionType.DUPLICATED_ID.getMsg()));
+    }
+
+    // apply changes if no errors found
+    if (exceptions.isEmpty()) {
+      for (ModifiableQuestionDTO item : updateQuestionsDTO.modifiableQuestionDTOList()) {
+        Question question = dao.getQuestionById(item.id());
+        question.setPosition(item.position());
+        question.setActive(item.isActive());
+        dao.save(question);
+      }
+    }
+
+    return new QuestionExceptionListDTO(exceptions);
   }
 
   private QuestionDTO mapToClientDto(Question q) {
