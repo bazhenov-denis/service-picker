@@ -75,3 +75,23 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+.adminEditButton {
+  cursor: pointer;
+  transition: filter 0.15s;
+}
+
+.adminEditButton:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
+
+.adminEditButton:active:not(:disabled) {
+  filter: brightness(0.85);
+}
+
+.inactiveQuestion {
+  opacity: 0.5;
+  background-color: #f0f0f0;
+  filter: grayscale(0.5);
+  /* pointer-events: none; */
+}

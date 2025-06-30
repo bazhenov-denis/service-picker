@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { fetchQuestions } from "../client/httpClient";
 import type { Question } from "../types/question";
 
-export const useQuestions = () => {
+export const useQuestions = (role: "client" | "admin" = "client") => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -10,7 +10,7 @@ export const useQuestions = () => {
   useEffect(() => {
     const loadQuestions = async () => {
       try {
-        const data = await fetchQuestions();
+        const data = await fetchQuestions(role);
         setQuestions(data as Question[]);
       } catch (err) {
         console.error("Ошибка при загрузке вопросов:", err);
@@ -21,7 +21,7 @@ export const useQuestions = () => {
     };
 
     loadQuestions();
-  }, []);
+  }, [role]);
 
   return { questions, isLoading, error };
 };

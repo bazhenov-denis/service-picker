@@ -47,10 +47,22 @@ export const fetchProfessions = async (): Promise<any[]> => {
   }
 };
 
-export const fetchQuestions = async (): Promise<any[]> => {
+export const fetchQuestions = async (
+  role: "client" | "admin" = "client",
+): Promise<any[]> => {
   try {
-    const response = await api.get("/questions");
-    return response.data;
+    // const params = role === 'client' ? {} : { role };
+    // const response = await api.get("/questions", { params });
+    // return response.data;
+    if (role === "admin") {
+      const response = await fetch("/mock-questions.json");
+      if (!response.ok) throw new Error("Ошибка загрузки mock-questions.json");
+      return await response.json();
+    } else {
+      const params = {};
+      const apiResponse = await api.get("/questions", { params });
+      return apiResponse.data;
+    }
   } catch (error) {
     console.error("Ошибка при получении вопросов:", error);
     throw error;

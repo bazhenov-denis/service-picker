@@ -5,6 +5,8 @@ export interface QuestionBase {
   questionText: string;
   isRequired: boolean;
   type: string;
+  active: boolean;
+  position: number;
 }
 
 export interface ReferenceQuestion extends QuestionBase {
@@ -18,14 +20,28 @@ export interface InputQuestion extends QuestionBase {
   placeholder?: string;
 }
 
+export interface OptionScore {
+  id: number;
+  code: string;
+  title: string;
+  weight: number;
+}
+
+export interface OptionWithScores {
+  id: number;
+  text: string;
+  position?: number;
+  scores: OptionScore[];
+}
+
 export interface SingleChoiceQuestion extends QuestionBase {
   type: "single-choice";
-  options: { id: number; text: string }[];
+  options: OptionWithScores[];
 }
 
 export interface MultipleChoiceQuestion extends QuestionBase {
   type: "multiple-choice";
-  options: { id: number; text: string }[];
+  options: OptionWithScores[];
 }
 
 export type Question =

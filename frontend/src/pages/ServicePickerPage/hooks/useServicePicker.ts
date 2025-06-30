@@ -8,6 +8,7 @@ import TreeCollection from "@hh.ru/magritte-ui-tree-selector/collection/treeColl
 import { TreeModel } from "@hh.ru/magritte-ui-tree-selector/collection/types";
 
 type AnswerValue = string[] | number[] | number;
+export type Answers = Record<string, AnswerValue>;
 
 const regionPathMap = new Map<string, string>();
 const regionIdMap = new Map<string, string>();

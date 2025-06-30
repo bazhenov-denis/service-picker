@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "code": "access_vacancies",
+    "title": "Доступ к вакансиям"
+  },
+  {
+    "id": 2,
+    "code": "access_resumes",
+    "title": "Доступ к резюме"
+  },
+  {
+    "id": 3,
+    "code": "competition",
+    "title": "Конкурентность"
+  },
+  {
+    "id": 4,
+    "code": "urgency",
+    "title": "Срочность"
+  },
+  {
+    "id": 5,
+    "code": "mass",
+    "title": "Массовость"
+  },
+  {
+    "id": 6,
+    "code": "consistency",
+    "title": "Постоянность"
+  }
+]
