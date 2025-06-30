@@ -3,8 +3,7 @@ package com.example.backend.controllers;
 import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
 import com.example.backend.DTO.questionsDTO.CreateQuestionDTO;
 import com.example.backend.DTO.questionsDTO.QuestionExceptionDTO;
-import com.example.backend.DTO.questionsDTO.ErrorDTO;
-import com.example.backend.DTO.questionsDTO.ErrorListDTO;
+import com.example.backend.DTO.questionsDTO.QuestionExceptionListDTO;
 import com.example.backend.DTO.questionsDTO.QuestionDTO;
 import com.example.backend.DTO.questionsDTO.UpdateQuestionsDTO;
 import com.example.backend.exceptions.QuestionException;
@@ -76,9 +75,9 @@ public class QuestionController {
       description = "Change activeness and position of the questions"
   )
   @PutMapping
-  public ResponseEntity<?> updateQuestions(@RequestBody UpdateQuestionsDTO updateQuestionsDTO) {
-    ErrorListDTO errors = questionService.updateQuestions(updateQuestionsDTO);
-    if (errors.errorDTOList().isEmpty()) { return ResponseEntity.ok(null); }
+  public ResponseEntity<QuestionExceptionListDTO> updateQuestions(@Valid @RequestBody UpdateQuestionsDTO updateQuestionsDTO) {
+    QuestionExceptionListDTO errors = questionService.updateQuestions(updateQuestionsDTO);
+    if (errors.questionExceptionDTOList().isEmpty()) { return ResponseEntity.ok(null); }
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
   }
 }

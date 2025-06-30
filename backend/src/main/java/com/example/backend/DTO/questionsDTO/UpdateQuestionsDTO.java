@@ -1,6 +1,7 @@
 package com.example.backend.DTO.questionsDTO;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
-public record UpdateQuestionsDTO(List<ModifiableQuestionDTO> modifiableQuestionDTOList) {
+public record UpdateQuestionsDTO(@Valid List<ModifiableQuestionDTO> modifiableQuestionDTOList) {
 }

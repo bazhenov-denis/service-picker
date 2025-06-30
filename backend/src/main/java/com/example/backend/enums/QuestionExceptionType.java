@@ -8,8 +8,7 @@ public enum QuestionExceptionType {
   WRONG_ORDER("No order can be made with new positions"),
   DUPLICATED_ID("Several identical ids"),
   WRONG_ID("Id doesn't exist"),
-  WRONG_POSITION("Position doesn't exist"),
-  NULL_FIELD("Null fields are not allowed");
+  WRONG_POSITION("Position doesn't exist");
 
   private final String msg;
 
