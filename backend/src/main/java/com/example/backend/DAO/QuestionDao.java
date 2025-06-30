@@ -4,6 +4,7 @@ import com.example.backend.models.OptionScore;
 import com.example.backend.models.Question;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
@@ -60,5 +61,15 @@ public class QuestionDao{
       """, OptionScore.class)
         .setParameter("ids", optionIds)
         .getResultList();
+  }
+
+  public Integer getNextPosition() {
+    String query = "SELECT max(q.position) FROM Question q";
+    return (Integer)entityManager.createQuery(query).getSingleResult() + 1;
+  }
+
+  @Transactional
+  public void save(Question question) {
+    entityManager.persist(question);
   }
 }

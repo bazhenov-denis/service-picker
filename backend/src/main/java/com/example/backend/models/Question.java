@@ -1,5 +1,7 @@
 package com.example.backend.models;
 
+import com.example.backend.DTO.questionsDTO.AdminQuestionDTO;
+import com.example.backend.DTO.questionsDTO.OptionDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(name = "questions")
@@ -17,7 +20,6 @@ public class Question {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", nullable = false)
   private Long id;
 
   @Column(name = "question_text", nullable = false)
@@ -148,5 +150,21 @@ public class Question {
 
   public void setActive(Boolean active) {
     this.active = active;
+  }
+
+  public AdminQuestionDTO toDto() {
+    List<OptionDTO> optionDTOList = this.options != null ? this.options.stream().map(Option::toDto).toList() : null;
+
+    return new AdminQuestionDTO(
+        this.id,
+        this.questionText,
+        this.type,
+        this.isRequired,
+        this.referenceType,
+        this.shortTitle,
+        this.position,
+        this.active,
+        optionDTOList
+    );
   }
 }

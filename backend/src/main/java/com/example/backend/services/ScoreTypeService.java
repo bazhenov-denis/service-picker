@@ -2,6 +2,7 @@ package com.example.backend.services;
 
 import com.example.backend.DAO.ScoreTypeDao;
 import com.example.backend.DTO.ScoreTypeDTO;
+import com.example.backend.models.ScoreType;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
