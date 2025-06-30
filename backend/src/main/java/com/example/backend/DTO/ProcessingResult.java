@@ -3,7 +3,6 @@ package com.example.backend.DTO;
 import com.example.backend.enums.ScoreCode;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Collections;
 
 public class ProcessingResult {
@@ -35,9 +34,6 @@ public class ProcessingResult {
     return profRoleIds;
   }
 
-  public Map<ScoreCode, Long> getAllScores() {
-    return Map.copyOf(scores);
-  }
 
   @Override
   public String toString() {

@@ -1,4 +1,4 @@
-package com.example.backend.query;
+package com.example.backend.mapper;
 
 import com.example.backend.DTO.OfferDto;
 import com.example.backend.enums.OfferChildCodeEnum;

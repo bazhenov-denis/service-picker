@@ -1,13 +1,14 @@
 package com.example.backend.utils;
 
-import com.example.backend.DAO.OfferDaoImpl;
+import com.example.backend.DAO.OfferDao;
 import com.example.backend.models.Offer;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
 import jakarta.annotation.PostConstruct;
 import java.io.FileReader;
 import java.nio.file.Paths;
@@ -16,8 +17,12 @@ import java.util.List;
 @Component
 public class CsvLoader {
 
-  @Autowired
-  private OfferDaoImpl offerDao;
+  private final OfferDao offerDao;
+  private final Logger log = LoggerFactory.getLogger(CsvLoader.class);
+
+  public CsvLoader(OfferDao offerDao) {
+    this.offerDao = offerDao;
+  }
 
   @PostConstruct
   public void loadCsvData() {
@@ -30,74 +35,52 @@ public class CsvLoader {
         .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
         .build()) {
       List<String[]> records = reader.readAll();
-      // remove header if present
-      if (!records.isEmpty() && isHeader(records.get(0), "product_id")) {
+      if (!records.isEmpty() && isHeader(records.get(0))) {
         records.remove(0);
       }
-
       for (String[] record : records) {
         if (record.length < 16) continue;
-
-        Offer offer = new Offer();
-        offer.setProductId(parseLong(record[0]));
-        offer.setTariff(record[1]);
-        offer.setCode(record[2]);
-        offer.setChildCode1(record[3]);
-        offer.setChildCount1(parseInt(record[4]));
-        offer.setChildCode2(record[5]);
-        offer.setChildCount2(parseInt(record[6]));
-        offer.setChildCode3(record[7]);
-        offer.setChildCount3(parseInt(record[8]));
-        offer.setChildCode4(record[9]);
-        offer.setChildCount4(parseInt(record[10]));
-        offer.setPeriod(parseInt(record[11]));
-        offer.setRegionId(parseLong(record[12]));
-        offer.setProfroleGroupId(parseInt(record[13]));
-        offer.setPriceAll(parseDouble(record[14]));
-        offer.setCurrency(record[15]);
+        Offer offer = mapToOffer(record);
         offerDao.save(offer);
       }
     } catch (Exception e) {
-      System.err.println("Error loading offers CSV: " + e.getMessage());
-      e.printStackTrace();
+      log.error("Error loading offers CSV: {}", e.getMessage());
     }
   }
 
-  private boolean isHeader(String[] record, String firstColumnName) {
-    // simple check: if first cell equals expected column name
-    return record[0].contains(firstColumnName);
+  private boolean isHeader(String[] record) {
+    return record[0].contains("product_id");
   }
 
-  private Long parseLong(String value) {
-    if (value == null) return null;
-    // remove BOM and whitespace
-    String cleaned = value.replace("\uFEFF", "").trim().replaceAll("\\s+", "");
-    try {
-      return cleaned.isEmpty() ? null : Long.parseLong(cleaned);
-    } catch (NumberFormatException e) {
-      System.err.println("Error parsing Long: '" + value + "'");
-      return null;
-    }
+
+  private Offer mapToOffer(String[] r) {
+    Offer o = new Offer();
+    o.setProductId        (parse(r[0], Long::parseLong));
+    o.setTariff           (r[1].trim());
+    o.setCode             (r[2].trim());
+    o.setChildCode1       (r[3].trim());
+    o.setChildCount1      (parse(r[4], Integer::parseInt));
+    o.setChildCode2       (r[5].trim());
+    o.setChildCount2      (parse(r[6], Integer::parseInt));
+    o.setChildCode3       (r[7].trim());
+    o.setChildCount3      (parse(r[8], Integer::parseInt));
+    o.setChildCode4       (r[9].trim());
+    o.setChildCount4      (parse(r[10], Integer::parseInt));
+    o.setPeriod           (parse(r[11], Integer::parseInt));
+    o.setRegionId         (parse(r[12], Long::parseLong));
+    o.setProfroleGroupId  (parse(r[13], Integer::parseInt));
+    o.setPriceAll         (parse(r[14], Double::parseDouble));
+    o.setCurrency         (r[15].trim());
+    return o;
   }
 
-  private Integer parseInt(String value) {
-    if (value == null) return null;
-    String cleaned = value.replace("\uFEFF", "").trim().replaceAll("\\s+", "");
-    try {
-      return cleaned.isEmpty() ? null : Integer.parseInt(cleaned);
-    } catch (NumberFormatException e) {
-      System.err.println("Error parsing Integer: '" + value + "'");
-      return null;
-    }
-  }
-
-  private Double parseDouble(String value) {
-    if (value == null) return null;
-    String cleaned = value.replace("\uFEFF", "").trim().replaceAll("\\s+", "");
-    try {
-      return cleaned.isEmpty() ? null : Double.parseDouble(cleaned);
-    } catch (NumberFormatException e) {
-      System.err.println("Error parsing Double: '" + value + "'");
+  private <T> T parse(String s, Function<String,T> fn) {
+    if (s == null) return null;
+    String t = s.replace("\uFEFF","").trim();
+    if (t.isEmpty()) return null;
+    try { return fn.apply(t); }
+    catch (Exception ex) {
+      log.warn("Не распарсить '{}' → {}", s, ex.getMessage());
       return null;
     }
   }

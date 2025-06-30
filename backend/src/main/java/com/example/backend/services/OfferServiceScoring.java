@@ -6,7 +6,7 @@ import com.example.backend.DTO.OfferListDto;
 import com.example.backend.DTO.ProcessingResult;
 import com.example.backend.handlers.CriteriaHandler;
 import com.example.backend.models.Offer;
-import com.example.backend.query.OfferMapper;
+import com.example.backend.mapper.OfferMapper;
 import com.example.backend.query.QueryBuilder;
 import java.util.Comparator;
 import java.util.List;
