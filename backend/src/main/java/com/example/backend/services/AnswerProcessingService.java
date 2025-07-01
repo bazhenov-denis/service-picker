@@ -24,13 +24,13 @@ public class AnswerProcessingService {
   private final QuestionDao questionDao;
   private final PriceProfroleService priceProfroleService;
   private final PriceRegionService priceRegionService;
-  private final ApiService apiService;
+  private final HhApiService apiService;
 
   public AnswerProcessingService(
       QuestionDao questionDao,
       PriceProfroleService priceProfroleService,
       PriceRegionService priceRegionService,
-      ApiService apiService
+      HhApiService apiService
   ) {
     this.questionDao = questionDao;
     this.priceProfroleService = priceProfroleService;
@@ -76,7 +76,7 @@ public class AnswerProcessingService {
           regionIds.get(0).intValue(),
           profRoleIds.get(0).intValue()
       );
-      result.addScore(ScoreCode.COMPETITION, vacancy.getCount());
+      result.addScore(ScoreCode.COMPETITION, vacancy.count());
     }
     return result;
   }
