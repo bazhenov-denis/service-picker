@@ -21,17 +21,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.List;
 
 @Service
-public class ApiService {
+public class HhApiService {
 
-  private static final Logger logger = LoggerFactory.getLogger(ApiService.class);
-  private static final int MAX_RETRIES = 3;
+  private static final Logger logger = LoggerFactory.getLogger(HhApiService.class);
   private static final int RETRY_DELAY_MILLIS = 1000;
 
   private final String baseUrl;
   private final RestClient restClient;
   private final ObjectMapper objectMapper;
 
-  public ApiService(
+  public HhApiService(
       RestClient restClient, ObjectMapper objectMapper,
       @Value("${api.hh.base_url:https://api.hh.ru}") String baseUrl
   ) {
@@ -41,8 +40,7 @@ public class ApiService {
   }
 
   @Retryable(
-      value = {RestClientException.class},
-      maxAttempts = MAX_RETRIES,
+      retryFor = RestClientException.class,
       backoff = @Backoff(delay = RETRY_DELAY_MILLIS))
   public VacancyResult getVacancyCount(Integer area, Integer role) {
     String uri = UriComponentsBuilder.fromUriString(baseUrl + "/vacancies")
@@ -69,8 +67,7 @@ public class ApiService {
 
 
   @Retryable(
-      value = {RestClientException.class},
-      maxAttempts = MAX_RETRIES,
+      retryFor = RestClientException.class,
       backoff = @Backoff(delay = RETRY_DELAY_MILLIS)
   )
   public List<AreaDTO> getAreas() {
@@ -94,8 +91,7 @@ public class ApiService {
   }
 
   @Retryable(
-      value = {RestClientException.class},
-      maxAttempts = MAX_RETRIES,
+      retryFor = RestClientException.class,
       backoff = @Backoff(delay = RETRY_DELAY_MILLIS)
   )
   public ProfessionalRolesResponseDTO getProfessionalRolesDictionary() {

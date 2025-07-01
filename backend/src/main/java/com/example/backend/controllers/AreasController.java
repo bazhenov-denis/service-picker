@@ -1,7 +1,7 @@
 package com.example.backend.controllers;
 
 import com.example.backend.DTO.AreaDTO;
-import com.example.backend.services.ApiService;
+import com.example.backend.services.HhApiService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,9 +21,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/areas")
 public class AreasController {
-  private final ApiService apiService;
+  private final HhApiService apiService;
 
-  public AreasController(ApiService apiService) {
+  public AreasController(HhApiService apiService) {
     this.apiService = apiService;
   }
 

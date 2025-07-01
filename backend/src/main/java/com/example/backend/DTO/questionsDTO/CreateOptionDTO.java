@@ -1,30 +1,31 @@
 package com.example.backend.DTO.questionsDTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import java.util.List;
+import jakarta.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CreateOptionDTO {
   @NotBlank
   private String text;
 
-  @NotEmpty
-  private List<Long> scores;
+  @Valid
+  @NotNull
+  private CreateOptionScoreDTO score;
 
   public CreateOptionDTO() {}
 
-  public CreateOptionDTO(String text, List<Long> scores) {
+  public CreateOptionDTO(String text, CreateOptionScoreDTO score) {
     this.text = text;
-    this.scores = scores;
+    this.score = score;
   }
 
   public String getText() {
-    return text;
+    return this.text;
   }
 
-  public List<Long> getScores() {
-    return scores;
+  public CreateOptionScoreDTO getScore() {
+    return this.score;
   }
 }

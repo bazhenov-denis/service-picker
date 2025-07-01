@@ -1,7 +1,7 @@
 package com.example.backend.controllers;
 
 import com.example.backend.DTO.ProfessionalRolesResponseDTO;
-import com.example.backend.services.ApiService;
+import com.example.backend.services.HhApiService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,9 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/professions")
 public class ProfessionsController {
 
-  private final ApiService apiService;
+  private final HhApiService apiService;
 
-  public ProfessionsController(ApiService apiService) {
+  public ProfessionsController(HhApiService apiService) {
     this.apiService = apiService;
   }
 

@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class OfferController {
-  @Autowired
-  private OfferServiceScoring offerService;
+
+  private final OfferServiceScoring offerService;
+
+  public OfferController(OfferServiceScoring offerService) {
+    this.offerService = offerService;
+  }
 
   @Operation(summary = "Pick offers by user data")
   @ApiResponses(value = {
@@ -36,15 +39,11 @@ public class OfferController {
       )))
       @RequestBody ClaimDto claim
   ) {
-    // обращение в сервис подбора
     OfferListDto offerListDto = offerService.pick(claim);
-
-    // пустой ответ от сервиса => что-то пошло не так => 400
     if (offerListDto.isEmpty()) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-    // 200
     return ResponseEntity.ok(offerListDto);
   }
 }
