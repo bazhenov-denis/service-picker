@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './AddQuestionButton.module.css';
 import QuestionEditModal from "./QuestionEditModal";
-import type { Question, SingleChoiceQuestion, MultipleChoiceQuestion } from "../../types/question";
+import type { Question, SingleChoiceQuestion, MultipleChoiceQuestion, OptionWithScores, OptionScore } from "../../types/question";
 
 interface ScoreType {
   id: number;
@@ -48,6 +48,7 @@ const AddQuestionButton: React.FC = () => {
     setDraftQuestion({
       id: Date.now(),
       questionText: "",
+      shortTitle: "",
       isRequired: true,
       type: "single-choice",
       active: true,
@@ -63,10 +64,32 @@ const AddQuestionButton: React.FC = () => {
     setError("");
     setSuccess(false);
     try {
+      let optionsArr: OptionWithScores[] = [];
+      if (
+        draftQuestion.type === "single-choice" ||
+        draftQuestion.type === "multiple-choice"
+      ) {
+        optionsArr = (draftQuestion as SingleChoiceQuestion | MultipleChoiceQuestion).options || [];
+      }
+      let payload: any = {
+        questionText: draftQuestion.questionText,
+        type: draftQuestion.type,
+        isRequired: draftQuestion.isRequired,
+        shortTitle: draftQuestion.shortTitle,
+        active: draftQuestion.active,
+        // referenceType: "",
+        options: optionsArr.map((opt: OptionWithScores) => ({
+          text: opt.text,
+          scores: (opt.scores || []).map((s: OptionScore) => s.id)
+        }))
+      };
+      if (draftQuestion.type === "reference") {
+        payload.referenceType = (draftQuestion as any).referenceType || "";
+      }
       const response = await fetch("http://localhost:8080/questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(draftQuestion),
+        body: JSON.stringify(payload),
       });
       if (!response.ok) throw new Error("Ошибка при создании вопроса");
       setSuccess(true);

@@ -7,6 +7,7 @@ export interface QuestionBase {
   type: string;
   active: boolean;
   position: number;
+  shortTitle: string;
 }
 
 export interface ReferenceQuestion extends QuestionBase {
