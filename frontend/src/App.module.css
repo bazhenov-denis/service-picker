@@ -95,3 +95,9 @@
   filter: grayscale(0.5);
   /* pointer-events: none; */
 }
+
+@media (max-width: 1500px) {
+  .container {
+    justify-content: flex-start;
+  }
+}

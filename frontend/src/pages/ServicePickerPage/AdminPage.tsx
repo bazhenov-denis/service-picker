@@ -10,6 +10,7 @@ import {
   ArrowDownOutlinedSize24,
   CrossOutlinedSize24,
 } from "@hh.ru/magritte-ui-icon/variants/icon";
+import { saveQuestionsOrder } from "./client/httpClient";
 
 const AdminPage: React.FC = () => {
   const {
@@ -24,12 +25,28 @@ const AdminPage: React.FC = () => {
     handleQuestionTypeChange,
   } = useAdminQuestions();
 
+  const [isChanged, setIsChanged] = React.useState(false);
+
+  const handleMoveUp = (id: number) => {
+    handleMoveQuestionUp(id);
+    setIsChanged(true);
+  };
+  const handleMoveDown = (id: number) => {
+    handleMoveQuestionDown(id);
+    setIsChanged(true);
+  };
+  const handleToggleActiveLocal = (id: number) => {
+    handleToggleActive(id);
+    setIsChanged(true);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.mainContent}>
         <div className={styles.questionsContainer}>
           {adminQuestions
             .filter((q) => q.isRequired === false)
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
             .map((question, idx) => (
               <div
                 key={question.id}
@@ -64,6 +81,7 @@ const AdminPage: React.FC = () => {
                         questionText: newText,
                       };
                       setAdminQuestions(newQuestions);
+                      setIsChanged(true);
                     }}
                     onOptionChange={(optIdx, field, value) => {
                       if (
@@ -130,6 +148,7 @@ const AdminPage: React.FC = () => {
                         options: newOptions,
                       };
                       setAdminQuestions(newQuestions);
+                      setIsChanged(true);
                     }}
                     onOptionAdd={() => {
                       if (
@@ -162,6 +181,7 @@ const AdminPage: React.FC = () => {
                         options: newOptions,
                       };
                       setAdminQuestions(newQuestions);
+                      setIsChanged(true);
                     }}
                     onOptionRemove={(optIdx) => {
                       if (
@@ -182,6 +202,7 @@ const AdminPage: React.FC = () => {
                         options: newOptions,
                       };
                       setAdminQuestions(newQuestions);
+                      setIsChanged(true);
                     }}
                     onQuestionTypeChange={handleQuestionTypeChange}
                   />
@@ -210,7 +231,7 @@ const AdminPage: React.FC = () => {
                         className={styles.adminEditButton}
                         aria-label="Вверх"
                         disabled={idx === 0}
-                        onClick={() => handleMoveQuestionUp(question.id)}
+                        onClick={() => handleMoveUp(question.id)}
                         style={{
                           cursor: idx === 0 ? "not-allowed" : "pointer",
                           background: "none",
@@ -272,7 +293,7 @@ const AdminPage: React.FC = () => {
                             .length -
                             1
                         }
-                        onClick={() => handleMoveQuestionDown(question.id)}
+                        onClick={() => handleMoveDown(question.id)}
                         style={{
                           cursor:
                             idx ===
@@ -321,7 +342,7 @@ const AdminPage: React.FC = () => {
                             ? "Сделать неактивным"
                             : "Сделать активным"
                         }
-                        onClick={() => handleToggleActive(question.id)}
+                        onClick={() => handleToggleActiveLocal(question.id)}
                         style={{
                           background: "none",
                           border: "none",
@@ -354,6 +375,21 @@ const AdminPage: React.FC = () => {
               </div>
             ))}
         </div>
+        <button
+          className={styles.saveButton}
+          disabled={!isChanged}
+          onClick={async () => {
+            const modifiableQuestionDTOList = adminQuestions.map(q => ({
+              id: q.id,
+              position: q.position,
+              isActive: q.active,
+            }));
+            await saveQuestionsOrder(modifiableQuestionDTOList);
+            setIsChanged(false);
+          }}
+        >
+          Сохранить
+        </button>
       </div>
     </div>
   );
