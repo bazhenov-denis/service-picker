@@ -11,6 +11,7 @@ import {
   CrossOutlinedSize24,
 } from "@hh.ru/magritte-ui-icon/variants/icon";
 import { saveQuestionsOrder } from "./client/httpClient";
+import AddQuestionButton from "./components/AddQuestionButton/AddQuestionButton";
 
 const AdminPage: React.FC = () => {
   const {
@@ -391,6 +392,7 @@ const AdminPage: React.FC = () => {
           Сохранить
         </button>
       </div>
+      <AddQuestionButton />
     </div>
   );
 };
