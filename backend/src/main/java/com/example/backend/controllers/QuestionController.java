@@ -64,8 +64,13 @@ public class QuestionController {
       AdminQuestionDTO body = questionService.createQuestion(createQuestionDTO);
       return ResponseEntity.ok(body);
     } catch (QuestionException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QuestionExceptionDTO(e.getErrorType(), e.getQuestionId(), e.getErrorType().getMsg()));
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new QuestionExceptionDTO(
+          e.getErrorType(),
+          e.getQuestionId(),
+          e.getErrorType().getMsg()
+      ));
     } catch (Exception e) {
+      log.warn(e.getMessage());
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sorry, something gone wrong");
     }
   }

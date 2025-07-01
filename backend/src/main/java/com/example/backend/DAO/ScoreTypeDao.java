@@ -23,4 +23,15 @@ public class ScoreTypeDao {
     );
     return q.getResultList();
   }
+
+  @Transactional(readOnly = true)
+  public ScoreType findByCode(String code) {
+    return em.createQuery("""
+        SELECT st
+        FROM ScoreType st
+        WHERE st.code = :code
+        """, ScoreType.class)
+        .setParameter("code", code)
+        .getSingleResult();
+  }
 }

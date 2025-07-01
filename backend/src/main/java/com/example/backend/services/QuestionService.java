@@ -96,8 +96,8 @@ public class QuestionService {
     }
 
     for (CreateOptionDTO createOptionDTO : createQuestionDTO.options()) {
-      if (createOptionDTO.getScores().size() != ScoreCode.values().length) {
-        throw new QuestionException(QuestionExceptionType.WRONG_NUMBER_OF_SCORES, null);
+      if (!ScoreCode.contains(createOptionDTO.getScore().code())) {
+        throw new QuestionException(QuestionExceptionType.WRONG_SCORE_CODE, null);
       }
     }
 
@@ -114,22 +114,20 @@ public class QuestionService {
         || createQuestionDTO.type().equals(QuestionType.MULTIPLE_CHOICE.getType())) {
 
       List<Option> options = new ArrayList<>();
-      List<ScoreType> scoreTypes = scoreTypeDao.findAll();
 
       for (int i = 0; i < createQuestionDTO.options().size(); i++) {
         Option option = new Option();
-        List<OptionScore> scores = new ArrayList<>();
-        for (int j = 0; j < scoreTypes.size(); j++) {
-          OptionScore optionScore = new OptionScore();
-          optionScore.setScoreType(scoreTypes.get(j));
-          optionScore.setWeight(createQuestionDTO.options().get(i).getScores().get(j));
-          optionScore.setOption(option);
-          scores.add(optionScore);
-        }
+        OptionScore optionScore = new OptionScore();
+        ArrayList<OptionScore> optionScores = new ArrayList<>();
+        optionScores.add(optionScore);
+
+        optionScore.setScoreType(scoreTypeDao.findByCode(createQuestionDTO.options().get(i).getScore().code()));
+        optionScore.setWeight(createQuestionDTO.options().get(i).getScore().weight());
+        optionScore.setOption(option);
 
         option.setPosition(i + 1);
         option.setText(createQuestionDTO.options().get(i).getText());
-        option.setOptionScores(scores);
+        option.setOptionScores(optionScores);
         option.setQuestion(question);
 
         options.add(option);
@@ -163,37 +161,47 @@ public class QuestionService {
 
     // question id must exist
     long maxId = dao.getMaxId();
-    List<Long> wrongIds = updateQuestionsDTO.modifiableQuestionDTOList()
+    updateQuestionsDTO.modifiableQuestionDTOList()
         .stream()
         .map(ModifiableQuestionDTO::id)
         .filter(e -> e < 1 || e > maxId)
-        .toList();
-    for (Long wrongId : wrongIds) {
-      exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.WRONG_ID, wrongId, QuestionExceptionType.WRONG_ID.getMsg()));
-    }
+        .forEach(e -> exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.WRONG_ID, e, QuestionExceptionType.WRONG_ID.getMsg())));
 
     // question position must fit order
     int maxPosition = dao.getNextPosition() - 1;
-    List<ModifiableQuestionDTO> wrongPositionedItems = updateQuestionsDTO.modifiableQuestionDTOList()
+    updateQuestionsDTO.modifiableQuestionDTOList()
         .stream()
         .filter(e -> e.position() < 1 || e.position() > maxPosition)
-        .toList();
-    for (ModifiableQuestionDTO q : wrongPositionedItems) {
-      exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.WRONG_POSITION, q.id(), QuestionExceptionType.WRONG_POSITION.getMsg()));
-    }
+        .forEach(
+            e -> exceptions.add(
+                new QuestionExceptionDTO(QuestionExceptionType.WRONG_POSITION, e.id(), QuestionExceptionType.WRONG_POSITION.getMsg())
+            )
+        );
+
+    // first 3 questions are unmodifiable
+    updateQuestionsDTO.modifiableQuestionDTOList()
+        .stream()
+        .map(ModifiableQuestionDTO::id)
+        .filter(e -> e < 4 && e > 0)
+        .forEach(
+            e -> exceptions.add(
+                new QuestionExceptionDTO(QuestionExceptionType.UNMODIFIABLE_QUESTION, e, QuestionExceptionType.UNMODIFIABLE_QUESTION.getMsg())
+            )
+        );
 
     // no duplicated ids allowed
-    List<Long> duplicatedIds = updateQuestionsDTO.modifiableQuestionDTOList()
+    updateQuestionsDTO.modifiableQuestionDTOList()
         .stream()
         .collect(Collectors.groupingBy(ModifiableQuestionDTO::id, Collectors.counting()))
         .entrySet()
         .stream()
         .filter(e -> e.getValue() > 1)
         .map(Map.Entry::getKey)
-        .toList();
-    for (Long id : duplicatedIds) {
-      exceptions.add(new QuestionExceptionDTO(QuestionExceptionType.DUPLICATED_ID, id, QuestionExceptionType.DUPLICATED_ID.getMsg()));
-    }
+        .forEach(
+            e -> exceptions.add(
+                new QuestionExceptionDTO(QuestionExceptionType.DUPLICATED_ID, e, QuestionExceptionType.DUPLICATED_ID.getMsg())
+            )
+        );
 
     // apply changes if no errors found
     if (exceptions.isEmpty()) {
