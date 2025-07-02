@@ -73,19 +73,21 @@ const SingleChoice: React.FC<Props> = ({
   if (isAdmin) {
     return (
       <div className={styles.questionContainer}>
-        <input
-          type="text"
-          value={question.questionText}
-          onChange={(e) =>
-            onQuestionTextChange && onQuestionTextChange(e.target.value)
-          }
-          style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            width: "100%",
-            marginBottom: 8,
-          }}
-        />
+        {onQuestionTextChange && (
+          <input
+            type="text"
+            value={question.questionText}
+            onChange={(e) =>
+              onQuestionTextChange && onQuestionTextChange(e.target.value)
+            }
+            style={{
+              fontWeight: "bold",
+              fontSize: 18,
+              width: "100%",
+              marginBottom: 8,
+            }}
+          />
+        )}
         <div style={{ marginBottom: 16 }}>
           <span style={{ marginRight: 8 }}>Тип вопроса:</span>
           <label style={{ marginRight: 8 }}>

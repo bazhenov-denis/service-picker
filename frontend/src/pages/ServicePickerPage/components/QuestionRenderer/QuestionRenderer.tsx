@@ -34,6 +34,7 @@ interface Props {
     questionId: number,
     newType: "single-choice" | "multiple-choice",
   ) => void;
+  editable?: boolean;
 }
 
 const isStringArray = (arr: unknown): arr is string[] => {
@@ -64,6 +65,7 @@ const QuestionRenderer: React.FC<Props> = ({
   onOptionAdd,
   onOptionRemove,
   onQuestionTypeChange,
+  editable,
 }) => {
   const handleChange = (value: unknown) => {
     onChange(value);

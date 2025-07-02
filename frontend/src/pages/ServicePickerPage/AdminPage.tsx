@@ -10,6 +10,8 @@ import {
   ArrowDownOutlinedSize24,
   CrossOutlinedSize24,
 } from "@hh.ru/magritte-ui-icon/variants/icon";
+import { saveQuestionsOrder } from "./client/httpClient";
+import AddQuestionButton from "./components/AddQuestionButton/AddQuestionButton";
 
 const AdminPage: React.FC = () => {
   const {
@@ -24,12 +26,28 @@ const AdminPage: React.FC = () => {
     handleQuestionTypeChange,
   } = useAdminQuestions();
 
+  const [isChanged, setIsChanged] = React.useState(false);
+
+  const handleMoveUp = (id: number) => {
+    handleMoveQuestionUp(id);
+    setIsChanged(true);
+  };
+  const handleMoveDown = (id: number) => {
+    handleMoveQuestionDown(id);
+    setIsChanged(true);
+  };
+  const handleToggleActiveLocal = (id: number) => {
+    handleToggleActive(id);
+    setIsChanged(true);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.mainContent}>
         <div className={styles.questionsContainer}>
           {adminQuestions
             .filter((q) => q.isRequired === false)
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
             .map((question, idx) => (
               <div
                 key={question.id}
@@ -53,137 +71,7 @@ const AdminPage: React.FC = () => {
                     answer={undefined}
                     onChange={() => {}}
                     error={null}
-                    onQuestionTextChange={(newText) => {
-                      const realIdx = adminQuestions.findIndex(
-                        (q) => q.id === question.id,
-                      );
-                      if (realIdx === -1) return;
-                      const newQuestions = [...adminQuestions];
-                      newQuestions[realIdx] = {
-                        ...question,
-                        questionText: newText,
-                      };
-                      setAdminQuestions(newQuestions);
-                    }}
-                    onOptionChange={(optIdx, field, value) => {
-                      if (
-                        question.type !== "single-choice" &&
-                        question.type !== "multiple-choice"
-                      )
-                        return;
-                      const realIdx = adminQuestions.findIndex(
-                        (q) => q.id === question.id,
-                      );
-                      if (realIdx === -1) return;
-                      const newQuestions = [...adminQuestions];
-                      const newOptions = [...(question.options || [])];
-                      if (field === "text") {
-                        newOptions[optIdx] = {
-                          ...newOptions[optIdx],
-                          text: value,
-                        };
-                      } else if (field === "scoreType") {
-                        const selectedType = scoreTypes.find(
-                          (st) => st.code === value,
-                        );
-                        const newScores = newOptions[optIdx].scores
-                          ? [...newOptions[optIdx].scores]
-                          : [
-                              {
-                                id: newOptions[optIdx].id,
-                                code: "",
-                                title: "",
-                                weight: 0,
-                              },
-                            ];
-                        newScores[0] = {
-                          ...newScores[0],
-                          code: selectedType?.code || "",
-                          title: selectedType?.title || "",
-                        };
-                        newOptions[optIdx] = {
-                          ...newOptions[optIdx],
-                          scores: newScores,
-                        };
-                      } else if (field === "weight") {
-                        const newScores = newOptions[optIdx].scores
-                          ? [...newOptions[optIdx].scores]
-                          : [
-                              {
-                                id: newOptions[optIdx].id,
-                                code: "",
-                                title: "",
-                                weight: 0,
-                              },
-                            ];
-                        newScores[0] = {
-                          ...newScores[0],
-                          weight: value === "" ? 0 : Number(value),
-                        };
-                        newOptions[optIdx] = {
-                          ...newOptions[optIdx],
-                          scores: newScores,
-                        };
-                      }
-                      newQuestions[realIdx] = {
-                        ...question,
-                        options: newOptions,
-                      };
-                      setAdminQuestions(newQuestions);
-                    }}
-                    onOptionAdd={() => {
-                      if (
-                        question.type !== "single-choice" &&
-                        question.type !== "multiple-choice"
-                      )
-                        return;
-                      const realIdx = adminQuestions.findIndex(
-                        (q) => q.id === question.id,
-                      );
-                      if (realIdx === -1) return;
-                      const newQuestions = [...adminQuestions];
-                      const newOptions = [
-                        ...(question.options || []),
-                        {
-                          id: Date.now(),
-                          text: "",
-                          scores: [
-                            {
-                              id: Date.now(),
-                              code: scoreTypes[0]?.code || "",
-                              title: scoreTypes[0]?.title || "",
-                              weight: 0,
-                            },
-                          ],
-                        },
-                      ];
-                      newQuestions[realIdx] = {
-                        ...question,
-                        options: newOptions,
-                      };
-                      setAdminQuestions(newQuestions);
-                    }}
-                    onOptionRemove={(optIdx) => {
-                      if (
-                        question.type !== "single-choice" &&
-                        question.type !== "multiple-choice"
-                      )
-                        return;
-                      const realIdx = adminQuestions.findIndex(
-                        (q) => q.id === question.id,
-                      );
-                      if (realIdx === -1) return;
-                      const newQuestions = [...adminQuestions];
-                      const newOptions = (question.options || []).filter(
-                        (_, i) => i !== optIdx,
-                      );
-                      newQuestions[realIdx] = {
-                        ...question,
-                        options: newOptions,
-                      };
-                      setAdminQuestions(newQuestions);
-                    }}
-                    onQuestionTypeChange={handleQuestionTypeChange}
+                    editable={false}
                   />
                 </div>
                 <div
@@ -210,7 +98,7 @@ const AdminPage: React.FC = () => {
                         className={styles.adminEditButton}
                         aria-label="Вверх"
                         disabled={idx === 0}
-                        onClick={() => handleMoveQuestionUp(question.id)}
+                        onClick={() => handleMoveUp(question.id)}
                         style={{
                           cursor: idx === 0 ? "not-allowed" : "pointer",
                           background: "none",
@@ -272,7 +160,7 @@ const AdminPage: React.FC = () => {
                             .length -
                             1
                         }
-                        onClick={() => handleMoveQuestionDown(question.id)}
+                        onClick={() => handleMoveDown(question.id)}
                         style={{
                           cursor:
                             idx ===
@@ -321,7 +209,7 @@ const AdminPage: React.FC = () => {
                             ? "Сделать неактивным"
                             : "Сделать активным"
                         }
-                        onClick={() => handleToggleActive(question.id)}
+                        onClick={() => handleToggleActiveLocal(question.id)}
                         style={{
                           background: "none",
                           border: "none",
@@ -354,7 +242,23 @@ const AdminPage: React.FC = () => {
               </div>
             ))}
         </div>
+        <button
+          className={styles.saveButton}
+          disabled={!isChanged}
+          onClick={async () => {
+            const modifiableQuestionDTOList = adminQuestions.map((q) => ({
+              id: q.id,
+              position: q.position,
+              isActive: q.active,
+            }));
+            await saveQuestionsOrder(modifiableQuestionDTOList);
+            setIsChanged(false);
+          }}
+        >
+          Сохранить
+        </button>
       </div>
+      <AddQuestionButton />
     </div>
   );
 };

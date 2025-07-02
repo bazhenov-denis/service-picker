@@ -13,9 +13,12 @@ export function useQuestionSegments(questions: Question[], answers: Answers) {
 
   const currentSegmentQuestions = useMemo(() => {
     if (!questions) return [];
+    const sortedQuestions = [...questions].sort(
+      (a, b) => (a.position ?? 0) - (b.position ?? 0),
+    );
     const startIndex = currentSegment * QUESTIONS_PER_SEGMENT;
     const endIndex = startIndex + QUESTIONS_PER_SEGMENT;
-    return questions.slice(startIndex, endIndex);
+    return sortedQuestions.slice(startIndex, endIndex);
   }, [questions, currentSegment]);
 
   const canProceedToNext = useMemo(() => {

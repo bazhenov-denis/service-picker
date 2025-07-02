@@ -1,7 +1,7 @@
 .container {
   position: fixed;
   top: 80px;
-  right: calc((100% - 1200px) / 2 + 2rem);
+  right: 5%;
   min-width: 300px;
   max-width: 400px;
   padding-top: 32px;
@@ -71,4 +71,10 @@
 .emptyState {
   color: var(--color-text-secondary);
   font-style: italic;
+}
+
+@media (max-width: 1000px) {
+  .container {
+    display: none;
+  }
 }

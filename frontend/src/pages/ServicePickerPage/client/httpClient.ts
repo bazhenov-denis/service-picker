@@ -51,18 +51,9 @@ export const fetchQuestions = async (
   role: "client" | "admin" = "client",
 ): Promise<any[]> => {
   try {
-    // const params = role === 'client' ? {} : { role };
-    // const response = await api.get("/questions", { params });
-    // return response.data;
-    if (role === "admin") {
-      const response = await fetch("/mock-questions.json");
-      if (!response.ok) throw new Error("Ошибка загрузки mock-questions.json");
-      return await response.json();
-    } else {
-      const params = {};
-      const apiResponse = await api.get("/questions", { params });
-      return apiResponse.data;
-    }
+    const params = role === "client" ? {} : { role };
+    const response = await api.get("/questions", { params });
+    return response.data;
   } catch (error) {
     console.error("Ошибка при получении вопросов:", error);
     throw error;
@@ -79,6 +70,22 @@ export const sendAnswers = async (
     return response.data;
   } catch (error) {
     console.error("Ошибка при отправке ответов:", error);
+    throw error;
+  }
+};
+
+export const saveQuestionsOrder = async (
+  modifiableQuestionDTOList: {
+    id: number;
+    position: number;
+    isActive: boolean;
+  }[],
+) => {
+  try {
+    const response = await api.put("/questions", { modifiableQuestionDTOList });
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка при сохранении порядка/активности вопросов:", error);
     throw error;
   }
 };
