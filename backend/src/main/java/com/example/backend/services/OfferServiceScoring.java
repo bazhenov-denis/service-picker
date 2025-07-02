@@ -38,25 +38,38 @@ public class OfferServiceScoring implements OfferService {
 
   @Override
   public OfferListDto pick(ClaimDto claim) {
-    log.info(claim.toString());
     ProcessingResult result = answerProcessingService.process(claim);
-    log.info("ProcessingResult: {}", result);
+    log.info("Score: {}", result);
 
 
     QueryBuilder qb = new QueryBuilder();
     for (CriteriaHandler handler : handlers) {
       handler.apply(result, qb);
     }
-    log.debug("SQL: {}", qb.buildSql());
-    log.debug("Params: {}", qb.getParams());
+    log.info("SQL: {}", qb.buildSql());
+    log.info("Params: {}", qb.getParams());
+
+/*    List<Offer> offers = offerDaoImpl.findOffers(qb.buildSql(), qb.getParams());*/
+
+
     List<Offer> offers = offerDaoImpl.findOffers(qb.buildSql(), qb.getParams());
 
+
+    log.info("Offers: {}", offers);
     offers.sort(Comparator.comparingDouble(Offer::getPriceAll));
 
     OfferListDto dtoList = new OfferListDto();
     offers.stream()
         .map(offerMapper::toDto)
         .forEach(dtoList::add);
+
+    if (offers.isEmpty()) {
+      dtoList.add(offerMapper.basicOffer());
+    } else {
+      offers.stream()
+          .map(offerMapper::toDto)
+          .forEach(dtoList::add);
+    }
 
     return dtoList;
 

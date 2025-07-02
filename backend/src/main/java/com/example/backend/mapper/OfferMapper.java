@@ -27,7 +27,7 @@ public class OfferMapper {
     String region = priceRegionService.getRegionNameById(offer.getRegionId());
     String profrole = priceProfroleService.getProfroleNameById(offer.getProfroleGroupId().longValue());
     String price = Double.toString(offer.getPriceAll() / 100.0);
-    String label = "Оптимальный";
+    String label = "Подходящий";
     return switch (code) {
       case "DI" ->
         // доступ к базе резюме
@@ -81,4 +81,20 @@ public class OfferMapper {
       default -> throw new IllegalArgumentException("Unknown offer code: " + code);
     };
   }
+  public OfferDto basicOffer() {
+    return new OfferDto(
+        "Подходящий",      // label
+        "vacancy",              // code
+        "Публикация вакансий", // description
+        "30",                   // period
+        "Вся Россия",                   // region
+        "Все профессии",                   // profrole
+        "1619",               // price
+        "Стандарт",                  // childCode
+        "1",                  // childCount1
+        null,                  // childCount2
+        null                   // childCount3
+    );
+  }
+
 }
