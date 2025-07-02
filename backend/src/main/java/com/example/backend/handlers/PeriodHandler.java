@@ -20,6 +20,7 @@ public class PeriodHandler implements CriteriaHandler{
     List<Integer> periods = new ArrayList<>();
 
 
+
     if ( consistency < -3) {
       periods.add(7);
       periods.add(14);
