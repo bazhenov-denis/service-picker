@@ -16,38 +16,49 @@ export function useAdminQuestions() {
   }, [questions]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/score-types")
+    axios
+      .get("http://localhost:8080/score-types")
       .then((res) => setScoreTypes(res.data))
       .catch(() => setScoreTypes([]));
   }, []);
 
   function handleMoveQuestionUp(questionId: number) {
-    const sortedQuestions = [...adminQuestions].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    const sortedQuestions = [...adminQuestions].sort(
+      (a, b) => (a.position ?? 0) - (b.position ?? 0),
+    );
     const idx = sortedQuestions.findIndex((q) => q.id === questionId);
     if (idx <= 0) return;
-    [sortedQuestions[idx - 1], sortedQuestions[idx]] = [sortedQuestions[idx], sortedQuestions[idx - 1]];
+    [sortedQuestions[idx - 1], sortedQuestions[idx]] = [
+      sortedQuestions[idx],
+      sortedQuestions[idx - 1],
+    ];
     const posA = sortedQuestions[idx].position;
     const posB = sortedQuestions[idx - 1].position;
     sortedQuestions[idx].position = posB;
     sortedQuestions[idx - 1].position = posA;
-    const updated = adminQuestions.map(q => {
-      const updatedQ = sortedQuestions.find(sq => sq.id === q.id);
+    const updated = adminQuestions.map((q) => {
+      const updatedQ = sortedQuestions.find((sq) => sq.id === q.id);
       return updatedQ ? { ...updatedQ } : q;
     });
     setAdminQuestions(updated);
   }
 
   function handleMoveQuestionDown(questionId: number) {
-    const sortedQuestions = [...adminQuestions].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+    const sortedQuestions = [...adminQuestions].sort(
+      (a, b) => (a.position ?? 0) - (b.position ?? 0),
+    );
     const idx = sortedQuestions.findIndex((q) => q.id === questionId);
     if (idx === -1 || idx === sortedQuestions.length - 1) return;
-    [sortedQuestions[idx], sortedQuestions[idx + 1]] = [sortedQuestions[idx + 1], sortedQuestions[idx]];
+    [sortedQuestions[idx], sortedQuestions[idx + 1]] = [
+      sortedQuestions[idx + 1],
+      sortedQuestions[idx],
+    ];
     const posA = sortedQuestions[idx].position;
     const posB = sortedQuestions[idx + 1].position;
     sortedQuestions[idx].position = posB;
     sortedQuestions[idx + 1].position = posA;
-    const updated = adminQuestions.map(q => {
-      const updatedQ = sortedQuestions.find(sq => sq.id === q.id);
+    const updated = adminQuestions.map((q) => {
+      const updatedQ = sortedQuestions.find((sq) => sq.id === q.id);
       return updatedQ ? { ...updatedQ } : q;
     });
     setAdminQuestions(updated);

@@ -51,7 +51,7 @@ export const fetchQuestions = async (
   role: "client" | "admin" = "client",
 ): Promise<any[]> => {
   try {
-    const params = role === 'client' ? {} : { role };
+    const params = role === "client" ? {} : { role };
     const response = await api.get("/questions", { params });
     return response.data;
   } catch (error) {
@@ -74,7 +74,13 @@ export const sendAnswers = async (
   }
 };
 
-export const saveQuestionsOrder = async (modifiableQuestionDTOList: { id: number; position: number; isActive: boolean }[]) => {
+export const saveQuestionsOrder = async (
+  modifiableQuestionDTOList: {
+    id: number;
+    position: number;
+    isActive: boolean;
+  }[],
+) => {
   try {
     const response = await api.put("/questions", { modifiableQuestionDTOList });
     return response.data;

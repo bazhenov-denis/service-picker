@@ -9,7 +9,7 @@
   color: #fff;
   font-size: 2rem;
   border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   z-index: 1000;
   display: flex;
@@ -27,7 +27,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,7 +40,7 @@
   border-radius: 12px;
   min-width: 500px;
   max-width: 95vw;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -72,4 +72,4 @@
 .success {
   color: #388e3c;
   margin-top: 8px;
-} 
+}

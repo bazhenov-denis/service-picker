@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import styles from './AddQuestionButton.module.css';
+import React, { useState, useEffect } from "react";
+import styles from "./AddQuestionButton.module.css";
 import QuestionEditModal from "./QuestionEditModal";
-import type { Question, SingleChoiceQuestion, MultipleChoiceQuestion, OptionWithScores, OptionScore } from "../../types/question";
+import type {
+  Question,
+  SingleChoiceQuestion,
+  MultipleChoiceQuestion,
+  OptionWithScores,
+  OptionScore,
+} from "../../types/question";
 
 interface ScoreType {
   id: number;
@@ -10,50 +16,46 @@ interface ScoreType {
 
 interface Option {
   text: string;
-  scores: number[];
+  score: { code: string; weight: number };
 }
 
 const AddQuestionButton: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [scoreTypes, setScoreTypes] = useState<ScoreType[]>([]);
-  const [questionText, setQuestionText] = useState('');
-  const [shortTitle, setShortTitle] = useState('');
-  const [type, setType] = useState('');
-  const [referenceType, setReferenceType] = useState('');
+  const [questionText, setQuestionText] = useState("");
+  const [shortTitle, setShortTitle] = useState("");
+  const [type, setType] = useState("");
+  const [referenceType, setReferenceType] = useState("");
   const [isRequired, setIsRequired] = useState(true);
   const [active, setActive] = useState(true);
-  const [options, setOptions] = useState<Option[]>([{ text: '', scores: [] }]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [draftQuestion, setDraftQuestion] = useState<Question | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:8080/score-types')
-      .then(res => res.json())
-      .then(data => setScoreTypes(data))
+    fetch("http://localhost:8080/score-types")
+      .then((res) => res.json())
+      .then((data) => setScoreTypes(data))
       .catch(() => setScoreTypes([]));
   }, []);
-
-  const handleOptionChange = (idx: number, field: 'text' | 'scores', value: string | number[]) => {
-    setOptions(prev => prev.map((opt, i) =>
-      i === idx ? { ...opt, [field]: value } : opt
-    ));
-  };
-
-  const addOption = () => setOptions([...options, { text: '', scores: [] }]);
-  const removeOption = (idx: number) => setOptions(options.filter((_, i) => i !== idx));
 
   const handleOpen = () => {
     setDraftQuestion({
       id: Date.now(),
       questionText: "",
       shortTitle: "",
-      isRequired: true,
+      isRequired: false,
       type: "single-choice",
       active: true,
       position: 0,
-      options: [],
+      options: [
+        {
+          id: Date.now(),
+          text: "",
+          scores: [{ id: Date.now(), code: "", title: "", weight: 1 }],
+        },
+      ],
     } as SingleChoiceQuestion);
     setOpen(true);
   };
@@ -64,24 +66,20 @@ const AddQuestionButton: React.FC = () => {
     setError("");
     setSuccess(false);
     try {
-      let optionsArr: OptionWithScores[] = [];
-      if (
-        draftQuestion.type === "single-choice" ||
-        draftQuestion.type === "multiple-choice"
-      ) {
-        optionsArr = (draftQuestion as SingleChoiceQuestion | MultipleChoiceQuestion).options || [];
-      }
+      let optionsArr = (draftQuestion as any).options || [];
       let payload: any = {
         questionText: draftQuestion.questionText,
         type: draftQuestion.type,
         isRequired: draftQuestion.isRequired,
         shortTitle: draftQuestion.shortTitle,
         active: draftQuestion.active,
-        // referenceType: "",
-        options: optionsArr.map((opt: OptionWithScores) => ({
+        options: optionsArr.map((opt: any) => ({
           text: opt.text,
-          scores: (opt.scores || []).map((s: OptionScore) => s.id)
-        }))
+          score:
+            opt.scores && opt.scores[0]
+              ? { code: opt.scores[0].code, weight: opt.scores[0].weight }
+              : { code: "", weight: 1 },
+        })),
       };
       if (draftQuestion.type === "reference") {
         payload.referenceType = (draftQuestion as any).referenceType || "";
@@ -105,8 +103,8 @@ const AddQuestionButton: React.FC = () => {
   // Преобразуем scoreTypes к нужному формату
   const mappedScoreTypes = scoreTypes.map((st: any) => ({
     id: st.id,
-    code: st.code || st.name || '',
-    title: st.title || st.name || '',
+    code: st.code || st.name || "",
+    title: st.title || st.name || "",
   }));
 
   return (
@@ -120,7 +118,10 @@ const AddQuestionButton: React.FC = () => {
           scoreTypes={mappedScoreTypes}
           onChange={setDraftQuestion}
           onSave={handleSave}
-          onCancel={() => { setOpen(false); setDraftQuestion(null); }}
+          onCancel={() => {
+            setOpen(false);
+            setDraftQuestion(null);
+          }}
           isSaving={loading}
           error={error}
         />
@@ -129,4 +130,4 @@ const AddQuestionButton: React.FC = () => {
   );
 };
 
-export default AddQuestionButton; 
+export default AddQuestionButton;
