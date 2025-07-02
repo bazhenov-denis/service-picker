@@ -5,34 +5,39 @@ import com.example.backend.enums.ScoreCode;
 import com.example.backend.query.QueryBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CodeHandler implements CriteriaHandler {
 
+  Logger logger = Logger.getLogger(CodeHandler.class.getName());
 
   public void apply(ProcessingResult result, QueryBuilder queryBuilder) {
 
-    long vacancyScore = result.getScore(ScoreCode.ACCESS_VACANCIES);
+    long competition = result.getScore(ScoreCode.COMPETITION);
     long resumeScore = result.getScore(ScoreCode.ACCESS_RESUMES);
     long mass = result.getScore(ScoreCode.MASS);
 
     List<String> codes = new ArrayList<>();
 
 
-    if (vacancyScore > 5) {
+    if (competition <= 100) {
       codes.add("VPPL");
     }
     if (resumeScore > 5) {
       codes.add("DI");
     }
-    if (vacancyScore > 3 && resumeScore > 3 && mass > 3) {
+    if (resumeScore > 3 && mass > 3) {
       codes.add("CIV+VPPL");
 
     }
     if (codes.isEmpty()) {
       codes.add("VPPL");
     }
+
+    logger.info("Тип услуги:" + codes);
+
 
     queryBuilder.addCondition(
         "code IN (:codes)",

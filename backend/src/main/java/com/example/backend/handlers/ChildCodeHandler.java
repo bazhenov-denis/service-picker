@@ -5,10 +5,14 @@ import com.example.backend.enums.ScoreCode;
 import com.example.backend.query.QueryBuilder;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ChildCodeHandler implements CriteriaHandler{
+
+  Logger log = LoggerFactory.getLogger(ChildCodeHandler.class);
 
   @Override
   public void apply(ProcessingResult result, QueryBuilder queryBuilder) {
@@ -30,17 +34,20 @@ public class ChildCodeHandler implements CriteriaHandler{
       codes.add("VPREM");
     }
 
+
+    // один и тот же плейсхолдер :codes
     queryBuilder.addCondition(
-        "(child_code_1 IN (:childCodes1) OR child_code_1 IS NULL)",
-        "childCodes1",
+        "(child_code_1 IN (:childCode1) OR child_code_1 IS NULL OR child_code_1 = '')",
+        "childCode1",
+        codes
+    );
+    queryBuilder.addCondition(
+        "(child_code_2 IN (:childCode2) OR child_code_2 IS NULL OR child_code_2 = '')",
+        "childCode2",
         codes
     );
 
-    queryBuilder.addCondition(
-        "(child_code_2 IN (:childCodes2) OR child_code_2 IS NULL)",
-        "childCodes2",
-        codes
-    );
+    log.info("Child Code : {}", codes);
 
   }
 }

@@ -45,7 +45,6 @@ public class AnswerProcessingService {
     List<Long> questionIds = answer.keySet().stream()
         .map(Long::valueOf)
         .toList();
-    log.info("ID вопросов: {}", questionIds);
 
     List<String> types = questionDao.findTypesByQuestionIds(questionIds);
 
@@ -62,7 +61,6 @@ public class AnswerProcessingService {
       String type = entry.getValue();
       List<String> values = answer.get(String.valueOf(id));
 
-      log.info("Обработка вопроса {} типа '{}' с ответами {}", id, type, values);
       switch (type) {
         case "reference" -> handleReference(id, values, result, regionIds, profRoleIds);
         case "input" -> handleInput(values, result);
@@ -72,11 +70,18 @@ public class AnswerProcessingService {
     }
 
     if (!regionIds.isEmpty() && !profRoleIds.isEmpty()) {
-      VacancyResult vacancy = apiService.getVacancyCount(
-          regionIds.get(0).intValue(),
-          profRoleIds.get(0).intValue()
-      );
-      result.addScore(ScoreCode.COMPETITION, vacancy.count());
+      int competition;
+      try {
+        VacancyResult vacancy = apiService.getVacancyCount(
+            regionIds.get(0).intValue(),
+            profRoleIds.get(0).intValue()
+        );
+        competition = vacancy.count();
+      } catch (Exception e) {
+        log.warn("Не удалось получить количество вакансий, устанавливаю competition=50", e);
+        competition = 50;
+      }
+      result.addScore(ScoreCode.COMPETITION, competition);
     }
     return result;
   }
@@ -96,7 +101,6 @@ public class AnswerProcessingService {
 
   private void handleChoice(List<String> values, ProcessingResult result) {
 
-    log.info("  [handleChoice] получены значения {}", values);
     if (values == null || values.isEmpty()) {
       return;
     }
