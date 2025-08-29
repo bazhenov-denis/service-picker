@@ -142,8 +142,10 @@ public class AnswerProcessingService {
         String[] parts = raw.split("\\.");
         long areaId = Long.parseLong(parts[1]);
         regionIds.add(areaId);
+        log.info("ID региона: {}", areaId);
       }
       List<Long> priceRegion = priceRegionService.getAreaIdsByRegionIds(regionIds);
+
       result.setRegionIds(priceRegion);
 
     } else if ("professions".equals(refType)) {

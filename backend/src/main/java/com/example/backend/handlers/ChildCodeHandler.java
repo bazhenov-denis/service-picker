@@ -18,20 +18,25 @@ public class ChildCodeHandler implements CriteriaHandler{
   public void apply(ProcessingResult result, QueryBuilder queryBuilder) {
     long urgency = result.getScore(ScoreCode.URGENCY);
     long competition = result.getScore(ScoreCode.COMPETITION);
+    long mass = result.getScore(ScoreCode.MASS);
 
     List<String> codes = new ArrayList<>();
 
     codes.add("CIV");
     codes.add("API_LIMITED");
 
-    if (competition < 30 && urgency < 20) {
-      codes.add("VP");
+    if ( urgency > 8 || competition > 4250) {
+      codes.add("VPREM");
     }
-    else if (competition < 100 && urgency < 10) {
+    else if (competition > 30 || urgency > 5) {
       codes.add("RENEWAL_VP");
     }
     else  {
-      codes.add("VPREM");
+      codes.add("VP");
+    }
+
+    if ( mass > 40) {
+      codes.add("VP");
     }
 
 

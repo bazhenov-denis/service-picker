@@ -11,6 +11,8 @@ import com.example.backend.query.QueryBuilder;
 import java.util.Comparator;
 import java.util.List;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,20 +57,21 @@ public class OfferServiceScoring implements OfferService {
     List<Offer> offers = offerDaoImpl.findOffers(qb.buildSql(), qb.getParams());
 
 
-    log.info("Offers: {}", offers);
-    offers.sort(Comparator.comparingDouble(Offer::getPriceAll));
+    List<Long> offerIds = offers.stream()
+        .map(Offer::getId)                    // или .map(o -> o.getId())
+        .collect(Collectors.toList());
+
+    log.info("Offer IDs: {}", offerIds);
+    Optional<Offer> cheapest = offers.stream()
+        .min(Comparator.comparingDouble(Offer::getPriceAll));
 
     OfferListDto dtoList = new OfferListDto();
-    offers.stream()
-        .map(offerMapper::toDto)
-        .forEach(dtoList::add);
-
-    if (offers.isEmpty()) {
-      dtoList.add(offerMapper.basicOffer());
+    if (cheapest.isPresent()) {
+      // Добавляем только одну самую дешёвую
+      dtoList.add(offerMapper.toDto(cheapest.get()));
     } else {
-      offers.stream()
-          .map(offerMapper::toDto)
-          .forEach(dtoList::add);
+      // Если вообще ничего не нашли — возвращаем дефолт
+      dtoList.add(offerMapper.basicOffer());
     }
 
     return dtoList;

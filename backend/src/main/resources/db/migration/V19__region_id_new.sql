@@ -22,5 +22,4 @@ VALUES (1, 'Москва');
 INSERT INTO area_mapping (price_region_id, area_id)
 VALUES (1, 1),
        (2000231, 1),
-       (3000233, 1),
-       (0, 1);
+       (3000233, 1);

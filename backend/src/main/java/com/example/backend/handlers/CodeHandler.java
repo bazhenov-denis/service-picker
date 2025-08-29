@@ -21,17 +21,16 @@ public class CodeHandler implements CriteriaHandler {
 
     List<String> codes = new ArrayList<>();
 
-
-    if (competition <= 100) {
-      codes.add("VPPL");
+    if (resumeScore > 3 && mass > 40) {
+      codes.add("CIV+VPPL");
     }
-    if (resumeScore > 5) {
+    else if (resumeScore > 5) {
       codes.add("DI");
     }
-    if (resumeScore > 3 && mass > 3) {
-      codes.add("CIV+VPPL");
-
+    else if (competition <= 100) {
+      codes.add("VPPL");
     }
+
     if (codes.isEmpty()) {
       codes.add("VPPL");
     }

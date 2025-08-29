@@ -178,7 +178,7 @@ public class QuestionService {
             )
         );
 
-    // first 3 questions are unmodifiable
+/*    // first 3 questions are unmodifiable
     updateQuestionsDTO.modifiableQuestionDTOList()
         .stream()
         .map(ModifiableQuestionDTO::id)
@@ -187,7 +187,7 @@ public class QuestionService {
             e -> exceptions.add(
                 new QuestionExceptionDTO(QuestionExceptionType.UNMODIFIABLE_QUESTION, e, QuestionExceptionType.UNMODIFIABLE_QUESTION.getMsg())
             )
-        );
+        );*/
 
     // no duplicated ids allowed
     updateQuestionsDTO.modifiableQuestionDTOList()

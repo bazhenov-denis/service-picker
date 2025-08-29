@@ -21,21 +21,20 @@ public class PeriodHandler implements CriteriaHandler{
 
 
 
-    if ( consistency < -3) {
+    if ( consistency < -10) {
       periods.add(7);
       periods.add(14);
       periods.add(30);
-    } else if ( consistency < 3) {
-      periods.add(14);
+    } else if ( consistency < -3) {
       periods.add(30);
       periods.add(92);
-    } else if (consistency < 10) {
+    } else if (consistency < 12) {
+      periods.add(30);
+      periods.add(92);
       periods.add(183);
-      periods.add(365);
     } else {
       periods.add(365);
-      periods.add(92);
-      periods.add(30);
+      periods.add(183);
     }
 
     logger.info("Период{}", periods.toString());
